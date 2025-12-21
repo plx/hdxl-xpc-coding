@@ -1,4 +1,4 @@
-// Sources/CodableXPC/XPCDecoder.swift - Decoder impelementation for XPC
+// Sources/XPCCoding/XPCDecoder.swift - Decoder impelementation for XPC
 //
 // Licensed under Apache License v2.0 with Runtime Library Exception
 //

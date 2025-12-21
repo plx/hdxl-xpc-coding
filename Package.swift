@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "CodableXPC",
+  name: "hdxl-xpc-coding",
   platforms: [
     .macOS(.v26),
     .iOS(.v26),
@@ -12,23 +12,23 @@ let package = Package(
   ],
   products: [
     .library(
-      name: "CodableXPC",
-      targets: ["CodableXPC"]
+      name: "XPCCoding",
+      targets: ["XPCCoding"]
     ),
   ],
   dependencies: [
   ],
   targets: [
     .target(
-      name: "CodableXPC",
+      name: "XPCCoding",
       dependencies: [],
       swiftSettings: [
         .enableExperimentalFeature("StrictConcurrency")
       ]
     ),
     .testTarget(
-      name: "CodableXPCTests",
-      dependencies: ["CodableXPC"],
+      name: "XPCCodingTests",
+      dependencies: ["XPCCoding"],
       swiftSettings: [
         .enableExperimentalFeature("StrictConcurrency")
       ]

@@ -1,4 +1,4 @@
-// Tests/CodableXPCTests/CodableXPCTests.swift
+// Tests/XPCCodingTests/XPCCodingTests.swift
 // Tests for XPC Codable support
 //
 // Licensed under Apache License v2.0 with Runtime Library Exception
@@ -8,9 +8,9 @@
 import XCTest
 import Foundation
 
-@testable import CodableXPC
+@testable import XPCCoding
 
-final class CodableXPCTests: XCTestCase {
+final class XPCCodingTests: XCTestCase {
   func testEncodingTopLevelEmptyStruct() {
     let empty = EmptyStruct()
     _testRoundTrip(of: empty)

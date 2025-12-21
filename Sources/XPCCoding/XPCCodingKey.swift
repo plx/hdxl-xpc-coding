@@ -11,7 +11,8 @@
 
 import XPC
 
-public struct XPCCodingKey: CodingKey {
+@usableFromInline
+internal struct XPCCodingKey: CodingKey {
   public let stringValue: String
   public let intValue: Int?
 
