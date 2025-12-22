@@ -238,7 +238,9 @@ struct EdgeCaseTests {
 
   @Test("Strings with embedded null bytes round-trip correctly", .tags(.roundTrip))
   func stringWithNullByteRoundTrip() throws {
-    try verifyRoundTrip(of: PrimitiveWrapper("Hello\0World"))
+    withKnownIssue("xpc strings can't have embedded null bytes") {
+      try verifyRoundTrip(of: PrimitiveWrapper("Hello\0World"))
+    }
   }
 
   @Test("Strings with newlines round-trip correctly", .tags(.roundTrip))
@@ -266,8 +268,15 @@ struct EdgeCaseTests {
 
   @Test("String with all ASCII control characters round-trips correctly", .tags(.roundTrip))
   func stringWithAllControlCharactersRoundTrip() throws {
-    // All control characters 0-31
-    let controlChars = (0...31).map { Character(UnicodeScalar($0)!) }
+    withKnownIssue("xpc strings can't have embedded null bytes") {
+      // All control characters 0-31
+      let controlChars = (0...31).map { Character(UnicodeScalar($0)) }
+      let controlString = String(controlChars)
+      try verifyRoundTrip(of: PrimitiveWrapper(controlString))
+    }
+
+    // All non-null control characters 1-31
+    let controlChars = (1...31).map { Character(UnicodeScalar($0)) }
     let controlString = String(controlChars)
     try verifyRoundTrip(of: PrimitiveWrapper(controlString))
   }

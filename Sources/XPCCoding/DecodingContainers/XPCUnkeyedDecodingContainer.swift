@@ -60,7 +60,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   }
   
   @usableFromInline
-  internal func withCurrentCodingKey<R>(_ closure: ([any CodingKey]) throws -> R) rethrows -> R {
+  internal func withCurrentCodingKey<R>(_ closure: ([any CodingKey]) throws -> R) throws -> R {
     try decoder.withTransientCodingPathElement(currentCodingKey, closure)
   }
   
@@ -109,7 +109,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       )
     }
 
-    return withCurrentCodingKey { _ in
+    return try withCurrentCodingKey { _ in
       let foundValue = xpc_array_get_value(underlyingMessage, currentIndex)
       
       if foundValue.decodeNil(at: codingPath) {
@@ -156,7 +156,11 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   public mutating func decode(_ type: Int64.Type) throws -> Int64 {
     try decodeNextValue(as: type)
   }
-  
+
+  public mutating func decode(_ type: Int128.Type) throws -> Int128 {
+    try decodeNextValue(as: type)
+  }
+
   public mutating func decode(_ type: UInt.Type) throws -> UInt {
     try decodeNextValue(as: type)
   }
@@ -176,7 +180,11 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   public mutating func decode(_ type: UInt64.Type) throws -> UInt64 {
     try decodeNextValue(as: type)
   }
-  
+
+  public mutating func decode(_ type: UInt128.Type) throws -> UInt128 {
+    try decodeNextValue(as: type)
+  }
+
   public mutating func decode<T: Decodable>(_ type: T.Type) throws -> T {
     try handleNextDecodingKeyValue { xpcValue, codingPath in
       return try T(

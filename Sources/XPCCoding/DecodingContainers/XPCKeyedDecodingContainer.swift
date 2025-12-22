@@ -92,15 +92,15 @@ internal struct XPCKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
   internal func withTransientCodingKey<R>(
     _ key: Key,
     _ closure: ([any CodingKey]) throws -> R
-  ) rethrows -> R {
+  ) throws -> R {
     try decoder.withTransientCodingPathElement(key, closure)
   }
-
+  
   @inlinable
   internal func withTransientCodingKey<R>(
     _ key: XPCCodingKey,
     _ closure: ([any CodingKey]) throws -> R
-  ) rethrows -> R {
+  ) throws -> R {
     try decoder.withTransientCodingPathElement(key, closure)
   }
 
@@ -119,7 +119,7 @@ internal struct XPCKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
   }
   
   public func decodeNil(forKey key: Key) throws -> Bool {
-    withTransientCodingKey(key) { codingPath in
+    try withTransientCodingKey(key) { codingPath in
       underlyingMessage.decodeNil(
         at: codingPath,
         forKey: key
@@ -150,7 +150,11 @@ internal struct XPCKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
   public func decode(_ type: Int64.Type, forKey key: Key) throws -> Int64 {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
+  public func decode(_ type: Int128.Type, forKey key: Key) throws -> Int128 {
+    try extractValue(ofType: type, forKey: key)
+  }
+
   public func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
     try extractValue(ofType: type, forKey: key)
   }
@@ -170,7 +174,11 @@ internal struct XPCKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
   public func decode(_ type: UInt64.Type, forKey key: Key) throws -> UInt64 {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
+  public func decode(_ type: UInt128.Type, forKey key: Key) throws -> UInt128 {
+    try extractValue(ofType: type, forKey: key)
+  }
+
   public func decode(_ type: Float.Type, forKey key: Key) throws -> Float {
     try extractValue(ofType: type, forKey: key)
   }

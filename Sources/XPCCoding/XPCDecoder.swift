@@ -31,7 +31,8 @@ public final class XPCDecoder: Decoder {
     self._codingPath = codingPath
   }
   
-  public convenience init(decoding message: xpc_object_t) throws {
+  @usableFromInline
+  internal convenience init(decoding message: xpc_object_t) throws {
     guard xpc_get_type(message) == XPC_TYPE_DICTIONARY else {
       throw DecodingError.dataCorrupted(
         DecodingError.Context(
@@ -46,11 +47,46 @@ public final class XPCDecoder: Decoder {
     )
   }
   
-  @usableFromInline
+  @inlinable
+  public static func decodeRootValue<T: Decodable>(_ message: xpc_object_t, as type: T.Type) throws -> T {
+    if
+      let extractableType = type as? XPCObjectExtractable.Type,
+      xpc_get_type(message) == extractableType.associatedXPCObjectType,
+      let _extractedValue = extractableType.extracting(from: message),
+      let extractedValue = _extractedValue as? T
+    {
+      return extractedValue
+    }
+    
+    let decoder = try XPCDecoder(decoding: message)
+    return try type.init(from: decoder)
+  }
+  
+  @inlinable
+  internal func verifyKeyCompatibility(
+    key: some CodingKey,
+    codingPath: [any CodingKey]
+  ) throws(DecodingError) {
+    do {
+      try key.verifyXPCCompatibility()
+    }
+    catch let incompatibilityError {
+      throw DecodingError.keyNotFound(
+        key,
+        DecodingError.Context(
+          codingPath: codingPath,
+          debugDescription: "Tried to decode an xpc-incompatible key `\(key)`",
+          underlyingError: incompatibilityError
+        )
+      )
+    }
+  }
+  
+  @inlinable
   internal func withTransientCodingPathElement<Key, R>(
     _ codingPathElement: Key,
     _ closure: ([any CodingKey]) throws -> R
-  ) rethrows -> R where Key: CodingKey {
+  ) throws -> R where Key: CodingKey {
     _codingPath.append(codingPathElement)
     defer {
       #if DEBUG
@@ -64,6 +100,10 @@ public final class XPCDecoder: Decoder {
       #endif
     }
     let codingPath = _codingPath
+    try verifyKeyCompatibility(
+      key: codingPathElement,
+      codingPath: codingPath
+    )
     return try closure(codingPath)
   }
   

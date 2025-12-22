@@ -70,17 +70,17 @@ extension xpc_object_t {
 extension xpc_object_t {
 
   @inlinable @inline(__always)
-  internal func setValue(_ value: some XPCObjectConvertible, forKey key: some CodingKey) {
+  internal func setValue(_ value: some LosslessXPCObjectConvertible, forKey key: some CodingKey) {
     setValue(value.xpcObjectRepresentation, forKey: key.stringValue)
   }
 
   @inlinable @inline(__always)
-  internal func setValue(_ value: some XPCObjectConvertible, forKey key: any CodingKey) {
+  internal func setValue(_ value: some LosslessXPCObjectConvertible, forKey key: any CodingKey) {
     setValue(value.xpcObjectRepresentation, forKey: key.stringValue)
   }
 
   @inlinable @inline(__always)
-  internal func setValue(_ value: some XPCObjectConvertible, forKey key: String) {
+  internal func setValue(_ value: some LosslessXPCObjectConvertible, forKey key: String) {
     setValue(value.xpcObjectRepresentation, forKey: key)
   }
 
@@ -114,7 +114,7 @@ extension xpc_object_t {
 extension xpc_object_t {
   
   @inlinable @inline(__always)
-  internal func appendValue(_ value: some XPCObjectConvertible) {
+  internal func appendValue(_ value: some LosslessXPCObjectConvertible) {
     assert(xpc_get_type(self) == XPC_TYPE_ARRAY)
     xpc_array_append_value(self, value.xpcObjectRepresentation)
   }

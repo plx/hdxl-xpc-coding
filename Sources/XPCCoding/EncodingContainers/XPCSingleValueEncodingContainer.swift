@@ -34,15 +34,33 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   // MARK: - SingleValueEncodingContainer protocol methods
   @usableFromInline
   internal func encodeXPCObjectConvertible(_ value: some XPCObjectConvertible) throws {
+    do {
+      let xpcObject = try value.makeXPCObjectRepresentation()
+      try insertionClosure(xpcObject)
+    }
+    catch let incompatibilityError {
+      throw EncodingError.invalidValue(
+        value,
+        EncodingError.Context(
+          codingPath: encoder.codingPath,
+          debugDescription: "XPC-incompatible value \(String(describing: value))",
+          underlyingError: incompatibilityError
+        )
+      )
+    }
+  }
+
+  @usableFromInline
+  internal func encodeLosslessXPCObjectConvertible(_ value: some LosslessXPCObjectConvertible) throws {
     try insertionClosure(value.xpcObjectRepresentation)
   }
-  
+
   public mutating func encodeNil() throws {
     try insertionClosure(xpc_null_create())
   }
   
   public mutating func encode(_ value: Bool) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: String) throws {
@@ -50,51 +68,59 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   }
   
   public mutating func encode(_ value: Double) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: Float) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: Int) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: Int8) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: Int16) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: Int32) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: Int64) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
+  }
+  
+  public mutating func encode(_ value: Int128) throws {
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: UInt) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: UInt8) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: UInt16) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: UInt32) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode(_ value: UInt64) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeLosslessXPCObjectConvertible(value)
+  }
+  
+  public mutating func encode(_ value: UInt128) throws {
+    try encodeLosslessXPCObjectConvertible(value)
   }
   
   public mutating func encode<T: Encodable>(_ value: T) throws {

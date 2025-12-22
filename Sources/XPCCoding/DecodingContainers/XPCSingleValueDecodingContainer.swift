@@ -76,7 +76,11 @@ internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
   public func decode(_ type: Int64.Type) throws -> Int64 {
     try underlyingMessage.extractValue(ofType: type, at: codingPath)
   }
-  
+
+  public func decode(_ type: Int128.Type) throws -> Int128 {
+    try underlyingMessage.extractValue(ofType: type, at: codingPath)
+  }
+
   public func decode(_ type: UInt.Type) throws -> UInt {
     try underlyingMessage.extractValue(ofType: type, at: codingPath)
   }
@@ -96,7 +100,11 @@ internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
   public func decode(_ type: UInt64.Type) throws -> UInt64 {
     try underlyingMessage.extractValue(ofType: type, at: codingPath)
   }
-  
+
+  public func decode(_ type: UInt128.Type) throws -> UInt128 {
+    try underlyingMessage.extractValue(ofType: type, at: codingPath)
+  }
+
   public func decode<T: Decodable>(_ type: T.Type) throws -> T {
     try T(
       from: XPCDecoder(

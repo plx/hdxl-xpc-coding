@@ -53,74 +53,102 @@ internal struct XPCKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerP
   }
  
   @usableFromInline
-  internal mutating func actuallyEncodeValue(_ value: some XPCObjectConvertible, forKey key: Key) throws {
-    encoder.withTransientCodingPathElement(key) { _ in
+  internal mutating func actuallyEncodeLosslesslyConvertibleValue(_ value: some LosslessXPCObjectConvertible, forKey key: Key) throws {
+    try encoder.withTransientCodingPathElement(key) { _ in
       underlyingMessage.setValue(value, forKey: key)
     }
   }
-  
+
+  @usableFromInline
+  internal mutating func actuallyEncodeConvertibleValue(_ value: some XPCObjectConvertible, forKey key: Key) throws {
+    try encoder.withTransientCodingPathElement(key) { codingPath in
+      do {
+        let xpcObject = try value.makeXPCObjectRepresentation()
+        underlyingMessage.setValue(xpcObject, forKey: key)
+      }
+      catch let incompatibilityError {
+        throw EncodingError.invalidValue(
+          value,
+          EncodingError.Context(
+            codingPath: codingPath,
+            debugDescription: "Unable to encode incompatible value \(value) for key: \(key)",
+            underlyingError: incompatibilityError
+          )
+        )
+      }
+    }
+  }
+
   // MARK: - KeyedEncodingContainerProtocol Methods
   
   public mutating func encodeNil(forKey key: Key) throws {
-    encoder.withTransientCodingPathElement(key) { _ in
+    try encoder.withTransientCodingPathElement(key) { _ in
       underlyingMessage.setNil(forKey: key)
     }
   }
   
   public mutating func encode(_ value: Bool, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: Int, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: Int8, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: Int16, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: Int32, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: Int64, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
+  public mutating func encode(_ value: Int128, forKey key: Key) throws {
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
+  }
+
   public mutating func encode(_ value: UInt, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: UInt8, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: UInt16, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: UInt32, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: UInt64, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
+  public mutating func encode(_ value: UInt128, forKey key: Key) throws {
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
+  }
+
   public mutating func encode(_ value: String, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: Float, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode(_ value: Double, forKey key: Key) throws {
-    try actuallyEncodeValue(value, forKey: key)
+    try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
   
   public mutating func encode<T : Encodable>(_ value: T, forKey key: Key) throws {
@@ -148,46 +176,94 @@ internal struct XPCKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerP
   }
   
   public mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> {
-    encoder.withTransientCodingPathElement(key) { _ in
-      let xpcDictionary = xpc_dictionary_create(nil, nil, 0)
-      underlyingMessage.setValue(xpcDictionary, forKey: key)
-      // It is OK to force this through because we know we are providing a dictionary
-      let container = try! XPCKeyedEncodingContainer<NestedKey>(
-        referencing: encoder,
-        wrapping: xpcDictionary
+    do {
+      return try encoder.withTransientCodingPathElement(key) { _ in
+        let xpcDictionary = xpc_dictionary_create(nil, nil, 0)
+        underlyingMessage.setValue(xpcDictionary, forKey: key)
+        // It is OK to force this through because we know we are providing a dictionary
+        let container = try XPCKeyedEncodingContainer<NestedKey>(
+          referencing: encoder,
+          wrapping: xpcDictionary
+        )
+        return KeyedEncodingContainer(container)
+      }
+    }
+    catch let error {
+      fatalError(
+        """
+        Encountered unrecoverable error preparing nested keyed container (due to API limitations requiring non-throwing construction here).
+        
+        - keyType: \(keyType)
+        - key: \(key)
+        - error: \(String(reflecting: error))
+        """
       )
-      return KeyedEncodingContainer(container)
     }
   }
   
   public mutating func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
-    encoder.withTransientCodingPathElement(key) { _ in
-      let xpcArray = xpc_array_create(nil, 0)
-      underlyingMessage.setValue(xpcArray, forKey: key)
-      let container = try! XPCUnkeyedEncodingContainer(
-        referencing: encoder,
-        wrapping: xpcArray
+    do {
+      return try encoder.withTransientCodingPathElement(key) { _ in
+        let xpcArray = xpc_array_create(nil, 0)
+        underlyingMessage.setValue(xpcArray, forKey: key)
+        let container = try XPCUnkeyedEncodingContainer(
+          referencing: encoder,
+          wrapping: xpcArray
+        )
+        return container
+      }
+    }
+    catch let error {
+      fatalError(
+        """
+        Encountered unrecoverable error preparing nested unkeyed container (due to API limitations requiring non-throwing construction here).
+        
+        - key: \(key)
+        - error: \(String(reflecting: error))
+        """
       )
-      return container
     }
   }
   
   public mutating func superEncoder() -> Encoder {
-    encoder.withTransientCodingPathElement(XPCCodingKey.superKey) { codingPath in
-      XPCDictionaryReferencingEncoder(
-        at: codingPath,
-        wrapping: underlyingMessage,
-        forKey: XPCCodingKey.superKey
+    do {
+      return try encoder.withTransientCodingPathElement(XPCCodingKey.superKey) { codingPath in
+        XPCDictionaryReferencingEncoder(
+          at: codingPath,
+          wrapping: underlyingMessage,
+          forKey: XPCCodingKey.superKey
+        )
+      }
+    }
+    catch let error {
+      fatalError(
+        """
+        Encountered unrecoverable error preparing superEncoder (due to API limitations requiring non-throwing construction here).
+        
+        - error: \(String(reflecting: error))
+        """
       )
     }
   }
   
   public mutating func superEncoder(forKey key: Key) -> Encoder {
-    encoder.withTransientCodingPathElement(key) { codingPath in
-      XPCDictionaryReferencingEncoder(
-        at: codingPath,
-        wrapping: underlyingMessage,
-        forKey: key
+    do {
+      return try encoder.withTransientCodingPathElement(key) { codingPath in
+        XPCDictionaryReferencingEncoder(
+          at: codingPath,
+          wrapping: underlyingMessage,
+          forKey: key
+        )
+      }
+    }
+    catch let error {
+      fatalError(
+        """
+        Encountered unrecoverable error preparing superEncoder (due to API limitations requiring non-throwing construction here).
+        
+        - key: \(key)
+        - error: \(String(reflecting: error))
+        """
       )
     }
   }
@@ -218,12 +294,23 @@ internal final class XPCDictionaryReferencingEncoder: XPCEncoder {
     let newDictionary = xpc_dictionary_create(nil, nil, 0)
     xpcDictionary.setValue(newDictionary, forKey: key)
     
-    // It is OK to force this through because we are explicitly passing a dictionary
-    let container = try! XPCKeyedEncodingContainer<Key>(
-      referencing: self,
-      wrapping: newDictionary
-    )
-    return KeyedEncodingContainer(container)
+    do {
+      let container = try XPCKeyedEncodingContainer<Key>(
+        referencing: self,
+        wrapping: newDictionary
+      )
+      return KeyedEncodingContainer(container)
+    }
+    catch let error {
+      fatalError(
+        """
+        Encountered unrecoverable internal error creating keyed-container:
+        
+        - keyedBy: \(type)
+        - error: \(String(reflecting: error))
+        """
+      )
+    }
   }
   
   @usableFromInline
@@ -231,11 +318,21 @@ internal final class XPCDictionaryReferencingEncoder: XPCEncoder {
     let newArray = xpc_array_create(nil, 0)
     xpcDictionary.setValue(newArray, forKey: key)
     
-    // It is OK to force this through because we are explicitly passing an array
-    return try! XPCUnkeyedEncodingContainer(
-      referencing: self,
-      wrapping: newArray
-    )
+    do {
+      return try XPCUnkeyedEncodingContainer(
+        referencing: self,
+        wrapping: newArray
+      )
+    }
+    catch let error {
+      fatalError(
+        """
+        Encountered unrecoverable internal error creating unkeyed-container:
+        
+        - error: \(String(reflecting: error))
+        """
+      )
+    }
   }
   
   @usableFromInline
