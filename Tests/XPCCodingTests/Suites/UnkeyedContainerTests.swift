@@ -27,12 +27,11 @@ struct UnkeyedContainerTests {
     // Verify it's a dictionary with an array field
     verifyXPCType(encoded, is: XPC_TYPE_DICTIONARY)
 
-    let arrayField = "items".withCString { key in
+    let arrayField = try #require("items".withCString { key in
       xpc_dictionary_get_value(encoded, key)
-    }
-    #expect(arrayField != nil)
-    verifyXPCType(arrayField!, is: XPC_TYPE_ARRAY)
-    #expect(xpc_array_get_count(arrayField!) == 0)
+    })
+    verifyXPCType(arrayField, is: XPC_TYPE_ARRAY)
+    #expect(xpc_array_get_count(arrayField) == 0)
 
     // Verify round-trip
     try verifyRoundTrip(of: empty)
@@ -217,17 +216,15 @@ struct UnkeyedContainerTests {
       verifyXPCType(element, is: XPC_TYPE_DICTIONARY)
 
       // Check that "key" and "value" fields exist
-      let keyField = "key".withCString { key in
+      let keyField = try #require("key".withCString { key in
         xpc_dictionary_get_value(element, key)
-      }
-      let valueField = "value".withCString { key in
+      })
+      let valueField = try #require("value".withCString { key in
         xpc_dictionary_get_value(element, key)
-      }
+      })
 
-      #expect(keyField != nil)
-      #expect(valueField != nil)
-      verifyXPCType(keyField!, is: XPC_TYPE_STRING)
-      verifyXPCType(valueField!, is: XPC_TYPE_INT64)
+      verifyXPCType(keyField, is: XPC_TYPE_STRING)
+      verifyXPCType(valueField, is: XPC_TYPE_INT64)
     }
 
     // Verify round-trip

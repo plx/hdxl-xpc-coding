@@ -28,29 +28,25 @@ struct KeyedContainerTests {
     verifyXPCType(encoded, is: XPC_TYPE_DICTIONARY)
 
     // Verify all keys are present
-    let stringValue = "stringField".withCString { key in
+    let stringValue = try #require("stringField".withCString { key in
       xpc_dictionary_get_value(encoded, key)
-    }
-    #expect(stringValue != nil)
-    verifyXPCType(stringValue!, is: XPC_TYPE_STRING)
+    })
+    verifyXPCType(stringValue, is: XPC_TYPE_STRING)
 
-    let intValue = "intField".withCString { key in
+    let intValue = try #require("intField".withCString { key in
       xpc_dictionary_get_value(encoded, key)
-    }
-    #expect(intValue != nil)
-    verifyXPCType(intValue!, is: XPC_TYPE_INT64)
+    })
+    verifyXPCType(intValue, is: XPC_TYPE_INT64)
 
-    let doubleValue = "doubleField".withCString { key in
+    let doubleValue = try #require("doubleField".withCString { key in
       xpc_dictionary_get_value(encoded, key)
-    }
-    #expect(doubleValue != nil)
-    verifyXPCType(doubleValue!, is: XPC_TYPE_DOUBLE)
+    })
+    verifyXPCType(doubleValue, is: XPC_TYPE_DOUBLE)
 
-    let boolValue = "boolField".withCString { key in
+    let boolValue = try #require("boolField".withCString { key in
       xpc_dictionary_get_value(encoded, key)
-    }
-    #expect(boolValue != nil)
-    verifyXPCType(boolValue!, is: XPC_TYPE_BOOL)
+    })
+    verifyXPCType(boolValue, is: XPC_TYPE_BOOL)
   }
 
   // MARK: - 2. Empty Dictionary
@@ -94,11 +90,10 @@ struct KeyedContainerTests {
     verifyXPCType(encoded, is: XPC_TYPE_DICTIONARY)
 
     // Check that the optional key exists and is null
-    let optionalValue = "optional".withCString { key in
+    let optionalValue = try #require("optional".withCString { key in
       xpc_dictionary_get_value(encoded, key)
-    }
-    #expect(optionalValue != nil)
-    verifyXPCType(optionalValue!, is: XPC_TYPE_NULL)
+    })
+    verifyXPCType(optionalValue, is: XPC_TYPE_NULL)
   }
 
   // MARK: - 4. encodeIfPresent Variations
@@ -245,25 +240,22 @@ struct KeyedContainerTests {
     verifyXPCType(encoded, is: XPC_TYPE_DICTIONARY)
 
     // Verify outer value
-    let outerValue = "outerValue".withCString { key in
+    let outerValue = try #require("outerValue".withCString { key in
       xpc_dictionary_get_value(encoded, key)
-    }
-    #expect(outerValue != nil)
-    verifyXPCType(outerValue!, is: XPC_TYPE_STRING)
+    })
+    verifyXPCType(outerValue, is: XPC_TYPE_STRING)
 
     // Verify inner container is a dictionary
-    let innerDict = "inner".withCString { key in
+    let innerDict = try #require("inner".withCString { key in
       xpc_dictionary_get_value(encoded, key)
-    }
-    #expect(innerDict != nil)
-    verifyXPCType(innerDict!, is: XPC_TYPE_DICTIONARY)
+    })
+    verifyXPCType(innerDict, is: XPC_TYPE_DICTIONARY)
 
     // Verify inner value
-    let innerValue = "innerValue".withCString { key in
-      xpc_dictionary_get_value(innerDict!, key)
-    }
-    #expect(innerValue != nil)
-    verifyXPCType(innerValue!, is: XPC_TYPE_INT64)
+    let innerValue = try #require("innerValue".withCString { key in
+      xpc_dictionary_get_value(innerDict, key)
+    })
+    verifyXPCType(innerValue, is: XPC_TYPE_INT64)
   }
 
   // MARK: - 6. Nested Unkeyed Container in Keyed
@@ -282,21 +274,19 @@ struct KeyedContainerTests {
     verifyXPCType(encoded, is: XPC_TYPE_DICTIONARY)
 
     // Verify name field
-    let nameValue = "name".withCString { key in
+    let nameValue = try #require("name".withCString { key in
       xpc_dictionary_get_value(encoded, key)
-    }
-    #expect(nameValue != nil)
-    verifyXPCType(nameValue!, is: XPC_TYPE_STRING)
+    })
+    verifyXPCType(nameValue, is: XPC_TYPE_STRING)
 
     // Verify values field is an array
-    let valuesArray = "values".withCString { key in
+    let valuesArray = try #require("values".withCString { key in
       xpc_dictionary_get_value(encoded, key)
-    }
-    #expect(valuesArray != nil)
-    verifyXPCType(valuesArray!, is: XPC_TYPE_ARRAY)
+    })
+    verifyXPCType(valuesArray, is: XPC_TYPE_ARRAY)
 
     // Verify array length
-    let count = xpc_array_get_count(valuesArray!)
+    let count = xpc_array_get_count(valuesArray)
     #expect(count == 3)
   }
 

@@ -53,11 +53,10 @@ struct InheritanceTests {
 
     // Level1 should have "b" and "super" keys
     let bValue = xpc_dictionary_get_value(encoded, "b")
-    let superValue = xpc_dictionary_get_value(encoded, "super")
+    let superValue = try #require(xpc_dictionary_get_value(encoded, "super"))
 
     #expect(bValue != nil, "Level1 should have 'b' key")
-    #expect(superValue != nil, "Level1 should have 'super' key")
-    verifyXPCType(superValue!, is: XPC_TYPE_DICTIONARY)
+    verifyXPCType(superValue, is: XPC_TYPE_DICTIONARY)
   }
 
   // MARK: - Depth 2 Inheritance Tests (Level0 -> Level1 -> Level2)
@@ -86,19 +85,17 @@ struct InheritanceTests {
 
     // Level2 should have "c" and "super" keys
     let cValue = xpc_dictionary_get_value(encoded, "c")
-    let superValue = xpc_dictionary_get_value(encoded, "super")
+    let superValue = try #require(xpc_dictionary_get_value(encoded, "super"))
 
     #expect(cValue != nil, "Level2 should have 'c' key")
-    #expect(superValue != nil, "Level2 should have 'super' key")
-    verifyXPCType(superValue!, is: XPC_TYPE_DICTIONARY)
+    verifyXPCType(superValue, is: XPC_TYPE_DICTIONARY)
 
     // The super dictionary should have "b" and "super" keys
-    let bValue = xpc_dictionary_get_value(superValue!, "b")
-    let nestedSuperValue = xpc_dictionary_get_value(superValue!, "super")
+    let bValue = xpc_dictionary_get_value(superValue, "b")
+    let nestedSuperValue = try #require(xpc_dictionary_get_value(superValue, "super"))
 
     #expect(bValue != nil, "Level2's super should have 'b' key")
-    #expect(nestedSuperValue != nil, "Level2's super should have nested 'super' key")
-    verifyXPCType(nestedSuperValue!, is: XPC_TYPE_DICTIONARY)
+    verifyXPCType(nestedSuperValue, is: XPC_TYPE_DICTIONARY)
   }
 
   // MARK: - Depth 3 Inheritance Tests (Level0 -> Level1 -> Level2 -> Level3)
@@ -283,9 +280,9 @@ struct InheritanceTests {
     let superValue = xpc_dictionary_get_value(encoded, "super")
 
     #expect(extraValue != nil, "CustomSuperKey should have 'extra' key")
-    #expect(parentValue != nil, "CustomSuperKey should have 'parent' key instead of 'super'")
+    let requiredParentValue = try #require(parentValue, "CustomSuperKey should have 'parent' key instead of 'super'")
     #expect(superValue == nil, "CustomSuperKey should not have default 'super' key")
-    verifyXPCType(parentValue!, is: XPC_TYPE_DICTIONARY)
+    verifyXPCType(requiredParentValue, is: XPC_TYPE_DICTIONARY)
   }
 
   // MARK: - Optional Properties Inheritance Tests
@@ -380,37 +377,37 @@ struct InheritanceTests {
     // Level6 has g and super
     let g = xpc_dictionary_get_value(current, "g")
     #expect(g != nil, "Level6 should have 'g' key")
-    current = xpc_dictionary_get_value(current, "super")!
+    current = try #require(xpc_dictionary_get_value(current, "super"))
     verifyXPCType(current, is: XPC_TYPE_DICTIONARY)
 
     // Level5 has f and super
     let f = xpc_dictionary_get_value(current, "f")
     #expect(f != nil, "Level5 should have 'f' key")
-    current = xpc_dictionary_get_value(current, "super")!
+    current = try #require(xpc_dictionary_get_value(current, "super"))
     verifyXPCType(current, is: XPC_TYPE_DICTIONARY)
 
     // Level4 has e and super
     let e = xpc_dictionary_get_value(current, "e")
     #expect(e != nil, "Level4 should have 'e' key")
-    current = xpc_dictionary_get_value(current, "super")!
+    current = try #require(xpc_dictionary_get_value(current, "super"))
     verifyXPCType(current, is: XPC_TYPE_DICTIONARY)
 
     // Level3 has d and super
     let d = xpc_dictionary_get_value(current, "d")
     #expect(d != nil, "Level3 should have 'd' key")
-    current = xpc_dictionary_get_value(current, "super")!
+    current = try #require(xpc_dictionary_get_value(current, "super"))
     verifyXPCType(current, is: XPC_TYPE_DICTIONARY)
 
     // Level2 has c and super
     let c = xpc_dictionary_get_value(current, "c")
     #expect(c != nil, "Level2 should have 'c' key")
-    current = xpc_dictionary_get_value(current, "super")!
+    current = try #require(xpc_dictionary_get_value(current, "super"))
     verifyXPCType(current, is: XPC_TYPE_DICTIONARY)
 
     // Level1 has b and super
     let b = xpc_dictionary_get_value(current, "b")
     #expect(b != nil, "Level1 should have 'b' key")
-    current = xpc_dictionary_get_value(current, "super")!
+    current = try #require(xpc_dictionary_get_value(current, "super"))
     verifyXPCType(current, is: XPC_TYPE_DICTIONARY)
 
     // Level0 has a only, no super

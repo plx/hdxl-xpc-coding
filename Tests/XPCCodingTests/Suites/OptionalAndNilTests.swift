@@ -24,7 +24,7 @@ struct OptionalAndNilTests {
 
     // Verify XPC structure - the value should be encoded, not null
     let encoded = try XPCEncoder.encode(value)
-    let optionalValue = xpc_dictionary_get_value(encoded, "optional")!
+    let optionalValue = try #require(xpc_dictionary_get_value(encoded, "optional"))
     verifyXPCType(optionalValue, is: XPC_TYPE_INT64)
     #expect(xpc_int64_get_value(optionalValue) == 42)
   }
@@ -57,7 +57,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_BOOL)
     #expect(xpc_bool_get_value(value) == true)
   }
@@ -88,7 +88,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_INT64)
     #expect(xpc_int64_get_value(value) == 123)
   }
@@ -113,7 +113,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -137,7 +137,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -161,7 +161,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -185,7 +185,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_INT64)
     #expect(xpc_int64_get_value(value) == 9876543210)
   }
@@ -210,7 +210,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_UINT64)
     #expect(xpc_uint64_get_value(value) == 12345)
   }
@@ -235,7 +235,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -259,7 +259,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -283,7 +283,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -307,7 +307,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_UINT64)
     #expect(xpc_uint64_get_value(value) == 18446744073709551615)
   }
@@ -340,7 +340,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -380,7 +380,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DOUBLE)
   }
 
@@ -412,7 +412,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_STRING)
   }
 
@@ -436,7 +436,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -476,7 +476,7 @@ struct OptionalAndNilTests {
 
     // Verify encoding creates null
     let encoded = try XPCEncoder.encode(value)
-    let nullValue = xpc_dictionary_get_value(encoded, "nullField")!
+    let nullValue = try #require(xpc_dictionary_get_value(encoded, "nullField"))
     verifyXPCType(nullValue, is: XPC_TYPE_NULL)
 
     // Verify round-trip
@@ -554,7 +554,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_INT64)
     #expect(xpc_int64_get_value(value) == 42)
   }
@@ -569,7 +569,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     // .some(.none) should encode as explicit null
     verifyXPCType(value, is: XPC_TYPE_NULL)
   }
@@ -757,16 +757,16 @@ struct OptionalAndNilTests {
     let encoded = try XPCEncoder.encode(test)
 
     // Verify all values are present and correct types
-    let a = xpc_dictionary_get_value(encoded, "a")!
+    let a = try #require(xpc_dictionary_get_value(encoded, "a"))
     verifyXPCType(a, is: XPC_TYPE_INT64)
 
-    let b = xpc_dictionary_get_value(encoded, "b")!
+    let b = try #require(xpc_dictionary_get_value(encoded, "b"))
     verifyXPCType(b, is: XPC_TYPE_STRING)
 
-    let c = xpc_dictionary_get_value(encoded, "c")!
+    let c = try #require(xpc_dictionary_get_value(encoded, "c"))
     verifyXPCType(c, is: XPC_TYPE_DOUBLE)
 
-    let d = xpc_dictionary_get_value(encoded, "d")!
+    let d = try #require(xpc_dictionary_get_value(encoded, "d"))
     verifyXPCType(d, is: XPC_TYPE_BOOL)
   }
 
@@ -792,10 +792,10 @@ struct OptionalAndNilTests {
     let encoded = try XPCEncoder.encode(test)
 
     // Verify present values
-    let a = xpc_dictionary_get_value(encoded, "a")!
+    let a = try #require(xpc_dictionary_get_value(encoded, "a"))
     verifyXPCType(a, is: XPC_TYPE_INT64)
 
-    let c = xpc_dictionary_get_value(encoded, "c")!
+    let c = try #require(xpc_dictionary_get_value(encoded, "c"))
     verifyXPCType(c, is: XPC_TYPE_DOUBLE)
 
     // Verify nil values are null or absent
@@ -900,7 +900,7 @@ struct OptionalAndNilTests {
     try verifyRoundTrip(of: test)
 
     let encoded = try XPCEncoder.encode(test)
-    let array = xpc_dictionary_get_value(encoded, "array")!
+    let array = try #require(xpc_dictionary_get_value(encoded, "array"))
     verifyXPCType(array, is: XPC_TYPE_ARRAY)
     #expect(xpc_array_get_count(array) == 0)
   }

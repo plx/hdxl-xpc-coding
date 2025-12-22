@@ -78,7 +78,7 @@ struct CollectionTests {
     let wrapper = PrimitiveWrapper([1, 2, 3, 4, 5])
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_ARRAY)
   }
 
@@ -157,7 +157,7 @@ struct CollectionTests {
     let wrapper = PrimitiveWrapper(["a": 1, "b": 2, "c": 3])
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DICTIONARY)
   }
 

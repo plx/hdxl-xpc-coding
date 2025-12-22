@@ -169,8 +169,8 @@ struct SingleValueContainerTests {
     // Verify XPC type
     let encoded = try XPCEncoder.encode(wrapper)
     verifyXPCType(encoded, is: XPC_TYPE_STRING)
-    let cString = xpc_string_get_string_ptr(encoded)
-    #expect(String(cString: cString!) == "Hello, XPC!")
+    let cString = try #require(xpc_string_get_string_ptr(encoded))
+    #expect(String(cString: cString) == "Hello, XPC!")
   }
 
   @Test("Empty string via single-value container", .tags(.primitives, .roundTrip, .edgeCases))
@@ -183,8 +183,8 @@ struct SingleValueContainerTests {
     // Verify XPC type
     let encoded = try XPCEncoder.encode(wrapper)
     verifyXPCType(encoded, is: XPC_TYPE_STRING)
-    let cString = xpc_string_get_string_ptr(encoded)
-    #expect(String(cString: cString!) == "")
+    let cString = try #require(xpc_string_get_string_ptr(encoded))
+    #expect(String(cString: cString) == "")
   }
 
   @Test("String with special characters", .tags(.primitives, .roundTrip, .edgeCases))
@@ -327,10 +327,9 @@ struct SingleValueContainerTests {
     #expect(xpc_dictionary_get_count(encoded) == 3)
 
     // Verify a value
-    let oneValue = "one".withCString { xpc_dictionary_get_value(encoded, $0) }
-    #expect(oneValue != nil)
-    #expect(xpc_get_type(oneValue!) == XPC_TYPE_INT64)
-    #expect(xpc_int64_get_value(oneValue!) == 1)
+    let oneValue = try #require("one".withCString { xpc_dictionary_get_value(encoded, $0) })
+    #expect(xpc_get_type(oneValue) == XPC_TYPE_INT64)
+    #expect(xpc_int64_get_value(oneValue) == 1)
   }
 
   @Test("Empty dictionary via single-value container", .tags(.collections, .roundTrip, .edgeCases))
@@ -384,11 +383,10 @@ struct SingleValueContainerTests {
     verifyXPCType(encoded, is: XPC_TYPE_DICTIONARY)
 
     // Verify inner values
-    let stringValue = "stringField".withCString { xpc_dictionary_get_value(encoded, $0) }
-    #expect(stringValue != nil)
-    #expect(xpc_get_type(stringValue!) == XPC_TYPE_STRING)
-    let cString = xpc_string_get_string_ptr(stringValue!)
-    #expect(String(cString: cString!) == "test")
+    let stringValue = try #require("stringField".withCString { xpc_dictionary_get_value(encoded, $0) })
+    #expect(xpc_get_type(stringValue) == XPC_TYPE_STRING)
+    let cString = try #require(xpc_string_get_string_ptr(stringValue))
+    #expect(String(cString: cString) == "test")
   }
 
   @Test("Nested struct with default test value", .tags(.nested, .roundTrip))
@@ -575,8 +573,8 @@ struct SingleValueContainerTests {
     // Verify XPC type
     let encoded = try XPCEncoder.encode(wrapper)
     verifyXPCType(encoded, is: XPC_TYPE_STRING)
-    let cString = xpc_string_get_string_ptr(encoded)
-    #expect(String(cString: cString!).count == 10000)
+    let cString = try #require(xpc_string_get_string_ptr(encoded))
+    #expect(String(cString: cString).count == 10000)
   }
 
   @Test("Array with single element", .tags(.collections, .roundTrip, .edgeCases))

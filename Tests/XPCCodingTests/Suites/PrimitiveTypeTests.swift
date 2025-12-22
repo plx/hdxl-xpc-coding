@@ -31,7 +31,7 @@ struct PrimitiveTypeTests {
     let encoded = try XPCEncoder.encode(wrapper)
 
     // The wrapper creates a dictionary, so we need to extract the value
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_BOOL)
   }
 
@@ -47,7 +47,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(Int8(42))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -61,7 +61,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(Int16(1000))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -75,7 +75,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(Int32(100000))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -89,7 +89,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(Int64(1234567890))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_INT64)
   }
 
@@ -103,7 +103,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(Int(9876543210))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_INT64)
   }
 
@@ -119,7 +119,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(UInt8(200))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -133,7 +133,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(UInt16(50000))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -147,7 +147,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(UInt32(3000000000))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -161,7 +161,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(UInt64(18446744073709551615))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_UINT64)
   }
 
@@ -175,7 +175,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(UInt(12345678901234567890))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_UINT64)
   }
 
@@ -204,7 +204,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(Float16(3.14))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -231,7 +231,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(Float(2.71828))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
@@ -258,7 +258,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(Double(1.4142135623730951))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DOUBLE)
   }
 
@@ -305,7 +305,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper("test string")
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_STRING)
   }
 
@@ -333,7 +333,7 @@ struct PrimitiveTypeTests {
     let wrapper = PrimitiveWrapper(Data([0xDE, 0xAD, 0xBE, 0xEF]))
     let encoded = try XPCEncoder.encode(wrapper)
 
-    let value = xpc_dictionary_get_value(encoded, "value")!
+    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
     verifyXPCType(value, is: XPC_TYPE_DATA)
   }
 
