@@ -23,10 +23,13 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   internal let encoder: XPCEncoder
   
   @usableFromInline
-  internal let insertionClosure: (_ value: xpc_object_t) throws -> ()
+  internal let insertionClosure: (xpc_object_t) throws -> ()
   
   // MARK: - Initialization
-  init(referencing encoder: XPCEncoder, insertionClosure: @escaping (_ value: xpc_object_t) throws -> ()) {
+  init(
+    referencing encoder: XPCEncoder,
+    insertionClosure: @escaping (xpc_object_t) throws -> ()
+  ) {
     self.encoder = encoder
     self.insertionClosure = insertionClosure
   }

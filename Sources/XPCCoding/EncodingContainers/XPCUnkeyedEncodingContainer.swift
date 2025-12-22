@@ -40,12 +40,12 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   ) throws {
     self.encoder = encoder
     
-    guard xpc_get_type(underlyingMessage) == XPC_TYPE_ARRAY else {
+    guard underlyingMessage.isArray else {
       throw EncodingError.invalidValue(
         underlyingMessage,
         EncodingError.Context(
           codingPath: encoder.codingPath,
-          debugDescription: "Supplied a non-array xpc object (actual type: `\(xpc_get_type(underlyingMessage).typeDescription))"
+          debugDescription: "Supplied a non-array xpc object (actual type: `\(underlyingMessage.typeDescription))"
         )
       )
     }

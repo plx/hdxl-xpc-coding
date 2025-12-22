@@ -106,7 +106,11 @@ internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
   }
 
   public func decode<T: Decodable>(_ type: T.Type) throws -> T {
-    try T(
+    if let directExtraction = underlyingMessage.attemptDirectExtraction(type) {
+      return directExtraction
+    }
+    
+    return try T(
       from: XPCDecoder(
         underlyingMessage: underlyingMessage,
         at: decoder.codingPath

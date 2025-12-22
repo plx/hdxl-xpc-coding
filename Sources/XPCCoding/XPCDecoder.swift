@@ -33,14 +33,6 @@ public final class XPCDecoder: Decoder {
   
   @usableFromInline
   internal convenience init(decoding message: xpc_object_t) throws {
-    guard xpc_get_type(message) == XPC_TYPE_DICTIONARY else {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: [],
-          debugDescription: "Supplied a non-dictionary xpc object (type: \(xpc_get_type(message).typeDescription))!"
-        )
-      )
-    }
     self.init(
       underlyingMessage: message,
       at: []
@@ -48,7 +40,10 @@ public final class XPCDecoder: Decoder {
   }
   
   @inlinable
-  public static func decodeRootValue<T: Decodable>(_ message: xpc_object_t, as type: T.Type) throws -> T {
+  public static func decodeRootValue<T: Decodable>(
+    _ message: xpc_object_t,
+    as type: T.Type
+  ) throws -> T {
     if
       let extractableType = type as? XPCObjectExtractable.Type,
       xpc_get_type(message) == extractableType.associatedXPCObjectType,
@@ -148,6 +143,20 @@ extension xpc_object_t {
     
     return true
   }
+
+  @usableFromInline
+  internal func attemptDirectExtraction<T: Decodable>(_ type: T.Type) -> T? {
+    guard
+      let extractableType = type as? XPCObjectExtractable.Type,
+      hasType(extractableType.associatedXPCObjectType),
+      let _extractedValue = extractableType.extracting(from: self),
+      let extractedValue = _extractedValue as? T
+    else {
+      return nil
+    }
+    return extractedValue
+  }
+
 
   @usableFromInline
   func extractValue<Value>(

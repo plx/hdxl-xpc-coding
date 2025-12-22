@@ -74,7 +74,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         )
       )
     }
-      
+    
     let foundValue = xpc_array_get_value(underlyingMessage, currentIndex)
     
     let interpretedValue = try decoder.withTransientCodingPathElement(currentCodingKey) { codingPath in
@@ -84,7 +84,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     _currentIndex += 1
     return interpretedValue
   }
-
+  
   @usableFromInline
   internal mutating func decodeNextValue<Value>(
     as valueType: Value.Type
@@ -96,9 +96,9 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       )
     }
   }
-
   
   // MARK: - UnkeyedDecodingContainer protocol methods
+  
   public mutating func decodeNil() throws -> Bool {
     guard !isAtEnd else {
       throw DecodingError.dataCorrupted(
@@ -108,7 +108,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         )
       )
     }
-
+    
     return try withCurrentCodingKey { _ in
       let foundValue = xpc_array_get_value(underlyingMessage, currentIndex)
       
@@ -117,7 +117,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         return true
       }
       return false
-
+      
     }
   }
   
@@ -156,11 +156,11 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   public mutating func decode(_ type: Int64.Type) throws -> Int64 {
     try decodeNextValue(as: type)
   }
-
+  
   public mutating func decode(_ type: Int128.Type) throws -> Int128 {
     try decodeNextValue(as: type)
   }
-
+  
   public mutating func decode(_ type: UInt.Type) throws -> UInt {
     try decodeNextValue(as: type)
   }
@@ -180,13 +180,17 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   public mutating func decode(_ type: UInt64.Type) throws -> UInt64 {
     try decodeNextValue(as: type)
   }
-
+  
   public mutating func decode(_ type: UInt128.Type) throws -> UInt128 {
     try decodeNextValue(as: type)
   }
-
+  
   public mutating func decode<T: Decodable>(_ type: T.Type) throws -> T {
     try handleNextDecodingKeyValue { xpcValue, codingPath in
+      if let directExtraction = xpcValue.attemptDirectExtraction(type) {
+        return directExtraction
+      }
+      
       return try T(
         from: XPCDecoder(
           underlyingMessage: xpcValue,
@@ -196,7 +200,9 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     }
   }
   
-  public mutating func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
+  public mutating func nestedContainer<NestedKey>(
+    keyedBy type: NestedKey.Type
+  ) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
     let decoder = decoder
     return try handleNextDecodingKeyValue { xpcValue, _ in
       KeyedDecodingContainer(
@@ -227,5 +233,5 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       )
     }
   }
+  
 }
-

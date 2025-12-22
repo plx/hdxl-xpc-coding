@@ -193,16 +193,25 @@ internal struct XPCKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
   
   public func decode<T: Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
     try withTransientCodingKey(key) { codingPath in
-      try T(
+      let xpcObject = try getXPCObject(for: key)
+
+      if let directExtraction = xpcObject.attemptDirectExtraction(type) {
+        return directExtraction
+      }
+      
+      return try T(
         from: XPCDecoder(
-          underlyingMessage: try getXPCObject(for: key),
+          underlyingMessage: xpcObject,
           at: codingPath
         )
       )
     }
   }
   
-  public func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws -> KeyedDecodingContainer<NestedKey> {
+  public func nestedContainer<NestedKey>(
+    keyedBy type: NestedKey.Type,
+    forKey key: Key
+  ) throws -> KeyedDecodingContainer<NestedKey> {
     try withTransientCodingKey(key) { _ in
       let xpcObject = try getXPCObject(for: key)
       

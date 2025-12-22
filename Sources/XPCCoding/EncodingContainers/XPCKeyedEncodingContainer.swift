@@ -40,7 +40,7 @@ internal struct XPCKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerP
     wrapping dictionary: xpc_object_t
   ) throws {
     self.encoder = encoder
-    guard xpc_get_type(dictionary) == XPC_TYPE_DICTIONARY else {
+    guard dictionary.isDictionary else {
       throw EncodingError.invalidValue(
         dictionary,
         EncodingError.Context(
