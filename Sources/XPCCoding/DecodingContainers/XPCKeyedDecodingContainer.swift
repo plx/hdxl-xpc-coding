@@ -120,7 +120,10 @@ internal struct XPCKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
   
   public func decodeNil(forKey key: Key) throws -> Bool {
     withTransientCodingKey(key) { codingPath in
-      underlyingMessage.decodeNil(at: codingPath)
+      underlyingMessage.decodeNil(
+        at: codingPath,
+        forKey: key
+      )
     }
   }
   

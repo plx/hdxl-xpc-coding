@@ -33,8 +33,8 @@ func verifyRoundTrip<T: Codable & Equatable>(
 /// - Throws: If encoding or decoding fails
 func verifyRoundTrip<T: Codable>(
   of value: T,
-  areEqual: (T, T) -> Bool,
-  sourceLocation: SourceLocation = #_sourceLocation
+  sourceLocation: SourceLocation = #_sourceLocation,
+  areEqual: (T, T) -> Bool
 ) throws {
   let encoded = try XPCEncoder.encode(value)
   let decoded = try XPCDecoder.decode(T.self, message: encoded)
@@ -101,14 +101,6 @@ func floatsEqual<F: FloatingPoint>(_ a: F, _ b: F) -> Bool {
   return a == b
 }
 
-/// Compares two Float16 values, handling NaN correctly.
-func float16Equal(_ a: Float16, _ b: Float16) -> Bool {
-  if a.isNaN && b.isNaN {
-    return true
-  }
-  return a == b
-}
-
 // MARK: - XPC Primitive Creation
 
 /// Creates an XPC string object.
@@ -148,22 +140,3 @@ func xpcNull() -> xpc_object_t {
   return xpc_null_create()
 }
 
-// MARK: - XPC Type Description Extension
-
-extension xpc_type_t {
-  /// A human-readable description of the XPC type.
-  var typeDescription: String {
-    switch self {
-    case XPC_TYPE_DICTIONARY: return "XPC_TYPE_DICTIONARY"
-    case XPC_TYPE_ARRAY: return "XPC_TYPE_ARRAY"
-    case XPC_TYPE_STRING: return "XPC_TYPE_STRING"
-    case XPC_TYPE_INT64: return "XPC_TYPE_INT64"
-    case XPC_TYPE_UINT64: return "XPC_TYPE_UINT64"
-    case XPC_TYPE_DOUBLE: return "XPC_TYPE_DOUBLE"
-    case XPC_TYPE_BOOL: return "XPC_TYPE_BOOL"
-    case XPC_TYPE_DATA: return "XPC_TYPE_DATA"
-    case XPC_TYPE_NULL: return "XPC_TYPE_NULL"
-    default: return "XPC_TYPE_UNKNOWN"
-    }
-  }
-}

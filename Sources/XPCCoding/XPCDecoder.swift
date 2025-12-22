@@ -90,7 +90,25 @@ extension xpc_object_t {
   func decodeNil(at codingPath: [CodingKey]) -> Bool {
     return xpc_get_type(self) == XPC_TYPE_NULL
   }
-  
+
+  @usableFromInline
+  func decodeNil(
+    at codingPath: [CodingKey],
+    forKey key: any CodingKey
+  ) -> Bool {
+    let possibleValue = key.stringValue.withCString { cString in
+      xpc_dictionary_get_value(self, cString)
+    }
+    guard
+      let value = possibleValue,
+      value.hasType(XPC_TYPE_NULL)
+    else {
+      return false
+    }
+    
+    return true
+  }
+
   @usableFromInline
   func extractValue<Value>(
     ofType valueType: Value.Type,

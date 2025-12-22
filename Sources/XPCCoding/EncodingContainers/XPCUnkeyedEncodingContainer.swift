@@ -55,7 +55,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   
   @usableFromInline
   internal var nextCodingKey: XPCCodingKey {
-    XPCCodingKey(intValue: count - 1)
+    XPCCodingKey(intValue: count)
   }
   
   @inlinable
