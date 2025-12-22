@@ -192,8 +192,8 @@ private func _testRoundTrip<T>(
 /* FIXME: Import from %S/Inputs/Coding/SharedTypes.swift somehow. */
 
 // MARK: - Empty helper types for testing
-fileprivate struct EmptyStruct : Codable, Equatable {}
-fileprivate struct EmptyClass : Codable, Equatable {}
+//fileprivate struct EmptyStruct : Codable, Equatable {}
+//fileprivate struct EmptyClass : Codable, Equatable {}
 
 // MARK: - Single-Value Types
 /// A simple on-off switch type that encodes as a single Bool value.
