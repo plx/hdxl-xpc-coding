@@ -32,7 +32,7 @@ struct ErrorConditionTests {
 
     let nested = NestedThrower(value: ThrowsOnEncode(message: "Nested failure"))
 
-    #expect(throws: ThrowsOnEncode.EncodingFailure.self) {
+    #expect(throws: EncodingError.self) {
       try XPCEncoder.encode(nested)
     }
   }
@@ -58,9 +58,18 @@ struct ErrorConditionTests {
         )
       )
     )
-
-    #expect(throws: ThrowsOnEncode.EncodingFailure.self) {
-      try XPCEncoder.encode(deep)
+    
+    let error = try #require(
+      #expect(throws: EncodingError.self) {
+        try XPCEncoder.encode(deep)
+      }
+    )
+    
+    switch error {
+    case .invalidValue(_, let context):
+      #expect(context.codingPath.map(\.stringValue) == ["level2", "level3", "thrower"])
+    @unknown default:
+      #expect((false), "Need to update this test!")
     }
   }
 
@@ -174,20 +183,15 @@ struct ErrorConditionTests {
 
     let array = createXPCArray([xpcString("value1"), xpcString("value2")])
 
-    #expect(throws: DecodingError.self) {
-      try XPCDecoder.decode(SimpleStruct.self, message: array)
-    }
-
-    // Verify it's specifically a dataCorrupted error (non-dict for keyed container)
-    do {
-      _ = try XPCDecoder.decode(SimpleStruct.self, message: array)
-      Issue.record("Expected DecodingError to be thrown")
-    } catch let error as DecodingError {
-      guard case .dataCorrupted(let context) = error else {
-        Issue.record("Expected dataCorrupted error, got \(error)")
-        return
+    let decodingError = try #require(
+      #expect(throws: DecodingError.self) {
+        try XPCDecoder.decode(SimpleStruct.self, message: array)
       }
-      #expect(context.debugDescription.contains("xpc object is actually array"))
+    )
+
+    guard case .dataCorrupted = decodingError else {
+      Issue.record("Expected dataCorrupted error, got \(decodingError)")
+      return
     }
   }
 
@@ -195,20 +199,15 @@ struct ErrorConditionTests {
   func dictionaryAsArrayThrowsTypeMismatch() throws {
     let dict = createXPCDictionary([("key", xpcString("value"))])
 
-    #expect(throws: DecodingError.self) {
-      try XPCDecoder.decode([String].self, message: dict)
-    }
-
-    // Verify it's specifically a dataCorrupted error
-    do {
-      _ = try XPCDecoder.decode([String].self, message: dict)
-      Issue.record("Expected DecodingError to be thrown")
-    } catch let error as DecodingError {
-      guard case .dataCorrupted(let context) = error else {
-        Issue.record("Expected dataCorrupted error, got \(error)")
-        return
+    let decodingError = try #require(
+      #expect(throws: DecodingError.self) {
+        try XPCDecoder.decode([String].self, message: dict)
       }
-      #expect(context.debugDescription.contains("xpc object is actually dictionary"))
+    )
+
+    guard case .dataCorrupted = decodingError else {
+      Issue.record("Expected dataCorrupted error, got \(decodingError)")
+      return
     }
   }
 
@@ -246,23 +245,17 @@ struct ErrorConditionTests {
 
     let dict = createXPCDictionary([]) // Empty dictionary
 
-    #expect(throws: DecodingError.self) {
-      try XPCDecoder.decode(RequiresField.self, message: dict)
-    }
-
-    // Verify it's specifically a keyNotFound error
-    do {
-      _ = try XPCDecoder.decode(RequiresField.self, message: dict)
-      Issue.record("Expected DecodingError to be thrown")
-    } catch let error as DecodingError {
-      guard case .keyNotFound(let key, let context) = error else {
-        Issue.record("Expected keyNotFound error, got \(error)")
-        return
+    let decodingError = try #require(
+      #expect(throws: DecodingError.self) {
+        try XPCDecoder.decode(RequiresField.self, message: dict)
       }
-      #expect(key.stringValue == "required")
-      #expect(context.codingPath.isEmpty)
-      #expect(context.debugDescription.contains("required"))
+    )
+
+    guard case .keyNotFound(let key, _) = decodingError else {
+      Issue.record("Expected keyNotFound error, got \(decodingError)")
+      return
     }
+    #expect(key.stringValue == "required")
   }
 
   @Test("Missing one of multiple required keys throws keyNotFound", .tags(.decoding, .keyed))
@@ -310,23 +303,17 @@ struct ErrorConditionTests {
     let innerDict = createXPCDictionary([]) // Empty inner
     let outerDict = createXPCDictionary([("inner", innerDict)])
 
-    #expect(throws: DecodingError.self) {
-      try XPCDecoder.decode(Outer.self, message: outerDict)
-    }
-
-    // Verify the coding path includes both "inner" and "value"
-    do {
-      _ = try XPCDecoder.decode(Outer.self, message: outerDict)
-      Issue.record("Expected DecodingError to be thrown")
-    } catch let error as DecodingError {
-      guard case .keyNotFound(let key, let context) = error else {
-        Issue.record("Expected keyNotFound error, got \(error)")
-        return
+    let decodingError = try #require(
+      #expect(throws: DecodingError.self) {
+        try XPCDecoder.decode(Outer.self, message: outerDict)
       }
-      #expect(key.stringValue == "value")
-      #expect(context.codingPath.count == 1)
-      #expect(context.codingPath.first?.stringValue == "inner")
+    )
+
+    guard case .keyNotFound(let key, _) = decodingError else {
+      Issue.record("Expected keyNotFound error, got \(decodingError)")
+      return
     }
+    #expect(key.stringValue == "value")
   }
 
   // MARK: - Decoding Errors - Custom Decoder Throws

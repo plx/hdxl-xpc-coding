@@ -66,33 +66,33 @@ struct EdgeCaseTests {
   func floatSpecialValuesRoundTrip() throws {
     // NaN
     try verifyRoundTrip(of: PrimitiveWrapper(Float.nan), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     // Infinity
     try verifyRoundTrip(of: PrimitiveWrapper(Float.infinity), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     try verifyRoundTrip(of: PrimitiveWrapper(-Float.infinity), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     // ULP and smallest magnitude
     try verifyRoundTrip(of: PrimitiveWrapper(Float.ulpOfOne), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     try verifyRoundTrip(of: PrimitiveWrapper(Float.leastNonzeroMagnitude), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     try verifyRoundTrip(of: PrimitiveWrapper(Float.leastNormalMagnitude), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     try verifyRoundTrip(of: PrimitiveWrapper(Float.greatestFiniteMagnitude), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
   }
 
@@ -100,33 +100,33 @@ struct EdgeCaseTests {
   func doubleSpecialValuesRoundTrip() throws {
     // NaN
     try verifyRoundTrip(of: PrimitiveWrapper(Double.nan), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     // Infinity
     try verifyRoundTrip(of: PrimitiveWrapper(Double.infinity), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     try verifyRoundTrip(of: PrimitiveWrapper(-Double.infinity), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     // Smallest and largest magnitudes
     try verifyRoundTrip(of: PrimitiveWrapper(Double.leastNonzeroMagnitude), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     try verifyRoundTrip(of: PrimitiveWrapper(Double.leastNormalMagnitude), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     try verifyRoundTrip(of: PrimitiveWrapper(Double.greatestFiniteMagnitude), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     try verifyRoundTrip(of: PrimitiveWrapper(Double.ulpOfOne), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
   }
 
@@ -135,22 +135,22 @@ struct EdgeCaseTests {
   @Test("Positive and negative zero round-trip for Float", .tags(.roundTrip, .primitives))
   func floatZeroVariationsRoundTrip() throws {
     try verifyRoundTrip(of: PrimitiveWrapper(Float(0.0)), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     try verifyRoundTrip(of: PrimitiveWrapper(Float(-0.0)), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
   }
 
   @Test("Positive and negative zero round-trip for Double", .tags(.roundTrip, .primitives))
   func doubleZeroVariationsRoundTrip() throws {
     try verifyRoundTrip(of: PrimitiveWrapper(Double(0.0)), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     try verifyRoundTrip(of: PrimitiveWrapper(Double(-0.0)), areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
   }
 

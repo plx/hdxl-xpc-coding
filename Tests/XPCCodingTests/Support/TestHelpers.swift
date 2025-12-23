@@ -94,7 +94,7 @@ func createXPCArray(_ values: [xpc_object_t]) -> xpc_object_t {
 ///   - a: First value
 ///   - b: Second value
 /// - Returns: true if values are equal (or both NaN)
-func floatsEqual<F: FloatingPoint>(_ a: F, _ b: F) -> Bool {
+func equivalentFloats<F: FloatingPoint>(_ a: F, _ b: F) -> Bool {
   if a.isNaN && b.isNaN {
     return true
   }

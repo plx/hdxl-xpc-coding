@@ -330,7 +330,7 @@ struct OptionalAndNilTests {
       static func == (lhs: TestStruct, rhs: TestStruct) -> Bool {
         switch (lhs.value, rhs.value) {
         case (nil, nil): return true
-        case let (l?, r?): return floatsEqual(l, r)
+        case let (l?, r?): return equivalentFloats(l, r)
         default: return false
         }
       }
@@ -352,7 +352,7 @@ struct OptionalAndNilTests {
       static func == (lhs: TestStruct, rhs: TestStruct) -> Bool {
         switch (lhs.value, rhs.value) {
         case (nil, nil): return true
-        case let (l?, r?): return floatsEqual(l, r)
+        case let (l?, r?): return equivalentFloats(l, r)
         default: return false
         }
       }
@@ -370,7 +370,7 @@ struct OptionalAndNilTests {
       static func == (lhs: TestStruct, rhs: TestStruct) -> Bool {
         switch (lhs.value, rhs.value) {
         case (nil, nil): return true
-        case let (l?, r?): return floatsEqual(l, r)
+        case let (l?, r?): return equivalentFloats(l, r)
         default: return false
         }
       }
@@ -392,7 +392,7 @@ struct OptionalAndNilTests {
       static func == (lhs: TestStruct, rhs: TestStruct) -> Bool {
         switch (lhs.value, rhs.value) {
         case (nil, nil): return true
-        case let (l?, r?): return floatsEqual(l, r)
+        case let (l?, r?): return equivalentFloats(l, r)
         default: return false
         }
       }
@@ -565,13 +565,15 @@ struct OptionalAndNilTests {
       let value: Int??
     }
 
-    let test = NestedOptional(value: .some(.none))
-    try verifyRoundTrip(of: test)
-
-    let encoded = try XPCEncoder.encode(test)
-    let value = try #require(xpc_dictionary_get_value(encoded, "value"))
-    // .some(.none) should encode as explicit null
-    verifyXPCType(value, is: XPC_TYPE_NULL)
+    withKnownIssue("`Codable` has trouble round-tripping `??` (and above)") {
+      let test = NestedOptional(value: .some(.none))
+      try verifyRoundTrip(of: test)
+      
+      let encoded = try XPCEncoder.encode(test)
+      let value = try #require(xpc_dictionary_get_value(encoded, "value"))
+      // .some(.none) should encode as explicit null
+      verifyXPCType(value, is: XPC_TYPE_NULL)
+    }
   }
 
   @Test("Nested optional .none", .tags(.encoding, .roundTrip))

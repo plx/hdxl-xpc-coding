@@ -27,7 +27,7 @@ extension XPCObjectExtractable where Self: XPCBinaryDataRepresentationConvertibl
   
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
     let length = xpc_data_get_length(object)
@@ -58,7 +58,7 @@ extension Double: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
     return xpc_double_get_value(object)
@@ -75,7 +75,7 @@ extension Int64: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
     return xpc_int64_get_value(object)
@@ -92,7 +92,7 @@ extension UInt64: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
     return xpc_uint64_get_value(object)
@@ -143,7 +143,7 @@ extension Data: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
     let length = xpc_data_get_length(object)
@@ -182,7 +182,7 @@ extension String: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
     let length = xpc_string_get_length(object)
@@ -210,10 +210,9 @@ extension Bool: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
-    
     return xpc_bool_get_value(object)
   }
   

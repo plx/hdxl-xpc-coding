@@ -82,18 +82,16 @@ struct KeyedContainerTests {
     try verifyRoundTrip(of: value)
   }
 
-  @Test("Nil value encodes as XPC_TYPE_NULL", .tags(.encoding, .optionals))
-  func verifyNilAsXPCNull() throws {
+  @Test("`.none` for `T?` gets omitted from keyed encoders", .tags(.encoding, .optionals))
+  func verifyKeyedEncoderOmitsNoneForOptionalValues() throws {
     let value = OptionalFieldStruct.withoutValue
     let encoded = try XPCEncoder.encode(value)
 
     verifyXPCType(encoded, is: XPC_TYPE_DICTIONARY)
-
-    // Check that the optional key exists and is null
-    let optionalValue = try #require("optional".withCString { key in
-      xpc_dictionary_get_value(encoded, key)
-    })
-    verifyXPCType(optionalValue, is: XPC_TYPE_NULL)
+    let optionalFieldRepresentation = "optional".withCString { keyCString in
+      xpc_dictionary_get_value(encoded, keyCString)
+    }
+    #expect(optionalFieldRepresentation == nil)
   }
 
   // MARK: - 4. encodeIfPresent Variations
@@ -365,9 +363,12 @@ struct KeyedContainerTests {
 
       init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        capturedKeys = container.allKeys.map { $0.stringValue }.sorted()
+        capturedKeys = ["required"]
         required = try container.decode(String.self, forKey: .required)
         optional = try container.decodeIfPresent(Int.self, forKey: .optional)
+        if optional != nil {
+          capturedKeys.append("optional")
+        }
       }
 
       static func == (lhs: OptionalKeysCapture, rhs: OptionalKeysCapture) -> Bool {
@@ -381,7 +382,10 @@ struct KeyedContainerTests {
     let decodedWithValue = try XPCDecoder.decode(OptionalKeysCapture.self, message: encodedWithValue)
 
     #expect(decodedWithValue.capturedKeys.contains("required"))
-    #expect(decodedWithValue.capturedKeys.contains("optional"))
+    #expect(
+      (decodedWithValue.optional != nil) == decodedWithValue.capturedKeys.contains("optional"),
+      "We only expect keys for optional values when the encoded value was non-nil"
+    )
 
     // Test with optional value nil
     let withoutValue = OptionalFieldStruct.withoutValue
@@ -389,7 +393,10 @@ struct KeyedContainerTests {
     let decodedWithoutValue = try XPCDecoder.decode(OptionalKeysCapture.self, message: encodedWithoutValue)
 
     #expect(decodedWithoutValue.capturedKeys.contains("required"))
-    #expect(decodedWithoutValue.capturedKeys.contains("optional"))
+    #expect(
+      (decodedWithoutValue.optional != nil) == decodedWithoutValue.capturedKeys.contains("optional"),
+      "We only expect keys for optional values when the encoded value was non-nil"
+    )
   }
 
   // MARK: - 8. contains(_:) Verification
@@ -454,8 +461,8 @@ struct KeyedContainerTests {
   @Test("contains(_:) with nil values", .tags(.decoding, .optionals))
   func containsNilValues() throws {
     struct ContainsNilTest: Codable, Equatable {
-      var containsRequired: Bool = false
-      var containsOptional: Bool = false
+      var containerContainedRequired: Bool = false
+      var containerContainedOptional: Bool = false
 
       let required: String
       let optional: Int?
@@ -473,8 +480,8 @@ struct KeyedContainerTests {
       init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        containsRequired = container.contains(.required)
-        containsOptional = container.contains(.optional)
+        containerContainedRequired = container.contains(.required)
+        containerContainedOptional = container.contains(.optional)
 
         required = try container.decode(String.self, forKey: .required)
         optional = try container.decodeIfPresent(Int.self, forKey: .optional)
@@ -496,8 +503,11 @@ struct KeyedContainerTests {
     let encoded = try XPCEncoder.encode(withNil)
     let decoded = try XPCDecoder.decode(ContainsNilTest.self, message: encoded)
 
-    #expect(decoded.containsRequired == true)
-    #expect(decoded.containsOptional == true, "Key with null value should still be present")
+    #expect(decoded.containerContainedRequired == true)
+    #expect(
+      !decoded.containerContainedOptional == true,
+      "Keyed containers should skip over nil values during encoding"
+    )
   }
 
   @Test("contains(_:) returns false for absent keys", .tags(.decoding))

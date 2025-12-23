@@ -49,9 +49,13 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   
   // MARK: - Initilization
   init(referencing decoder: XPCDecoder, wrapping: xpc_object_t) throws {
-    guard xpc_get_type(wrapping) == XPC_TYPE_ARRAY else {
-      throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath,
-                                                              debugDescription: "Did not find xpc array in unkeyed container."))
+    guard wrapping.isArray else {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: decoder.codingPath,
+          debugDescription: "Did not find xpc array in unkeyed container."
+        )
+      )
     }
     
     self.underlyingMessage = wrapping

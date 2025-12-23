@@ -1016,7 +1016,7 @@ func createXPCDictionary(_ pairs: [(String, xpc_object_t)]) -> xpc_object_t
 func createXPCArray(_ values: [xpc_object_t]) -> xpc_object_t
 
 /// Compares floats accounting for NaN
-func floatsEqual<F: FloatingPoint>(_ a: F, _ b: F) -> Bool
+func equivalentFloats<F: FloatingPoint>(_ a: F, _ b: F) -> Bool
 ```
 
 ### TestTags.swift

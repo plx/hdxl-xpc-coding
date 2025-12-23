@@ -73,7 +73,7 @@ struct SingleValueContainerTests {
 
     /// Custom equality that handles NaN correctly.
     static func == (lhs: DoubleWrapper, rhs: DoubleWrapper) -> Bool {
-      floatsEqual(lhs.value, rhs.value)
+      equivalentFloats(lhs.value, rhs.value)
     }
   }
 
@@ -442,7 +442,7 @@ struct SingleValueContainerTests {
 
     // Test round-trip with custom equality
     try verifyRoundTrip(of: wrapper, areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     // Verify XPC type
@@ -459,7 +459,7 @@ struct SingleValueContainerTests {
 
     // Test round-trip with custom equality
     try verifyRoundTrip(of: wrapper, areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     // Verify XPC type
@@ -476,7 +476,7 @@ struct SingleValueContainerTests {
 
     // Test round-trip with custom equality that handles NaN
     try verifyRoundTrip(of: wrapper, areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     // Verify XPC type
@@ -492,7 +492,7 @@ struct SingleValueContainerTests {
 
     // Test round-trip with custom equality that handles NaN
     try verifyRoundTrip(of: wrapper, areEqual: { a, b in
-      floatsEqual(a.value, b.value)
+      equivalentFloats(a.value, b.value)
     })
 
     // Verify XPC type

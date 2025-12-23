@@ -102,28 +102,46 @@ public final class XPCDecoder: Decoder {
     return try closure(codingPath)
   }
   
-  public func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key : CodingKey {
-    let container = try XPCKeyedDecodingContainer<Key>(referencing: self, wrapping: underlyingMessage)
+  public func container<Key>(
+    keyedBy type: Key.Type
+  ) throws -> KeyedDecodingContainer<Key> where Key : CodingKey {
+    let container = try XPCKeyedDecodingContainer<Key>(
+      referencing: self,
+      wrapping: underlyingMessage
+    )
     return KeyedDecodingContainer(container)
   }
   
   public func unkeyedContainer() throws -> UnkeyedDecodingContainer {
-    try XPCUnkeyedDecodingContainer(referencing: self, wrapping: underlyingMessage)
+    try XPCUnkeyedDecodingContainer(
+      referencing: self,
+      wrapping: underlyingMessage
+    )
   }
   
   public func singleValueContainer() throws -> SingleValueDecodingContainer {
-    XPCSingleValueDecodingContainer(referencing: self, wrapping: underlyingMessage)
+    XPCSingleValueDecodingContainer(
+      referencing: self,
+      wrapping: underlyingMessage
+    )
   }
   
-  public static func decode<T: Decodable>(_ type: T.Type, message xpcObject: xpc_object_t) throws -> T {
-    try T(from: XPCDecoder(underlyingMessage: xpcObject))
+  public static func decode<T: Decodable>(
+    _ type: T.Type,
+    message xpcObject: xpc_object_t
+  ) throws -> T {
+    if let extractedValue = xpcObject.attemptDirectExtraction(type) {
+      return extractedValue
+    }
+    
+    return try T(from: XPCDecoder(underlyingMessage: xpcObject))
   }
 }
 
 extension xpc_object_t {
   @usableFromInline
   func decodeNil(at codingPath: [CodingKey]) -> Bool {
-    return xpc_get_type(self) == XPC_TYPE_NULL
+    isNull
   }
 
   @usableFromInline
@@ -163,14 +181,14 @@ extension xpc_object_t {
     ofType valueType: Value.Type,
     at codingPath: [any CodingKey]
   ) throws -> Value where Value: XPCObjectExtractable {
-    guard xpc_get_type(self) == valueType.associatedXPCObjectType else {
+    guard hasType(valueType.associatedXPCObjectType) else {
       throw DecodingError.typeMismatch(
         valueType,
         DecodingError.Context(
           codingPath: codingPath,
           debugDescription:
           """
-          Type mismatch: expected \(String(reflecting: valueType)) represented-as \(valueType.associatedXPCObjectType.typeDescription), but xpc object is actually \(xpc_get_type(self).typeDescription).",
+          Type mismatch: expected \(String(reflecting: valueType)) represented-as \(valueType.associatedXPCObjectType.typeDescription), but xpc object is actually \(typeDescription).",
           """,
           underlyingError: nil
         )
@@ -183,7 +201,7 @@ extension xpc_object_t {
           codingPath: codingPath,
           debugDescription:
           """
-          Data corruption: unable to construct a value of type \(String(reflecting: valueType)) from an xpc object of type \(xpc_get_type(self).typeDescription).",
+          Data corruption: unable to construct a value of type \(String(reflecting: valueType)) from an xpc object of type \(typeDescription).",
           """,
           underlyingError: nil
         )
@@ -199,13 +217,13 @@ extension xpc_object_t {
     at codingPath: [any CodingKey],
     forKey key: any CodingKey
   ) throws -> Value where Value: XPCObjectExtractable {
-    guard xpc_get_type(self) == XPC_TYPE_DICTIONARY else {
+    guard isDictionary else {
       throw DecodingError.dataCorrupted(
         DecodingError.Context(
           codingPath: codingPath,
           debugDescription:
           """
-          Data corruption: expected to be extracting a value of type \(String(reflecting: valueType)) for key `\(key)` from a dictionary, but our xpc object is actually \(xpc_get_type(self).typeDescription).",
+          Data corruption: expected to be extracting a value of type \(String(reflecting: valueType)) for key `\(key)` from a dictionary, but our xpc object is actually \(typeDescription).",
           """,
           underlyingError: nil
         )

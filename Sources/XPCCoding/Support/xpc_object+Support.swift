@@ -22,7 +22,12 @@ extension xpc_object_t {
   internal func hasType(_ xpcType: xpc_type_t) -> Bool {
     xpc_get_type(self) == xpcType
   }
-  
+
+  @inlinable
+  internal var isNull: Bool {
+    hasType(XPC_TYPE_NULL)
+  }
+
   @inlinable
   internal var isArray: Bool {
     hasType(XPC_TYPE_ARRAY)
