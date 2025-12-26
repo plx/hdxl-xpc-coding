@@ -64,7 +64,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   @usableFromInline
   internal mutating func actuallyEncodeStringValue(_ value: String, forKey key: Key) throws {
     try encoder.withTransientCodingPathElement(key) { codingPath in
-      let xpcObject = value.makeXPCObjectRepresentation(stringKeyStrategy: stringKeyStrategy)
+      let xpcObject = try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy)
       underlyingMessage.setValue(
         xpcObject,
         forKey: key,

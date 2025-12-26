@@ -176,7 +176,7 @@ private struct `Original CodableXPC Tests` {
     
     let codec = XPCCodec(configuration: configuration)
     
-    let decodingError = try #require(throws: EncodingError.self) {
+    let decodingError = try #require(throws: DecodingError.self) {
       try codec.decode(DecodeFailure.self, from: input)
     }
     
@@ -198,7 +198,7 @@ private struct `Original CodableXPC Tests` {
     
     let codec = XPCCodec(configuration: configuration)
     
-    let decodingError = try #require(throws: EncodingError.self) {
+    let decodingError = try #require(throws: DecodingError.self) {
       try codec.decode(DecodeFailure.self, from: input)
     }
     
