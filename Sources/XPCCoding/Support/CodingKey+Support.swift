@@ -12,11 +12,6 @@ extension CodingKey {
   }
   
   @inlinable
-  internal func verifyXPCCompatibility() throws(XPCObjectCompatibilityError) {
-    try stringValue.verifyXPCCompatibility()
-  }
-  
-  @inlinable
   internal func withUTF8CString<R>(
     embeddedNullByteRepresentation: String.EmbeddedNullByteRepresentation,
     _ closure: (UnsafePointer<CChar>) throws -> R

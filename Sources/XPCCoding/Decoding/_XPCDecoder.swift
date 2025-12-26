@@ -47,7 +47,8 @@ internal final class _XPCDecoder: Decoder {
   ) throws -> KeyedDecodingContainer<Key> where Key : CodingKey {
     let container = try XPCKeyedDecodingContainer<Key>(
       referencing: self,
-      wrapping: underlyingMessage
+      wrapping: underlyingMessage,
+      codingPath: codingPath
     )
     return KeyedDecodingContainer(container)
   }
@@ -56,7 +57,8 @@ internal final class _XPCDecoder: Decoder {
   internal func unkeyedContainer() throws -> UnkeyedDecodingContainer {
     try XPCUnkeyedDecodingContainer(
       referencing: self,
-      wrapping: underlyingMessage
+      wrapping: underlyingMessage,
+      codingPath: codingPath
     )
   }
   
@@ -64,33 +66,15 @@ internal final class _XPCDecoder: Decoder {
   internal func singleValueContainer() throws -> SingleValueDecodingContainer {
     XPCSingleValueDecodingContainer(
       referencing: self,
-      wrapping: underlyingMessage
+      wrapping: underlyingMessage,
+      codingPath: codingPath
     )
   }
   
 }
 
 extension _XPCDecoder {
-  @inlinable
-  internal func verifyKeyCompatibility(
-    key: some CodingKey,
-    codingPath: [any CodingKey]
-  ) throws(DecodingError) {
-    do {
-      try key.verifyXPCCompatibility()
-    }
-    catch let incompatibilityError {
-      throw DecodingError.keyNotFound(
-        key,
-        DecodingError.Context(
-          codingPath: codingPath,
-          debugDescription: "Tried to decode an xpc-incompatible key `\(key)`",
-          underlyingError: incompatibilityError
-        )
-      )
-    }
-  }
-  
+
   @inlinable
   internal func withTransientCodingPathElement<Key, R>(
     _ codingPathElement: Key,
@@ -109,10 +93,6 @@ extension _XPCDecoder {
 #endif
     }
     let codingPath = _codingPath
-    try verifyKeyCompatibility(
-      key: codingPathElement,
-      codingPath: codingPath
-    )
     return try closure(codingPath)
   }
   

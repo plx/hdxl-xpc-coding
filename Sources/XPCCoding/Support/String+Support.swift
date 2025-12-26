@@ -28,17 +28,5 @@ extension String {
   internal var percentCount: Int {
     utf8.count { $0 == UTF8.CodeUnit(ascii: "%") }
   }
-
-  
-  @inlinable
-  internal func verifyXPCCompatibility() throws(XPCObjectCompatibilityError) {
-    guard !isLosslesslyRepresentableAsXPCStringObject else { return }
-    // would check each individual condition here if we gained additional ones
-    let containsNullBytes = containsNullBytes
-    throw XPCObjectCompatibilityError.incompatibleStringContent(
-      "Contains null bytes: \(containsNullBytes)",
-      self
-    )
-  }
   
 }

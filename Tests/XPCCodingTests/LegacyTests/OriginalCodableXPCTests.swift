@@ -199,7 +199,7 @@ private struct `Original CodableXPC Tests` {
     let codec = XPCCodec(configuration: configuration)
     
     let decodingError = try #require(throws: DecodingError.self) {
-      try codec.decode(DecodeFailure.self, from: input)
+      try codec.decode(DecodeFailureNested.self, from: input)
     }
     
     try verifyCodingPath(

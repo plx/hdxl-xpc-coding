@@ -23,18 +23,18 @@ internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
   internal let underlyingMessage: xpc_object_t
 
   // MARK: - Properties
-  public var codingPath: [CodingKey] {
-    decoder.codingPath
-  }
+  public var codingPath: [any CodingKey]
   
   // MARK: - Initialization
   @usableFromInline
   internal init(
     referencing decoder: _XPCDecoder,
-    wrapping xpcObject: xpc_object_t
+    wrapping xpcObject: xpc_object_t,
+    codingPath: [any CodingKey]
   ) {
     self.decoder = decoder
     self.underlyingMessage = xpcObject
+    self.codingPath = codingPath
   }
   
   public func decodeNil() -> Bool {
@@ -118,7 +118,7 @@ internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: stringValueStrategy,
         decoding: underlyingMessage,
-        at: decoder.codingPath
+        at: codingPath
       )
     )
   }

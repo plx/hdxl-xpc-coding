@@ -1,7 +1,7 @@
 import XPC
 
 @usableFromInline
-internal struct XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContainerProtocol {
+internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContainerProtocol {
 
   @usableFromInline
   internal typealias StringKeyStrategy = XPCDecoder.StringKeyStrategy
@@ -23,9 +23,7 @@ internal struct XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContaine
   
   /// The path of coding keys taken to get to this point in decoding.
   @usableFromInline
-  internal var codingPath: [CodingKey] {
-    decoder.codingPath
-  }
+  internal var codingPath: [CodingKey]
   
   @usableFromInline
   internal let underlyingMessage: xpc_object_t
@@ -36,18 +34,20 @@ internal struct XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContaine
   @usableFromInline
   internal init(
     referencing decoder: _XPCDecoder,
-    wrapping underlyingMessage: xpc_object_t
+    wrapping underlyingMessage: xpc_object_t,
+    codingPath: [any CodingKey]
   ) throws {
     guard underlyingMessage.isDictionary else {
       throw DecodingError.dataCorrupted(
         DecodingError.Context(
-          codingPath: decoder.codingPath,
+          codingPath: codingPath,
           debugDescription: "Did not find xpc dictionary in keyed container"
         )
       )
     }
     self.decoder = decoder
     self.underlyingMessage = underlyingMessage
+    self.codingPath = codingPath
   }
   
   // MARK: - KeyedDecodingContainerProtocol
@@ -195,12 +195,13 @@ internal struct XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContaine
     keyedBy type: NestedKey.Type,
     forKey key: Key
   ) throws -> KeyedDecodingContainer<NestedKey> {
-    try withTransientCodingKey(key) { _ in
+    try withTransientCodingKey(key) { codingPath in
       let xpcObject = try getXPCObject(for: key)
       
       let container = try XPCKeyedDecodingContainer<NestedKey>(
         referencing: decoder,
-        wrapping: xpcObject
+        wrapping: xpcObject,
+        codingPath: codingPath
       )
       
       return KeyedDecodingContainer<NestedKey>(container)
@@ -209,10 +210,11 @@ internal struct XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContaine
   
   @inlinable
   internal func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
-    try withTransientCodingKey(key) { _ in
+    try withTransientCodingKey(key) { codingPath in
       try XPCUnkeyedDecodingContainer(
         referencing: decoder,
-        wrapping: try getXPCObject(for: key)
+        wrapping: try getXPCObject(for: key),
+        codingPath: codingPath
       )
     }
   }
@@ -271,7 +273,17 @@ extension XPCKeyedDecodingContainer {
     _ key: Key,
     _ closure: ([any CodingKey]) throws -> R
   ) throws -> R {
-    try decoder.withTransientCodingPathElement(key, closure)
+    codingPath.append(key)
+    defer {
+#if DEBUG
+      let poppedKey = codingPath.removeLast()
+      assert(poppedKey.stringValue == key.stringValue)
+      assert(poppedKey.intValue == key.intValue)
+#else
+      let _ = codingPath.removeLast()
+#endif
+    }
+    return try closure(codingPath)
   }
   
   @inlinable
@@ -279,7 +291,17 @@ extension XPCKeyedDecodingContainer {
     _ key: XPCCodingKey,
     _ closure: ([any CodingKey]) throws -> R
   ) throws -> R {
-    try decoder.withTransientCodingPathElement(key, closure)
+    codingPath.append(key)
+    defer {
+#if DEBUG
+      let poppedKey = codingPath.removeLast()
+      assert(poppedKey.stringValue == key.stringValue)
+      assert(poppedKey.intValue == key.intValue)
+#else
+      let _ = codingPath.removeLast()
+#endif
+    }
+    return try closure(codingPath)
   }
   
   @inlinable

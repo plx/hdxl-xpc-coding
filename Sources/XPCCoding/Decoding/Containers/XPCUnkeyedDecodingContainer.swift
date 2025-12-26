@@ -17,9 +17,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
   // MARK: - Properties
   @usableFromInline
-  internal var codingPath: [CodingKey] {
-    decoder.codingPath
-  }
+  internal var codingPath: [CodingKey]
   
   @usableFromInline
   internal var count: Int? {
@@ -55,11 +53,15 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   
   // MARK: - Initilization
   @usableFromInline
-  internal init(referencing decoder: _XPCDecoder, wrapping: xpc_object_t) throws {
+  internal init(
+    referencing decoder: _XPCDecoder,
+    wrapping: xpc_object_t,
+    codingPath: [any CodingKey]
+  ) throws {
     guard wrapping.isArray else {
       throw DecodingError.dataCorrupted(
         DecodingError.Context(
-          codingPath: decoder.codingPath,
+          codingPath: codingPath,
           debugDescription: "Did not find xpc array in unkeyed container."
         )
       )
@@ -67,6 +69,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     
     self.underlyingMessage = wrapping
     self.decoder = decoder
+    self.codingPath = codingPath
     self._currentIndex = 0
   }
   
@@ -251,11 +254,12 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     keyedBy type: NestedKey.Type
   ) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
     let decoder = decoder
-    return try handleNextDecodingKeyValue { xpcValue, _ in
+    return try handleNextDecodingKeyValue { xpcValue, codingPath in
       KeyedDecodingContainer(
         try XPCKeyedDecodingContainer<NestedKey>(
           referencing: decoder,
-          wrapping: xpcValue
+          wrapping: xpcValue,
+          codingPath: codingPath
         )
       )
     }
@@ -265,10 +269,11 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   internal mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
     let decoder = decoder
     
-    return try handleNextDecodingKeyValue { xpcValue, _ in
+    return try handleNextDecodingKeyValue { xpcValue, codingPath in
       try XPCUnkeyedDecodingContainer(
         referencing: decoder,
-        wrapping: xpcValue
+        wrapping: xpcValue,
+        codingPath: codingPath
       )
     }
   }

@@ -323,26 +323,6 @@ internal class _XPCEncoder: Encoder {
 extension _XPCEncoder {
   
   @inlinable
-  internal func verifyKeyCompatibility(
-    key: some CodingKey,
-    codingPath: [any CodingKey]
-  ) throws(EncodingError) {
-    do {
-      try key.verifyXPCCompatibility()
-    }
-    catch let incompatibilityError {
-      throw EncodingError.invalidValue(
-        key,
-        EncodingError.Context(
-          codingPath: codingPath,
-          debugDescription: "Tried to encode something with an xpc-incompatible key `\(key)`",
-          underlyingError: incompatibilityError
-        )
-      )
-    }
-  }
-
-  @inlinable
   internal func withTransientCodingPathElement<Key, R>(
     _ codingPathElement: Key,
     _ closure: ([any CodingKey]) throws -> R
@@ -358,10 +338,6 @@ extension _XPCEncoder {
       _codingPath.removeLast()
       #endif
     }
-    try verifyKeyCompatibility(
-      key: codingPathElement,
-      codingPath: codingPath
-    )
     return try closure(_codingPath)
   }
   
