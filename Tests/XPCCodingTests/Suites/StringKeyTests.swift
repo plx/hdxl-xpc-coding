@@ -111,26 +111,6 @@ struct `String-Key Tests` {
     }
   }
 
-  /// Verify in `.throwsOnDiscovery` mode we throw an error when trying to encode.
-  @Test(
-    .tags(.roundTrip, .keyed),
-    arguments: XPCCodec.StringValueStrategy.allCases
-  )
-  func `throw on discovery (throws)`(stringValueStrategy: XPCCodec.StringValueStrategy) throws {
-    let configuration = XPCCodec.Configuration(
-      stringKeyStrategy: .throwOnDiscovery,
-      stringValueStrategy: stringValueStrategy
-    )
-    let value = KeysWithEmbeddedNullStruct.exampleValue
-    
-    #expect(throws: (any Error).self) {
-      try verifyRoundTrip(
-        ofValueAndWrappers: value,
-        configuration: configuration
-      )
-    }
-  }
-
   /// Verify in `.percentEscape` mode we successfully round-trip.
   @Test(
     .tags(.roundTrip, .keyed),

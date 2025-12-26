@@ -38,11 +38,9 @@ extension XPCCodec.StringKeyStrategy {
   internal var decodingStrategy: XPCDecoder.StringKeyStrategy {
     switch self {
     case .assumeAbsent:
-        .passthrough
-    case .throwOnDiscovery:
-        .passthrough
+      .passthrough
     case .percentEscape:
-        .percentEscape
+      .percentEscape
     }
   }
   

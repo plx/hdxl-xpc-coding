@@ -53,7 +53,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   @usableFromInline
   internal mutating func actuallyEncodeLosslesslyConvertibleValue(_ value: some LosslessXPCObjectConvertible, forKey key: Key) throws {
     try encoder.withTransientCodingPathElement(key) { _ in
-      try underlyingMessage.setValue(
+      underlyingMessage.setValue(
         value,
         forKey: key,
         strategy: stringKeyStrategy
@@ -64,24 +64,12 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   @usableFromInline
   internal mutating func actuallyEncodeStringValue(_ value: String, forKey key: Key) throws {
     try encoder.withTransientCodingPathElement(key) { codingPath in
-      do {
-        let xpcObject = try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy)
-        try underlyingMessage.setValue(
-          xpcObject,
-          forKey: key,
-          strategy: stringKeyStrategy
-        )
-      }
-      catch let incompatibilityError {
-        throw EncodingError.invalidValue(
-          value,
-          EncodingError.Context(
-            codingPath: codingPath,
-            debugDescription: "Unable to encode incompatible value \(value) for key: \(key)",
-            underlyingError: incompatibilityError
-          )
-        )
-      }
+      let xpcObject = value.makeXPCObjectRepresentation(stringKeyStrategy: stringKeyStrategy)
+      underlyingMessage.setValue(
+        xpcObject,
+        forKey: key,
+        strategy: stringKeyStrategy
+      )
     }
   }
 
@@ -89,7 +77,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   
   public mutating func encodeNil(forKey key: Key) throws {
     try encoder.withTransientCodingPathElement(key) { _ in
-      try underlyingMessage.setNil(
+      underlyingMessage.setNil(
         forKey: key,
         strategy: stringKeyStrategy
       )
@@ -163,7 +151,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   public mutating func encode<T : Encodable>(_ value: T, forKey key: Key) throws {
     try encoder.withTransientCodingPathElement(key) { codingPath in
       do {
-        try underlyingMessage.setValue(
+        underlyingMessage.setValue(
           try _XPCEncoder.encode(
             value,
             at: codingPath,
@@ -192,7 +180,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
     do {
       return try encoder.withTransientCodingPathElement(key) { _ in
         let xpcDictionary = xpc_dictionary_create(nil, nil, 0)
-        try underlyingMessage.setValue(
+        underlyingMessage.setValue(
           xpcDictionary,
           forKey: key,
           strategy: stringKeyStrategy
@@ -220,13 +208,14 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   
   public mutating func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
     do {
+      let xpcArray = xpc_array_create(nil, 0)
+      underlyingMessage.setValue(
+        xpcArray,
+        forKey: key,
+        strategy: stringKeyStrategy
+      )
+      
       return try encoder.withTransientCodingPathElement(key) { _ in
-        let xpcArray = xpc_array_create(nil, 0)
-        try underlyingMessage.setValue(
-          xpcArray,
-          forKey: key,
-          strategy: stringKeyStrategy
-        )
         let container = try XPCUnkeyedEncodingContainer(
           referencing: encoder,
           wrapping: xpcArray
@@ -326,13 +315,14 @@ internal final class XPCDictionaryReferencingEncoder: _XPCEncoder {
   
   @usableFromInline
   override func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
+    let newDictionary = xpc_dictionary_create(nil, nil, 0)
+    xpcDictionary.setValue(
+      newDictionary,
+      forKey: codingKey,
+      strategy: stringKeyStrategy
+    )
+
     do {
-      let newDictionary = xpc_dictionary_create(nil, nil, 0)
-      try xpcDictionary.setValue(
-        newDictionary,
-        forKey: codingKey,
-        strategy: stringKeyStrategy
-      )
       let container = try XPCKeyedEncodingContainer<Key>(
         referencing: self,
         wrapping: newDictionary
@@ -353,15 +343,14 @@ internal final class XPCDictionaryReferencingEncoder: _XPCEncoder {
   
   @usableFromInline
   override func unkeyedContainer() -> UnkeyedEncodingContainer {
-    
+    let newArray = xpc_array_create(nil, 0)
+    xpcDictionary.setValue(
+      newArray,
+      forKey: codingKey,
+      strategy: stringKeyStrategy
+    )
+
     do {
-      let newArray = xpc_array_create(nil, 0)
-      try xpcDictionary.setValue(
-        newArray,
-        forKey: codingKey,
-        strategy: stringKeyStrategy
-      )
-      
       return try XPCUnkeyedEncodingContainer(
         referencing: self,
         wrapping: newArray
@@ -381,22 +370,11 @@ internal final class XPCDictionaryReferencingEncoder: _XPCEncoder {
   @usableFromInline
   override func singleValueContainer() -> SingleValueEncodingContainer {
     XPCSingleValueEncodingContainer(referencing: self) { [self] value in
-      do {
-        try xpcDictionary.setValue(
-          value,
-          forKey: codingKey,
-          strategy: stringKeyStrategy
-        )
-      }
-      catch let error {
-        fatalError(
-        """
-        Encountered unrecoverable internal error creating unkeyed-container:
-        
-        - error: \(String(reflecting: error))
-        """
-        )
-      }
+      xpcDictionary.setValue(
+        value,
+        forKey: codingKey,
+        strategy: stringKeyStrategy
+      )
     }
   }
 }

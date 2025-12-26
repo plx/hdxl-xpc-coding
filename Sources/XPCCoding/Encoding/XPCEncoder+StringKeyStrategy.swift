@@ -5,7 +5,6 @@ extension XPCEncoder {
   
   public enum StringKeyStrategy {
     case assumeAbsent
-    case throwOnDiscovery
     case percentEscape
   }
 
@@ -31,8 +30,6 @@ extension XPCCodec.StringKeyStrategy {
     switch self {
     case .assumeAbsent:
       .assumeAbsent
-    case .throwOnDiscovery:
-      .throwOnDiscovery
     case .percentEscape:
       .percentEscape
     }

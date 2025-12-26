@@ -53,8 +53,8 @@ extension xpc_object_t {
   internal func setNil(
     forKey key: some CodingKey,
     strategy: XPCEncoder.StringKeyStrategy
-  ) throws {
-    try setNil(
+  ) {
+    setNil(
       forKey: key.stringValue,
       strategy: strategy
     )
@@ -64,8 +64,8 @@ extension xpc_object_t {
   internal func setNil(
     forKey key: any CodingKey,
     strategy: XPCEncoder.StringKeyStrategy
-  ) throws {
-    try setNil(
+  ) {
+    setNil(
       forKey: key.stringValue,
       strategy: strategy
     )
@@ -75,8 +75,8 @@ extension xpc_object_t {
   internal func setNil(
     forKey key: String,
     strategy: XPCEncoder.StringKeyStrategy
-  ) throws {
-    try key.withUTF8CString(stringKeyStrategy: strategy) { keyCString in
+  ) {
+    key.withUTF8CString(stringKeyStrategy: strategy) { keyCString in
       xpc_dictionary_set_value(
         self,
         keyCString,
@@ -96,8 +96,8 @@ extension xpc_object_t {
     _ value: some LosslessXPCObjectConvertible,
     forKey key: some CodingKey,
     strategy: XPCEncoder.StringKeyStrategy
-  ) throws {
-    try setValue(
+  ) {
+    setValue(
       value.xpcObjectRepresentation,
       forKey: key.stringValue,
       strategy: strategy
@@ -109,8 +109,8 @@ extension xpc_object_t {
     _ value: some LosslessXPCObjectConvertible,
     forKey key: any CodingKey,
     strategy: XPCEncoder.StringKeyStrategy
-  ) throws {
-    try setValue(
+  ) {
+    setValue(
       value.xpcObjectRepresentation,
       forKey: key.stringValue,
       strategy: strategy
@@ -122,8 +122,8 @@ extension xpc_object_t {
     _ value: some LosslessXPCObjectConvertible,
     forKey key: String,
     strategy: XPCEncoder.StringKeyStrategy
-  ) throws {
-    try setValue(
+  ) {
+    setValue(
       value.xpcObjectRepresentation,
       forKey: key,
       strategy: strategy
@@ -141,8 +141,8 @@ extension xpc_object_t {
     _ value: xpc_object_t,
     forKey key: some CodingKey,
     strategy: XPCEncoder.StringKeyStrategy
-  ) throws {
-    try setValue(
+  ) {
+    setValue(
       value,
       forKey: key.stringValue,
       strategy: strategy
@@ -154,8 +154,8 @@ extension xpc_object_t {
     _ value: xpc_object_t,
     forKey key: any CodingKey,
     strategy: XPCEncoder.StringKeyStrategy
-  ) throws {
-    try setValue(
+  ) {
+    setValue(
       value,
       forKey: key.stringValue,
       strategy: strategy
@@ -167,8 +167,8 @@ extension xpc_object_t {
     _ value: xpc_object_t,
     forKey key: String,
     strategy stringKeyStrategy: XPCEncoder.StringKeyStrategy
-  ) throws {
-    try key.withUTF8CString(stringKeyStrategy: stringKeyStrategy) { keyCString in
+  ) {
+    key.withUTF8CString(stringKeyStrategy: stringKeyStrategy) { keyCString in
       xpc_dictionary_set_value(
         self,
         keyCString,

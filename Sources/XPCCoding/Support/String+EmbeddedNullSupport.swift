@@ -43,14 +43,9 @@ extension String {
   internal func withUTF8CString<R>(
     stringKeyStrategy: XPCEncoder.StringKeyStrategy,
     _ closure: (UnsafePointer<CChar>) throws -> R
-  ) throws -> R {
+  ) rethrows -> R {
     switch stringKeyStrategy {
     case .assumeAbsent:
-      return try withCString(closure)
-    case .throwOnDiscovery:
-      guard !containsNullBytes else {
-        throw StringKeyUsageError.nullBytesDetected(self)
-      }
       return try withCString(closure)
     case .percentEscape:
       switch containsNullBytes {

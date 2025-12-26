@@ -22,13 +22,7 @@ extension XPCCodec {
     /// This has the lowest performance impact, but will encode truncated values
     /// when encoding keys or values with embedded null bytes...use with caution.
     case assumeAbsent
-    
-    /// Encoders will throw an error on discovering embedded null bytes.
-    ///
-    /// This has zero space overhead on success, at cost of being unable to handle
-    /// any strings with embedded null bytes—use at your own risk.
-    case throwOnDiscovery
-    
+        
     /// Apply percent-escaping to prevent XPC from seeing null bytes.
     ///
     /// This is less-efficient than the "modified utf-8" approach, but has
@@ -54,7 +48,6 @@ extension XPCCodec.StringKeyStrategy: CustomStringConvertible {
   public var description: String {
     switch self {
     case .assumeAbsent: "assume absent"
-    case .throwOnDiscovery: "throw on discovery"
     case .percentEscape: "%-escape"
     }
   }
@@ -68,7 +61,6 @@ extension XPCCodec.StringKeyStrategy: CustomDebugStringConvertible {
   public var debugDescription: String {
     switch self {
     case .assumeAbsent: ".assumeAbsent"
-    case .throwOnDiscovery: ".throwOnDiscovery"
     case .percentEscape: ".percentEscape"
     }
   }

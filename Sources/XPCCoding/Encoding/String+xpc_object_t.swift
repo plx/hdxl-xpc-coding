@@ -11,6 +11,22 @@ extension String {
   
   @inlinable
   internal func makeXPCObjectRepresentation(
+    stringKeyStrategy: XPCEncoder.StringKeyStrategy
+  ) -> xpc_object_t {
+    switch stringKeyStrategy {
+    case .assumeAbsent:
+      return withCString { cStringPtr in
+        xpc_string_create(cStringPtr)
+      }
+    case .percentEscape:
+      return withStringWithEmbeddedNullBytesPercentEncoded { cStringPtr in
+        xpc_string_create(cStringPtr)
+      }
+    }
+  }
+
+  @inlinable
+  internal func makeXPCObjectRepresentation(
     stringValueStrategy: XPCEncoder.StringValueStrategy
   ) throws(XPCObjectConversionError) -> xpc_object_t {
     switch stringValueStrategy {
@@ -47,5 +63,5 @@ extension String {
       }
     }
   }
-  
+
 }
