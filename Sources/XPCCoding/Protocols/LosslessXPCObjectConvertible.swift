@@ -3,23 +3,11 @@ import XPC
 
 /// Protocol for values that can *infallibly* be converted to `xpc_object_t` representations.
 ///
-/// - SeeAlso: ``XPCObjectConvertible``, for the rare, fallible equivalent.
 @usableFromInline
-internal protocol LosslessXPCObjectConvertible: XPCObjectConvertible {
+internal protocol LosslessXPCObjectConvertible {
   
   /// Provides an `xpc_object_t` that's an exact representation of `self`.
   var xpcObjectRepresentation: xpc_object_t { get }
-  
-}
-
-// MARK: - XPCObjectConvertible Interop
-
-extension XPCObjectConvertible where Self: LosslessXPCObjectConvertible {
-  
-  @inlinable
-  internal func makeXPCObjectRepresentation() throws(XPCObjectCompatibilityError) -> xpc_object_t {
-    xpcObjectRepresentation
-  }
   
 }
 
@@ -41,7 +29,7 @@ extension LosslessXPCObjectConvertible where Self: XPCBinaryDataRepresentationCo
 
 // MARK: - Specialized Conformances
 
-extension Double: XPCObjectConvertible, LosslessXPCObjectConvertible {
+extension Double: LosslessXPCObjectConvertible {
 
   @inlinable
   internal var xpcObjectRepresentation: xpc_object_t {
@@ -50,7 +38,7 @@ extension Double: XPCObjectConvertible, LosslessXPCObjectConvertible {
   
 }
 
-extension Int64: XPCObjectConvertible, LosslessXPCObjectConvertible {
+extension Int64: LosslessXPCObjectConvertible {
   
   @inlinable
   internal var xpcObjectRepresentation: xpc_object_t {
@@ -59,7 +47,7 @@ extension Int64: XPCObjectConvertible, LosslessXPCObjectConvertible {
   
 }
 
-extension UInt64: XPCObjectConvertible, LosslessXPCObjectConvertible {
+extension UInt64: LosslessXPCObjectConvertible {
   
   @inlinable
   internal var xpcObjectRepresentation: xpc_object_t {
@@ -68,7 +56,7 @@ extension UInt64: XPCObjectConvertible, LosslessXPCObjectConvertible {
   
 }
 
-extension Int: XPCObjectConvertible, LosslessXPCObjectConvertible {
+extension Int: LosslessXPCObjectConvertible {
   
   @inlinable
   internal var xpcObjectRepresentation: xpc_object_t {
@@ -77,7 +65,7 @@ extension Int: XPCObjectConvertible, LosslessXPCObjectConvertible {
 
 }
 
-extension UInt: XPCObjectConvertible, LosslessXPCObjectConvertible {
+extension UInt: LosslessXPCObjectConvertible {
 
   @inlinable
   internal var xpcObjectRepresentation: xpc_object_t {
@@ -86,7 +74,7 @@ extension UInt: XPCObjectConvertible, LosslessXPCObjectConvertible {
 
 }
 
-extension Data: XPCObjectConvertible, LosslessXPCObjectConvertible {
+extension Data: LosslessXPCObjectConvertible {
 
   @inlinable
   internal var xpcObjectRepresentation: xpc_object_t {
@@ -100,7 +88,7 @@ extension Data: XPCObjectConvertible, LosslessXPCObjectConvertible {
   
 }
 
-extension Bool: XPCObjectConvertible, LosslessXPCObjectConvertible {
+extension Bool: LosslessXPCObjectConvertible {
   
   @inlinable
   internal var xpcObjectRepresentation: xpc_object_t {
@@ -111,15 +99,15 @@ extension Bool: XPCObjectConvertible, LosslessXPCObjectConvertible {
 
 // MARK: - Synthesized Conformances
 
-extension Int8: XPCObjectConvertible, LosslessXPCObjectConvertible { }
-extension Int16: XPCObjectConvertible, LosslessXPCObjectConvertible { }
-extension Int32: XPCObjectConvertible, LosslessXPCObjectConvertible { }
-extension Int128: XPCObjectConvertible, LosslessXPCObjectConvertible { }
+extension Int8: LosslessXPCObjectConvertible { }
+extension Int16: LosslessXPCObjectConvertible { }
+extension Int32: LosslessXPCObjectConvertible { }
+extension Int128: LosslessXPCObjectConvertible { }
 
-extension UInt8: XPCObjectConvertible, LosslessXPCObjectConvertible { }
-extension UInt16: XPCObjectConvertible, LosslessXPCObjectConvertible { }
-extension UInt32: XPCObjectConvertible, LosslessXPCObjectConvertible { }
-extension UInt128: XPCObjectConvertible, LosslessXPCObjectConvertible { }
+extension UInt8: LosslessXPCObjectConvertible { }
+extension UInt16: LosslessXPCObjectConvertible { }
+extension UInt32: LosslessXPCObjectConvertible { }
+extension UInt128: LosslessXPCObjectConvertible { }
 
-extension Float16: XPCObjectConvertible, LosslessXPCObjectConvertible { }
-extension Float: XPCObjectConvertible, LosslessXPCObjectConvertible { }
+extension Float16: LosslessXPCObjectConvertible { }
+extension Float: LosslessXPCObjectConvertible { }

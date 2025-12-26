@@ -5,8 +5,8 @@ import XPC
 func verifyXPCConversion<T>(
   of value: T,
   sourceLocation: SourceLocation = #_sourceLocation
-) throws where T: Equatable & XPCObjectConvertible & XPCObjectExtractable {
-  let xpcObject = try value.makeXPCObjectRepresentation()
+) throws where T: Equatable & LosslessXPCObjectConvertible & XPCObjectExtractable {
+  let xpcObject = value.xpcObjectRepresentation
   #expect(
     xpc_get_type(xpcObject) == T.associatedXPCObjectType,
     """
@@ -40,8 +40,8 @@ func verifyXPCConversion<T>(
   of value: T,
   sourceLocation: SourceLocation = #_sourceLocation,
   equivalence: (T, T) -> Bool
-) throws where T: XPCObjectConvertible & XPCObjectExtractable {
-  let xpcObject = try value.makeXPCObjectRepresentation()
+) throws where T: LosslessXPCObjectConvertible & XPCObjectExtractable {
+  let xpcObject = value.xpcObjectRepresentation
   #expect(
     xpc_get_type(xpcObject) == T.associatedXPCObjectType,
     """

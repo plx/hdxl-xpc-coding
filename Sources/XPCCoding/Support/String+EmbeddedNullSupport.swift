@@ -12,6 +12,75 @@ extension String {
   }
   
   @usableFromInline
+  enum StringKeyUsageError: Error {
+    case nullBytesDetected(String)
+  }
+//
+//  @usableFromInline
+//  internal func withUTF8CString<R>(
+//    stringKeyStrategy: XPCCodec.StringKeyStrategy,
+//    _ closure: (UnsafePointer<CChar>) throws -> R
+//  ) throws -> R {
+//    switch stringKeyStrategy {
+//    case .assumeAbsent:
+//      return try withCString(closure)
+//    case .throwOnDiscovery:
+//      guard !containsNullBytes else {
+//        throw StringKeyUsageError.nullBytesDetected(self)
+//      }
+//      return try withCString(closure)
+//    case .percentEscape:
+//      switch containsNullBytes {
+//      case true:
+//        return try withStringWithEmbeddedNullBytesPercentEncoded(closure)
+//      case false:
+//        return try withCString(closure)
+//      }
+//    }
+//  }
+
+  @usableFromInline
+  internal func withUTF8CString<R>(
+    stringKeyStrategy: XPCEncoder.StringKeyStrategy,
+    _ closure: (UnsafePointer<CChar>) throws -> R
+  ) throws -> R {
+    switch stringKeyStrategy {
+    case .assumeAbsent:
+      return try withCString(closure)
+    case .throwOnDiscovery:
+      guard !containsNullBytes else {
+        throw StringKeyUsageError.nullBytesDetected(self)
+      }
+      return try withCString(closure)
+    case .percentEscape:
+      switch containsNullBytes {
+      case true:
+        return try withStringWithEmbeddedNullBytesPercentEncoded(closure)
+      case false:
+        return try withCString(closure)
+      }
+    }
+  }
+
+  @usableFromInline
+  internal func withUTF8CString<R>(
+    stringKeyStrategy: XPCDecoder.StringKeyStrategy,
+    _ closure: (UnsafePointer<CChar>) throws -> R
+  ) throws -> R {
+    switch stringKeyStrategy {
+    case .passthrough:
+      return try withCString(closure)
+    case .percentEscape:
+      switch containsNullBytes {
+      case true:
+        return try withStringWithEmbeddedNullBytesPercentEncoded(closure)
+      case false:
+        return try withCString(closure)
+      }
+    }
+  }
+
+  @usableFromInline
   internal func withUTF8CString<R>(
     embeddedNullByteRepresentation: EmbeddedNullByteRepresentation,
     _ closure: (UnsafePointer<CChar>) throws -> R

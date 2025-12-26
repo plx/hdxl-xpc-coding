@@ -50,18 +50,33 @@ extension xpc_object_t {
 extension xpc_object_t {
   
   @inlinable @inline(__always)
-  internal func setNil(forKey key: some CodingKey) {
-    setNil(forKey: key.stringValue)
+  internal func setNil(
+    forKey key: some CodingKey,
+    strategy: XPCEncoder.StringKeyStrategy
+  ) throws {
+    try setNil(
+      forKey: key.stringValue,
+      strategy: strategy
+    )
   }
   
   @inlinable @inline(__always)
-  internal func setNil(forKey key: any CodingKey) {
-    setNil(forKey: key.stringValue)
+  internal func setNil(
+    forKey key: any CodingKey,
+    strategy: XPCEncoder.StringKeyStrategy
+  ) throws {
+    try setNil(
+      forKey: key.stringValue,
+      strategy: strategy
+    )
   }
   
   @inlinable @inline(__always)
-  internal func setNil(forKey key: String) {
-    key.withCString { keyCString in
+  internal func setNil(
+    forKey key: String,
+    strategy: XPCEncoder.StringKeyStrategy
+  ) throws {
+    try key.withUTF8CString(stringKeyStrategy: strategy) { keyCString in
       xpc_dictionary_set_value(
         self,
         keyCString,
@@ -77,18 +92,42 @@ extension xpc_object_t {
 extension xpc_object_t {
 
   @inlinable @inline(__always)
-  internal func setValue(_ value: some LosslessXPCObjectConvertible, forKey key: some CodingKey) {
-    setValue(value.xpcObjectRepresentation, forKey: key.stringValue)
+  internal func setValue(
+    _ value: some LosslessXPCObjectConvertible,
+    forKey key: some CodingKey,
+    strategy: XPCEncoder.StringKeyStrategy
+  ) throws {
+    try setValue(
+      value.xpcObjectRepresentation,
+      forKey: key.stringValue,
+      strategy: strategy
+    )
   }
 
   @inlinable @inline(__always)
-  internal func setValue(_ value: some LosslessXPCObjectConvertible, forKey key: any CodingKey) {
-    setValue(value.xpcObjectRepresentation, forKey: key.stringValue)
+  internal func setValue(
+    _ value: some LosslessXPCObjectConvertible,
+    forKey key: any CodingKey,
+    strategy: XPCEncoder.StringKeyStrategy
+  ) throws {
+    try setValue(
+      value.xpcObjectRepresentation,
+      forKey: key.stringValue,
+      strategy: strategy
+    )
   }
 
   @inlinable @inline(__always)
-  internal func setValue(_ value: some LosslessXPCObjectConvertible, forKey key: String) {
-    setValue(value.xpcObjectRepresentation, forKey: key)
+  internal func setValue(
+    _ value: some LosslessXPCObjectConvertible,
+    forKey key: String,
+    strategy: XPCEncoder.StringKeyStrategy
+  ) throws {
+    try setValue(
+      value.xpcObjectRepresentation,
+      forKey: key,
+      strategy: strategy
+    )
   }
 
 }
@@ -98,18 +137,38 @@ extension xpc_object_t {
 extension xpc_object_t {
   
   @inlinable @inline(__always)
-  internal func setValue(_ value: xpc_object_t, forKey key: some CodingKey) {
-    setValue(value, forKey: key.stringValue)
+  internal func setValue(
+    _ value: xpc_object_t,
+    forKey key: some CodingKey,
+    strategy: XPCEncoder.StringKeyStrategy
+  ) throws {
+    try setValue(
+      value,
+      forKey: key.stringValue,
+      strategy: strategy
+    )
   }
   
   @inlinable @inline(__always)
-  internal func setValue(_ value: xpc_object_t, forKey key: any CodingKey) {
-    setValue(value, forKey: key.stringValue)
+  internal func setValue(
+    _ value: xpc_object_t,
+    forKey key: any CodingKey,
+    strategy: XPCEncoder.StringKeyStrategy
+  ) throws {
+    try setValue(
+      value,
+      forKey: key.stringValue,
+      strategy: strategy
+    )
   }
   
   @inlinable @inline(__always)
-  internal func setValue(_ value: xpc_object_t, forKey key: String) {
-    key.withCString { keyCString in
+  internal func setValue(
+    _ value: xpc_object_t,
+    forKey key: String,
+    strategy stringKeyStrategy: XPCEncoder.StringKeyStrategy
+  ) throws {
+    try key.withUTF8CString(stringKeyStrategy: stringKeyStrategy) { keyCString in
       xpc_dictionary_set_value(
         self,
         keyCString,

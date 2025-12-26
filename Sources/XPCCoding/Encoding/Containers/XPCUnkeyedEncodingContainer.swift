@@ -71,33 +71,13 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
       underlyingMessage.appendValue(value)
     }
   }
-
-  @inlinable
-  internal func appendNextConvertibleValue(_ value: some XPCObjectConvertible) throws {
-    try withNextCodingKey { codingPath in
-      do {
-        let xpcObject = try value.makeXPCObjectRepresentation()
-        xpc_array_append_value(underlyingMessage, xpcObject)
-      }
-      catch let incompatibilityError {
-        throw EncodingError.invalidValue(
-          value,
-          EncodingError.Context(
-            codingPath: codingPath,
-            debugDescription: "Attempted to append xpc-incompatible value \(value).",
-            underlyingError: incompatibilityError
-          )
-        )
-      }
-    }
-  }
   
   @inlinable
   internal func appendNextStringValue(_ value: String) throws {
     try withNextCodingKey { codingPath in
       
       do {
-        let xpcObject = try value.makeXPCObjectRepresentation()
+        let xpcObject = try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy)
         xpc_array_append_value(underlyingMessage, xpcObject)
       }
       catch let incompatibilityError {
@@ -129,7 +109,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
   @usableFromInline
   internal mutating func encode(_ value: String) throws {
-    try appendNextConvertibleValue(value)
+    try appendNextStringValue(value)
   }
   
   @usableFromInline

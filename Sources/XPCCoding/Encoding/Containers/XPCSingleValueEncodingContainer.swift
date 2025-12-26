@@ -36,27 +36,15 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   }
   
   // MARK: - SingleValueEncodingContainer protocol methods
-  @usableFromInline
-  internal func encodeXPCObjectConvertible(_ value: some XPCObjectConvertible) throws {
-    do {
-      let xpcObject = try value.makeXPCObjectRepresentation()
-      try insertionClosure(xpcObject)
-    }
-    catch let incompatibilityError {
-      throw EncodingError.invalidValue(
-        value,
-        EncodingError.Context(
-          codingPath: encoder.codingPath,
-          debugDescription: "XPC-incompatible value \(String(describing: value))",
-          underlyingError: incompatibilityError
-        )
-      )
-    }
-  }
 
   @usableFromInline
   internal func encodeLosslessXPCObjectConvertible(_ value: some LosslessXPCObjectConvertible) throws {
     try insertionClosure(value.xpcObjectRepresentation)
+  }
+
+  @usableFromInline
+  internal func encodeStringValue(_ value: String) throws {
+    try insertionClosure(try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy))
   }
 
   public mutating func encodeNil() throws {
@@ -68,7 +56,7 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   }
   
   public mutating func encode(_ value: String) throws {
-    try encodeXPCObjectConvertible(value)
+    try encodeStringValue(value)
   }
   
   public mutating func encode(_ value: Double) throws {
