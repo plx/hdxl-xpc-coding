@@ -3,7 +3,7 @@ import Foundation
 
 extension xpc_type_t {
   
-  @usableFromInline
+  @inlinable @inline(__always)
   internal var typeDescription: String {
     String(cString: xpc_type_get_name(self), encoding: .utf8) ?? "<unknown: \(String(reflecting: self))>"
   }
@@ -18,34 +18,34 @@ internal var sharedNullObject = xpc_null_create()
 
 extension xpc_object_t {
   
-  @inlinable
+  @inlinable @inline(__always)
   internal func hasType(_ xpcType: xpc_type_t) -> Bool {
     xpc_get_type(self) == xpcType
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   internal var isNull: Bool {
     hasType(XPC_TYPE_NULL)
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   internal var isArray: Bool {
     hasType(XPC_TYPE_ARRAY)
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   internal var isDictionary: Bool {
     hasType(XPC_TYPE_DICTIONARY)
   }
   
-  @inlinable
+  @inlinable @inline(__always)
   internal var typeDescription: String {
     xpc_get_type(self).typeDescription
   }
 
 }
 
-// MARK - Setters - CodingKey
+// MARK - Setters - Nil
 
 extension xpc_object_t {
   
@@ -72,6 +72,8 @@ extension xpc_object_t {
   
 }
 
+// MARK: - Value-Setting - Lossless
+
 extension xpc_object_t {
 
   @inlinable @inline(__always)
@@ -90,6 +92,8 @@ extension xpc_object_t {
   }
 
 }
+
+// MARK: - Value-Setting - Direct
 
 extension xpc_object_t {
   
@@ -116,6 +120,8 @@ extension xpc_object_t {
   
 }
 
+// MARK: - Value-Appending
+
 extension xpc_object_t {
   
   @inlinable @inline(__always)
@@ -125,3 +131,33 @@ extension xpc_object_t {
   }
   
 }
+
+// MARK: - Decoding Support
+
+extension xpc_object_t {
+  
+  @inlinable @inline(__always)
+  func decodeNil(at codingPath: [CodingKey]) -> Bool {
+    isNull
+  }
+  
+  @usableFromInline
+  func decodeNil(
+    at codingPath: [CodingKey],
+    forKey key: any CodingKey
+  ) -> Bool {
+    let possibleValue = key.stringValue.withCString { cString in
+      xpc_dictionary_get_value(self, cString)
+    }
+    guard
+      let value = possibleValue,
+      value.hasType(XPC_TYPE_NULL)
+    else {
+      return false
+    }
+    
+    return true
+  }
+  
+}
+

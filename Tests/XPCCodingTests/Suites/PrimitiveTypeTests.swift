@@ -1,8 +1,3 @@
-// Tests/XPCCodingTests/Suites/PrimitiveTypeTests.swift
-// Comprehensive tests for primitive type encoding/decoding
-//
-// Licensed under Apache License v2.0 with Runtime Library Exception
-
 import Testing
 import Foundation
 import XPC
@@ -16,103 +11,193 @@ struct PrimitiveTypeTests {
 
   // MARK: - Ints
   
-  @Test(arguments: Int8.exampleValues)
-  func `Int8 round-trip`(probe: Int8) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Int8 round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in Int8.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
   
-  @Test(arguments: Int16.exampleValues)
-  func `Int16 round-trip`(probe: Int16) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Int16 round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in Int16.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
   
-  @Test(arguments: Int32.exampleValues)
-  func `Int32 round-trip`(probe: Int32) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Int32 round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in Int32.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
   
-  @Test(arguments: Int64.exampleValues)
-  func `Int64 round-trip`(probe: Int64) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Int64 round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in Int64.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
   
-  @Test(arguments: Int128.exampleValues)
-  func `Int128 round-trip`(probe: Int128) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Int128 round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in Int128.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
   
-  @Test(arguments: Int.exampleValues)
-  func `Int round-trip`(probe: Int) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Int round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in Int.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
 
   // MARK: - UInts
   
-  @Test(arguments: UInt8.exampleValues)
-  func `UInt8 round-trip`(probe: UInt8) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `UInt8 round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in UInt8.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
 
-  @Test(arguments: UInt16.exampleValues)
-  func `UInt16 round-trip`(probe: UInt16) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `UInt16 round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in UInt16.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
 
-  @Test(arguments: UInt32.exampleValues)
-  func `UInt32 round-trip`(probe: UInt32) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `UInt32 round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in UInt32.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
 
-  @Test(arguments: UInt64.exampleValues)
-  func `UInt64 round-trip`(probe: UInt64) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `UInt64 round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in UInt64.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
 
-  @Test(arguments: UInt128.exampleValues)
-  func `UInt128 round-trip`(probe: UInt128) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `UInt128 round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in UInt128.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
 
-  @Test(arguments: UInt.exampleValues)
-  func `UInt round-trip`(probe: UInt) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `UInt round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in UInt.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
   
   // MARK: - Floating-Point
 
-  @Test(arguments: Float16.exampleValues)
-  func `Float16 round-trip`(probe: Float16) throws {
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Float16 round-trip`(configuration: XPCCodec.Configuration) throws {
     // need `equivalentFloats` to detect NaN round-trips
-    try verifyRoundTrip(of: probe) { equivalentFloats($0, $1) }
+    for probe in Float16.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      ) { equivalentFloats($0, $1) }
+    }
   }
 
-  @Test(arguments: Float.exampleValues)
-  func `Float round-trip`(probe: Float) throws {
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Float round-trip`(configuration: XPCCodec.Configuration) throws {
     // need `equivalentFloats` to detect NaN round-trips
-    try verifyRoundTrip(of: probe) { equivalentFloats($0, $1) }
+    for probe in Float.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      ) { equivalentFloats($0, $1) }
+    }
   }
 
-  @Test(arguments: Double.exampleValues)
-  func `Double round-trip`(probe: Double) throws {
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Double round-trip`(configuration: XPCCodec.Configuration) throws {
     // need `equivalentFloats` to detect NaN round-trips
-    try verifyRoundTrip(of: probe) { equivalentFloats($0, $1) }
+    for probe in Double.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      ) { equivalentFloats($0, $1) }
+    }
   }
 
   // MARK: - Others
   
-  @Test(arguments: Bool.exampleValues)
-  func `Bool round-trip`(probe: Bool) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Bool round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in Bool.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
   
-  @Test(arguments: Data.exampleValues)
-  func `Data round-trip`(probe: Data) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `Data round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in Data.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
   
-  @Test(arguments: String.exampleValues)
-  func `String round-trip`(probe: String) throws {
-    try verifyRoundTrip(of: probe)
+  @Test(arguments: XPCCodec.Configuration.allCases)
+  func `String round-trip`(configuration: XPCCodec.Configuration) throws {
+    for probe in String.exampleValues {
+      try verifyRoundTrip(
+        of: probe,
+        configuration: configuration
+      )
+    }
   }
 
 }

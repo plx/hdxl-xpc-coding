@@ -16,4 +16,15 @@ extension CodingKey {
     try stringValue.verifyXPCCompatibility()
   }
   
+  @inlinable
+  internal func withUTF8CString<R>(
+    embeddedNullByteRepresentation: String.EmbeddedNullByteRepresentation,
+    _ closure: (UnsafePointer<CChar>) throws -> R
+  ) rethrows -> R {
+    try stringValue.withUTF8CString(
+      embeddedNullByteRepresentation: embeddedNullByteRepresentation,
+      closure
+    )
+  }
+
 }

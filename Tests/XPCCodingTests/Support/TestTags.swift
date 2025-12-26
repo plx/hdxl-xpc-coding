@@ -1,11 +1,28 @@
-// Tests/XPCCodingTests/Support/TestTags.swift
-// Tag definitions for test filtering
-//
-// Licensed under Apache License v2.0 with Runtime Library Exception
-
 import Testing
 
 extension Tag {
+
+  /// Tests ported over from the original `CodableXPC`.
+  @Tag static var original: Self
+
+  /// Tests exercising behavior under concurrency.
+  @Tag static var concurrency: Self
+
+  /// Tests relating to strings.
+  @Tag static var strings: Self
+
+  /// Tests relating to dates.
+  @Tag static var dates: Self
+
+  /// Tests relating to decimals.
+  @Tag static var decimals: Self
+
+  /// Tests relating to urls.
+  @Tag static var urls: Self
+
+  /// Tests relating to UUIDs.
+  @Tag static var uuids: Self
+
   /// Tests for encoding operations
   @Tag static var encoding: Self
 

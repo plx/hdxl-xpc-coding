@@ -173,34 +173,6 @@ extension Data: XPCObjectExtractable {
   
 }
 
-// MARK: - String Conformance
-
-extension String: XPCObjectExtractable {
-
-  @usableFromInline
-  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_STRING }
-
-  @usableFromInline
-  static func extracting(from object: xpc_object_t) -> Self? {
-    guard object.hasType(associatedXPCObjectType) else {
-      return nil
-    }
-    let length = xpc_string_get_length(object)
-    guard length > 0 else {
-      return Self()
-    }
-    guard let unsafeStringPtr = xpc_string_get_string_ptr(object) else {
-      return nil
-    }
-    
-    return String(
-      cString: unsafeStringPtr,
-      encoding: .utf8
-    )
-  }
-
-}
-
 // MARK: - Bool Conformance
 
 extension Bool: XPCObjectExtractable {

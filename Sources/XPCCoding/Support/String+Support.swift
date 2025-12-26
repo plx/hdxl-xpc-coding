@@ -18,6 +18,17 @@ extension String {
   internal var containsNullBytes: Bool {
     utf8.contains(0)
   }
+
+  @inlinable
+  internal var nullByteCount: Int {
+    utf8.count { $0 == 0 }
+  }
+
+  @inlinable
+  internal var percentCount: Int {
+    utf8.count { $0 == UTF8.CodeUnit(ascii: "%") }
+  }
+
   
   @inlinable
   internal func verifyXPCCompatibility() throws(XPCObjectCompatibilityError) {
