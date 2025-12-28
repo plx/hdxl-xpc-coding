@@ -38,4 +38,23 @@ public final class XPCEncoder: TopLevelEncoder {
     )
   }
   
+  @inlinable
+  public func withTransientEncoder(_ closure: (any Encoder) throws -> Void) throws -> Output {
+    let encoder = _XPCEncoder(
+      stringKeyStrategy: stringKeyStrategy,
+      stringValueStrategy: stringValueStrategy,
+      codingPath: []
+    )
+    try closure(encoder)
+    guard let result = encoder.topLevelContainer else {
+      throw TransientEncoderError.noEncodingOccurred
+    }
+    return result
+  }
+  
+}
+
+public enum TransientEncoderError: Error {
+  
+  case noEncodingOccurred
 }
