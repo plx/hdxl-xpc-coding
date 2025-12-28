@@ -66,6 +66,13 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   }
   
   @inlinable
+  internal func appendNextXPCValue(_ value: xpc_object_t) throws {
+    try withNextCodingKey { _ in
+      xpc_array_append_value(underlyingMessage, value)
+    }
+  }
+
+  @inlinable
   internal func appendNextLosslesslyConvertibleValue(_ value: some LosslessXPCObjectConvertible) throws {
     try withNextCodingKey { _ in
       underlyingMessage.appendValue(value)
@@ -277,6 +284,57 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
       )
     }
   }
+}
+
+extension XPCUnkeyedEncodingContainer: XPCEnhancedUnkeyedEncodingContainer {
+    
+  @inlinable
+  internal mutating func directlyEncodeXPCData(
+    _ unsafePointer: UnsafeRawPointer?,
+    count: Int
+  ) throws {
+    try appendNextXPCValue(
+      xpc_data_create(
+        unsafePointer,
+        count
+      )
+    )
+  }
+  
+  @inlinable
+  internal mutating func directlyEncodeXPCData(
+    _ unsafePointer: UnsafeMutableRawPointer?,
+    count: Int
+  ) throws {
+    try appendNextXPCValue(
+      xpc_data_create(
+        unsafePointer.map { UnsafeRawPointer($0) },
+        count
+      )
+    )
+  }
+  
+  @inlinable
+  internal mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeRawBufferPointer) throws {
+    try appendNextXPCValue(
+      xpc_data_create(
+        unsafeBufferPointer.baseAddress,
+        unsafeBufferPointer.count
+      )
+    )
+  }
+  
+  @inlinable
+  internal mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeMutableRawBufferPointer) throws {
+    try appendNextXPCValue(
+      xpc_data_create(
+        unsafeBufferPointer.baseAddress.map { UnsafeRawPointer($0) },
+        unsafeBufferPointer.count
+      )
+    )
+  }
+
+  
 }
 
 // This is used for encoding super classes, we don't know yet what kind of

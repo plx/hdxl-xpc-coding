@@ -29,4 +29,3 @@ In any case, this project doesn't *quite* have a single consistent style at this
 - the test package also contains a large amount of miscellaneous code in mixed styles:
   - two inventories of "test types" (one from the original, one mostly agent-generated with light hand-editing)
   - multiple groups of "test helpers" (some of which are unmodified from the original, some of which are "hdxlified")
-
