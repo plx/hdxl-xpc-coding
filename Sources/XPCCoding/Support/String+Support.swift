@@ -1,0 +1,32 @@
+import Foundation
+import XPC
+
+// auxiliary helper (no specific item)
+// put this in a new file inside `XPCCoding` (`Support/String+Support.swift`)
+extension String {
+  
+  /// `true` iff this string can be used by xpc *without* truncation.
+  ///
+  /// Essentially this is just checking for null-bytes inside the body of `self`.
+  @inlinable
+  internal var isLosslesslyRepresentableAsXPCStringObject: Bool {
+    !containsNullBytes
+    // ^ may need further expansion if we discover other problematic content
+  }
+  
+  @inlinable
+  internal var containsNullBytes: Bool {
+    utf8.contains(0)
+  }
+
+  @inlinable
+  internal var nullByteCount: Int {
+    utf8.count { $0 == 0 }
+  }
+
+  @inlinable
+  internal var percentCount: Int {
+    utf8.count { $0 == UTF8.CodeUnit(ascii: "%") }
+  }
+  
+}

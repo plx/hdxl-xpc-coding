@@ -1,6 +1,15 @@
 import Foundation
 import XPC
 
+// MARK: XPCObjectExtractable
+
+/// Protocol for types that can be extracted-from an `xpc_object_t`.
+///
+/// Expected to be a round-trip for types that also conform to either ``XPCObjectConvertible``
+/// or ``LosslessXPCObjectConvertible`` (at least for values that *are* xpc-compatible).
+///
+/// - SeeAlso: ``XPCObjectConvertible``
+/// - SeeAlso: ``LosslessXPCObjectConvertible``
 @usableFromInline
 internal protocol XPCObjectExtractable {
   
@@ -9,6 +18,39 @@ internal protocol XPCObjectExtractable {
   
 }
 
+// MARK: - XPCBinaryDataRepresentationConvertible Interop
+
+extension XPCObjectExtractable where Self: XPCBinaryDataRepresentationConvertible {
+  
+  @usableFromInline
+  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DATA }
+  
+  @usableFromInline
+  static func extracting(from object: xpc_object_t) -> Self? {
+    guard object.hasType(associatedXPCObjectType) else {
+      return nil
+    }
+    let length = xpc_data_get_length(object)
+    guard MemoryLayout<Self>.size == length else {
+      return nil
+    }
+    
+    guard let unsafeBaseAddress = xpc_data_get_bytes_ptr(object) else {
+      return nil
+    }
+    
+    return Self(
+      unsafeXPCBinaryDataRepresentationRawBufferPointer: UnsafeRawBufferPointer(
+        start: unsafeBaseAddress,
+        count: length
+      )
+    )
+  }
+  
+}
+
+// MARK: - Double Conformance
+
 extension Double: XPCObjectExtractable {
 
   @usableFromInline
@@ -16,13 +58,15 @@ extension Double: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
     return xpc_double_get_value(object)
   }
   
 }
+
+// MARK: - Int64 Conformance
 
 extension Int64: XPCObjectExtractable {
 
@@ -31,13 +75,15 @@ extension Int64: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
     return xpc_int64_get_value(object)
   }
   
 }
+
+// MARK: - UInt64 Conformance
 
 extension UInt64: XPCObjectExtractable {
   
@@ -46,13 +92,15 @@ extension UInt64: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
     return xpc_uint64_get_value(object)
   }
   
 }
+
+// MARK: - Int Conformance
 
 extension Int: XPCObjectExtractable {
 
@@ -69,6 +117,8 @@ extension Int: XPCObjectExtractable {
 
 }
 
+// MARK: - UInt Conformance
+
 extension UInt: XPCObjectExtractable {
   
   @usableFromInline
@@ -84,6 +134,8 @@ extension UInt: XPCObjectExtractable {
   
 }
 
+// MARK: - Data Conformance
+
 extension Data: XPCObjectExtractable {
   
   @usableFromInline
@@ -91,7 +143,7 @@ extension Data: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
     let length = xpc_data_get_length(object)
@@ -121,31 +173,7 @@ extension Data: XPCObjectExtractable {
   
 }
 
-extension String: XPCObjectExtractable {
-
-  @usableFromInline
-  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_STRING }
-
-  @usableFromInline
-  static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
-      return nil
-    }
-    let length = xpc_string_get_length(object)
-    guard length > 0 else {
-      return Self()
-    }
-    guard let unsafeStringPtr = xpc_string_get_string_ptr(object) else {
-      return nil
-    }
-    
-    return String(
-      cString: unsafeStringPtr,
-      encoding: .utf8
-    )
-  }
-
-}
+// MARK: - Bool Conformance
 
 extension Bool: XPCObjectExtractable {
   
@@ -154,43 +182,16 @@ extension Bool: XPCObjectExtractable {
 
   @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
+    guard object.hasType(associatedXPCObjectType) else {
       return nil
     }
-    
     return xpc_bool_get_value(object)
   }
   
 }
 
-extension XPCObjectExtractable where Self: XPCBinaryDataRepresentationConvertible {
-  
-  @usableFromInline
-  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DATA }
-  
-  @usableFromInline
-  static func extracting(from object: xpc_object_t) -> Self? {
-    guard xpc_get_type(object) == associatedXPCObjectType else {
-      return nil
-    }
-    let length = xpc_data_get_length(object)
-    guard MemoryLayout<Self>.size == length else {
-      return nil
-    }
-    
-    guard let unsafeBaseAddress = xpc_data_get_bytes_ptr(object) else {
-      return nil
-    }
-    
-    return Self(
-      unsafeXPCBinaryDataRepresentationRawBufferPointer: UnsafeRawBufferPointer(
-        start: unsafeBaseAddress,
-        count: length
-      )
-    )
-  }
-  
-}
+
+// MARK: - Synthesized Conformances
 
 extension Int8: XPCObjectExtractable { }
 extension Int16: XPCObjectExtractable { }

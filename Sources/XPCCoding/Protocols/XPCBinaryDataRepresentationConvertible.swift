@@ -1,16 +1,30 @@
 import Foundation
 
+// MARK: XPCBinaryDataRepresentationConvertible
+
+/// Protocol for types that can be converted to a binary-data representation.
+///
+/// - Note: this exists to encode/decode types like `Int16` (etc.) as binary data, rather than as an Int64.
+/// - TBD: if we should actually use this as widely (vs, say, just embedding them in the larger ints, where applicable).
+/// - TODO: setup a dedicated error type, since there's really just one type of error we expect to see (length mismatches)
 @usableFromInline
 protocol XPCBinaryDataRepresentationConvertible: BitwiseCopyable {
   
+  /// Provides access to a raw buffer pointer our binary data representation.
+  ///
+  /// - Note: this is the primary API method to avoid *needing* to create a `Data` just to encode a value like an `Int8`.
   func withUnsafeXPCBinaryDataRepresentationRawBufferPointer<R>(_ closure: (UnsafeRawBufferPointer) throws -> R) rethrows -> R
+  
+  /// Constructs a value from a raw buffer pointer pointing-to our binary-data representation.
   init?(unsafeXPCBinaryDataRepresentationRawBufferPointer unsafeRawBufferPointer: UnsafeRawBufferPointer)
 }
+
+// MARK: - Defaults
 
 extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
   
   @inlinable
-  func withUnsafeXPCBinaryDataRepresentationRawBufferPointer<R>(_ closure: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
+  internal func withUnsafeXPCBinaryDataRepresentationRawBufferPointer<R>(_ closure: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
     try withUnsafePointer(to: self) { pointerToSelf in
       try closure(
         UnsafeRawBufferPointer(
@@ -21,16 +35,6 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
     }
   }
   
-  @inlinable
-  internal var xpcBinaryDataRepresentation: Data {
-    withUnsafePointer(to: self) { pointerToSelf in
-      Data(
-        bytes: pointerToSelf,
-        count: MemoryLayout<Self>.size
-      )
-    }
-  }
-
   @inlinable
   internal init?(unsafeXPCBinaryDataRepresentationRawBufferPointer unsafeRawBufferPointer: UnsafeRawBufferPointer) {
     guard
@@ -61,6 +65,26 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
   }
   
 }
+
+// MARK: - Conveniences
+
+extension XPCBinaryDataRepresentationConvertible {
+
+  /// Convenience to provide a `Data` holding our binary-data representation.
+  @inlinable
+  internal var xpcBinaryDataRepresentation: Data {
+    withUnsafePointer(to: self) { pointerToSelf in
+      Data(
+        bytes: pointerToSelf,
+        count: MemoryLayout<Self>.size
+      )
+    }
+  }
+  
+
+}
+
+// MARK: - Synthesized Conformances
 
 extension Int8: XPCBinaryDataRepresentationConvertible { }
 extension Int16: XPCBinaryDataRepresentationConvertible { }
