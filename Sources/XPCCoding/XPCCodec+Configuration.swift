@@ -3,11 +3,24 @@ import Foundation
 
 extension XPCCodec {
 
+  /// Configuration options for an ``XPCCodec``.
+  ///
+  /// Controls how the encoder and decoder handle strings that may contain embedded null bytes.
+  /// Since XPC only supports C-style null-terminated strings, Swift strings containing null bytes
+  /// require special handling to avoid truncation during encoding.
   public struct Configuration {
-    
+
+    /// The strategy for handling embedded null bytes in string keys.
     public var stringKeyStrategy: StringKeyStrategy
+
+    /// The strategy for handling embedded null bytes in string values.
     public var stringValueStrategy: StringValueStrategy
-    
+
+    /// Creates a new configuration with the specified strategies.
+    ///
+    /// - Parameters:
+    ///   - stringKeyStrategy: The strategy for handling null bytes in string keys.
+    ///   - stringValueStrategy: The strategy for handling null bytes in string values.
     public init(
       stringKeyStrategy: StringKeyStrategy,
       stringValueStrategy: StringValueStrategy
@@ -15,7 +28,7 @@ extension XPCCodec {
       self.stringKeyStrategy = stringKeyStrategy
       self.stringValueStrategy = stringValueStrategy
     }
-    
+
   }
 
 }

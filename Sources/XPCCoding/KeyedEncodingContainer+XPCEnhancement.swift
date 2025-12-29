@@ -1,9 +1,18 @@
 import Foundation
 
 extension KeyedEncodingContainer {
-  
+
   // MARK: - Data Elements
-  
+
+  /// Efficiently encodes raw binary data directly as XPC data for the given key.
+  ///
+  /// When used with ``XPCEncoder``, this method bypasses the standard `Data` encoding
+  /// path and directly creates an `xpc_data_t` object from the raw bytes.
+  ///
+  /// - Parameters:
+  ///   - unsafeRawPointer: A pointer to the raw bytes to encode, or `nil` for empty data.
+  ///   - count: The number of bytes to encode.
+  ///   - key: The key to associate the data with.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawPointer: UnsafeRawPointer?,
@@ -19,6 +28,15 @@ extension KeyedEncodingContainer {
     )
   }
 
+  /// Efficiently encodes raw binary data directly as XPC data for the given key.
+  ///
+  /// When used with ``XPCEncoder``, this method bypasses the standard `Data` encoding
+  /// path and directly creates an `xpc_data_t` object from the raw bytes.
+  ///
+  /// - Parameters:
+  ///   - unsafeMutableRawPointer: A pointer to the raw bytes to encode, or `nil` for empty data.
+  ///   - count: The number of bytes to encode.
+  ///   - key: The key to associate the data with.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawPointer: UnsafeMutableRawPointer?,
@@ -34,6 +52,14 @@ extension KeyedEncodingContainer {
     )
   }
 
+  /// Efficiently encodes raw binary data directly as XPC data for the given key.
+  ///
+  /// When used with ``XPCEncoder``, this method bypasses the standard `Data` encoding
+  /// path and directly creates an `xpc_data_t` object from the raw bytes.
+  ///
+  /// - Parameters:
+  ///   - unsafeRawBufferPointer: A buffer pointer to the raw bytes to encode.
+  ///   - key: The key to associate the data with.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawBufferPointer: UnsafeRawBufferPointer,
@@ -45,6 +71,14 @@ extension KeyedEncodingContainer {
     )
   }
 
+  /// Efficiently encodes raw binary data directly as XPC data for the given key.
+  ///
+  /// When used with ``XPCEncoder``, this method bypasses the standard `Data` encoding
+  /// path and directly creates an `xpc_data_t` object from the raw bytes.
+  ///
+  /// - Parameters:
+  ///   - unsafeMutableRawBufferPointer: A buffer pointer to the raw bytes to encode.
+  ///   - key: The key to associate the data with.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawBufferPointer: UnsafeMutableRawBufferPointer,
@@ -55,9 +89,15 @@ extension KeyedEncodingContainer {
       forKey: key
     )
   }
-  
+
   // MARK: - Element Buffers
 
+  /// Efficiently encodes a buffer of elements as a nested unkeyed container for the given key.
+  ///
+  /// - Parameters:
+  ///   - unsafePointer: A pointer to the elements to encode, or `nil` for an empty array.
+  ///   - count: The number of elements to encode.
+  ///   - key: The key to associate the array with.
   @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafePointer: UnsafePointer<T>?,
@@ -70,7 +110,13 @@ extension KeyedEncodingContainer {
       count: count
     )
   }
-  
+
+  /// Efficiently encodes a buffer of elements as a nested unkeyed container for the given key.
+  ///
+  /// - Parameters:
+  ///   - unsafeMutablePointer: A pointer to the elements to encode, or `nil` for an empty array.
+  ///   - count: The number of elements to encode.
+  ///   - key: The key to associate the array with.
   @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeMutablePointer: UnsafeMutablePointer<T>?,
@@ -83,7 +129,12 @@ extension KeyedEncodingContainer {
       count: count
     )
   }
-  
+
+  /// Efficiently encodes a buffer of elements as a nested unkeyed container for the given key.
+  ///
+  /// - Parameters:
+  ///   - unsafeBufferPointer: A buffer pointer to the elements to encode.
+  ///   - key: The key to associate the array with.
   @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeBufferPointer: UnsafeBufferPointer<T>,
@@ -92,7 +143,12 @@ extension KeyedEncodingContainer {
     var container = nestedUnkeyedContainer(forKey: key)
     try container.efficientlyEncodeElements(unsafeBufferPointer)
   }
-  
+
+  /// Efficiently encodes a buffer of elements as a nested unkeyed container for the given key.
+  ///
+  /// - Parameters:
+  ///   - unsafeMutableBufferPointer: A buffer pointer to the elements to encode.
+  ///   - key: The key to associate the array with.
   @inlinable
   public mutating func efficientlyEncodeBinaryData<T: Encodable>(
     _ unsafeMutableBufferPointer: UnsafeMutableBufferPointer<T>,
