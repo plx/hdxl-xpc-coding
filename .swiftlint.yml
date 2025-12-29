@@ -1,0 +1,89 @@
+disabled_rules:
+  - line_length # handled by swift-format
+  - trailing_comma # handled by swift-format
+  - trailing_newline # handled by swift-format
+  - trailing_whitespace # handled by swift-format
+  - opening_brace # handled by swift-format
+  - vertical_whitespace # handled by swift-format
+  - statement_position # handled by swift-format
+  - type_body_length # disagree
+  - unneeded_synthesized_initializer # dubious when you need inlinability
+  - todo # disagree this even deserves a warning (under normal use)
+  - implicit_optional_initialization # dislike Swift's default behavior
+  - large_tuple
+  - for_where
+  - function_body_length # too sensitive for some macros and not worth re-configuring here
+  - function_parameter_count # too sensitive for some macro code, not worth doing on a file-by-file basis
+  - file_length # files should be short, but don't like this limit and not going to do granular re-configuration here
+
+opt_in_rules:
+  - array_init # Array(seq) instead of seq.map { $0 }
+  - closure_end_indentation
+  - closure_spacing
+  - collection_alignment
+  - comma_inheritance
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
+  - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
+  - convenience_type
+  - discouraged_assert
+  - discouraged_none_name
+  - discouraged_object_literal
+  - empty_collection_literal
+  - empty_count
+  - empty_string
+  # - explicit_acl # strongly preferred
+  # - explicit_top_level_acl # strongly preferred
+  - explicit_init
+  - fatal_error_message
+  - file_name_no_space
+  - first_where
+  - flatmap_over_map_reduce
+  - force_unwrapping
+  - identical_operands
+  - implicit_return
+  - implicitly_unwrapped_optional
+  - joined_default_parameter
+  - last_where
+  - reduce_into
+  - redundant_nil_coalescing
+  - redundant_self_in_closure
+  - static_operator
+  - switch_case_on_newline
+  - yoda_condition
+  - untyped_error_in_catch
+  - unowned_variable_capture
+  - unneeded_parentheses_in_closure_argument
+  - unhandled_throwing_task
+  - toggle_bool
+  - sorted_first_last
+  - shorthand_optional_binding
+  - shorthand_argument
+  - self_binding
+  - return_value_from_void_function
+
+excluded:
+  - .build
+  - .swiftpm
+  - .github
+  - .vscode
+
+identifier_name:
+  max_length: 60
+  excluded:
+    - id
+    - op
+    - i
+    - j
+    - a
+    - b
+  allowed_symbols: ["_"]
+
+type_name:
+  min_length: 4
+  max_length: 60
+  excluded:
+    - ID
+    - Key
+  allowed_symbols: ["_"]
