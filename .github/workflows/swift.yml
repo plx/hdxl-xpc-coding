@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-15]
+        os: [macos-26]
         xcode: ['26.0.1']
 
     steps:
@@ -33,7 +33,7 @@ jobs:
           ${{ runner.os }}-xcode-${{ matrix.xcode }}-spm-
 
     - name: Build
-      run: swift build -v
+      run: swift build -q
 
     - name: Run tests
-      run: swift test -v
+      run: swift test -q
