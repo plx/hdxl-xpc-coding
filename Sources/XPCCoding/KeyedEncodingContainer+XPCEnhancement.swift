@@ -2,6 +2,21 @@ import Foundation
 
 extension KeyedEncodingContainer {
   
+  // MARK: - Inline Arrays
+  
+  @inlinable
+  public mutating func efficientlyEncodeBinaryData<let N: Int>(
+    _ inlineArray: InlineArray<N, UInt8>,
+    forKey key: Key
+  ) throws {
+    try inlineArray.span.withUnsafeBytes { unsafeBytes in
+      try efficientlyEncodeBinaryData(
+        unsafeBytes,
+        forKey: key
+      )
+    }
+  }
+  
   // MARK: - Data Elements
   
   @inlinable
@@ -265,3 +280,4 @@ internal struct UnsafeMutableRawBufferPointerShim: Encodable {
   }
   
 }
+
