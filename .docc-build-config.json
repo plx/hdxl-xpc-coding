@@ -1,0 +1,9 @@
+{
+  "exclude": [
+    "swift-syntax",
+    "swift-docc-plugin"
+  ],
+  "targets": [
+    "XPCCoding"
+  ]
+}

@@ -1,4 +1,6 @@
+import Foundation
 import XPC
+import Combine
 
 /// A facade that simplifies obtaining mutually-compatible ``XPCEncoder`` and ``XPCDecoder`` instances.
 ///
@@ -60,7 +62,7 @@ public struct XPCCodec {
 
 }
 
-extension XPCCodec {
+extension XPCCodec: TopLevelEncoder, TopLevelDecoder {
 
   /// Encodes the given value to an `xpc_object_t`.
   ///
