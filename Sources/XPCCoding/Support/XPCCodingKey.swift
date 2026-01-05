@@ -1,5 +1,8 @@
 import XPC
 
+// MARK: XPCCodingKey
+
+/// A `CodingKey` type for use with `XPCCoding`; primarily exists to represent the `super` key.
 @usableFromInline
 internal struct XPCCodingKey: CodingKey {
   @usableFromInline
@@ -26,6 +29,7 @@ internal struct XPCCodingKey: CodingKey {
     self.stringValue = stringValue
   }
   
+  /// The key used to represent the `super` element in an archive.
   @usableFromInline
   internal static let superKey = XPCCodingKey(
     intValue: 0,

@@ -1,19 +1,41 @@
 import Foundation
 import XPC
 
-// MARK: - Extraction Support
+// MARK: XPCStringExtractionError
 
+/// Errors that can occur when extracting a string from an `xpc_object_t`.
 @usableFromInline
 internal enum XPCStringExtractionError: Error {
+
+  /// The xpc object is not of the expected type.
   case typeMismatch(String)
+
+  /// The xpc string object's c string pointer is nil.
   case unexpectedNilCString
+
+  /// We were unable to remove percent escapes from the string.
   case unableToRemovePercentEscapes(String)
+
+  /// We were unable to copy the string content from the xpc data object.
   case unableToCopyStringContent(String)
+
+  /// We were unable to decode the string content from the xpc data object.
   case unableToDecode(String)
 }
 
+// MARK: - Extraction API
 
 extension xpc_object_t {
+
+  /// Generic entrypoint for attempting to extract a value from an `xpc_object_t`.
+  /// 
+  /// - Parameters:
+  ///   - type: The type of value to attempt to extract.
+  ///   - stringValueStrategy: The strategy to use when extracting a string value.
+  /// - Returns: The extracted value, if successful.
+  /// - Note: This method does not throw.
+  /// - Note: this method detects when `T` is `String` and uses the `stringValueStrategy` to extract the string.
+  /// 
   @usableFromInline
   internal func attemptDirectExtraction<T: Decodable>(
     _ type: T.Type,
@@ -33,6 +55,7 @@ extension xpc_object_t {
     return extractedValue
   }
 
+  /// Entry point for string-value extraction. 
   @usableFromInline
   internal func extractStringValue(
     stringValueStrategy: XPCDecoder.StringValueStrategy,
@@ -52,6 +75,7 @@ extension xpc_object_t {
     }
   }
   
+  /// Underlying logic for string extraction from an `xpc_object_t`.
   @usableFromInline
   internal func _extractStringValue(
     stringValueStrategy: XPCDecoder.StringValueStrategy
@@ -121,7 +145,7 @@ extension xpc_object_t {
     }
   }
   
-  
+  /// Extract a value of type `Value` directly from the receiving `xpc_object_t`, reporting errors as having occurred at the given `codingPath`.
   @usableFromInline
   func extractValue<Value>(
     ofType valueType: Value.Type,
@@ -157,6 +181,7 @@ extension xpc_object_t {
     return extractedValue
   }
 
+  /// Extract a value of type `Value` from an `xpc_object_t` at the given `key`, reporting errors as having occurred at the given `codingPath`.
   @usableFromInline
   func extractValue<Value>(
     ofType valueType: Value.Type,
@@ -200,6 +225,7 @@ extension xpc_object_t {
     )
   }
 
+  /// Extract a `String` from an `xpc_object_t` at the given `key`, reporting errors as having occurred at the given `codingPath`.
   @usableFromInline
   func extractString(
     at codingPath: [any CodingKey],

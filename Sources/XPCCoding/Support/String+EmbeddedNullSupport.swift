@@ -1,80 +1,47 @@
 import Foundation
 import XPC
 
-// auxiliary helper (no specific item)
-// put this in a new file inside `XPCCoding` (`Support/String+Support.swift`)
 extension String {
 
+  /// Represents the way we want to handle embedded null bytes.
   @usableFromInline
   enum EmbeddedNullByteRepresentation {
+    /// Ignore the possibility of embedded null bytes.
     case passthrough
+
+    /// Expect to percent-escape (or percent-unescape) to handle null bytes.
     case percentEscaped
   }
-  
-  @usableFromInline
-  enum StringKeyUsageError: Error {
-    case nullBytesDetected(String)
-  }
-//
-//  @usableFromInline
-//  internal func withUTF8CString<R>(
-//    stringKeyStrategy: XPCCodec.StringKeyStrategy,
-//    _ closure: (UnsafePointer<CChar>) throws -> R
-//  ) throws -> R {
-//    switch stringKeyStrategy {
-//    case .assumeAbsent:
-//      return try withCString(closure)
-//    case .throwOnDiscovery:
-//      guard !containsNullBytes else {
-//        throw StringKeyUsageError.nullBytesDetected(self)
-//      }
-//      return try withCString(closure)
-//    case .percentEscape:
-//      switch containsNullBytes {
-//      case true:
-//        return try withStringWithEmbeddedNullBytesPercentEncoded(closure)
-//      case false:
-//        return try withCString(closure)
-//      }
-//    }
-//  }
 
+  /// Access the c-string representation of the string, handling null bytes as per the `stringKeyStrategy`.
+  /// 
+  /// - seealso: `withUTF8CString(embeddedNullByteRepresentation:_:)`
   @usableFromInline
   internal func withUTF8CString<R>(
     stringKeyStrategy: XPCEncoder.StringKeyStrategy,
     _ closure: (UnsafePointer<CChar>) throws -> R
   ) rethrows -> R {
-    switch stringKeyStrategy {
-    case .assumeAbsent:
-      return try withCString(closure)
-    case .percentEscape:
-      switch containsNullBytes {
-      case true:
-        return try withStringWithEmbeddedNullBytesPercentEncoded(closure)
-      case false:
-        return try withCString(closure)
-      }
-    }
+    try withUTF8CString(
+      embeddedNullByteRepresentation: stringKeyStrategy.embeddedNullByteRepresentation,
+      closure
+    )
   }
 
+  /// Access the c-string representation of the string, handling null bytes as per the `stringKeyStrategy`.
+  /// 
+  /// - seealso: `withUTF8CString(embeddedNullByteRepresentation:_:)`
   @usableFromInline
   internal func withUTF8CString<R>(
     stringKeyStrategy: XPCDecoder.StringKeyStrategy,
     _ closure: (UnsafePointer<CChar>) throws -> R
-  ) throws -> R {
-    switch stringKeyStrategy {
-    case .passthrough:
-      return try withCString(closure)
-    case .percentEscape:
-      switch containsNullBytes {
-      case true:
-        return try withStringWithEmbeddedNullBytesPercentEncoded(closure)
-      case false:
-        return try withCString(closure)
-      }
-    }
+  ) rethrows -> R {
+    try withUTF8CString(
+      embeddedNullByteRepresentation: stringKeyStrategy.embeddedNullByteRepresentation,
+      closure
+    )
   }
 
+  /// Access the c-string representation of the string, handling null bytes as per the `embeddedNullByteRepresentation`.
   @usableFromInline
   internal func withUTF8CString<R>(
     embeddedNullByteRepresentation: EmbeddedNullByteRepresentation,
@@ -104,7 +71,10 @@ extension String {
   }
 
   @usableFromInline
-  internal init?(cString: UnsafePointer<CChar>, embeddedNullByteRepresentation: EmbeddedNullByteRepresentation) {
+  internal init?(
+    cString: UnsafePointer<CChar>, 
+    embeddedNullByteRepresentation: EmbeddedNullByteRepresentation
+    ) {
     switch embeddedNullByteRepresentation {
     case .passthrough:
       self.init(cString: cString)
@@ -134,46 +104,7 @@ extension String {
     return result
   }
 
-  @usableFromInline
-  internal func withModifiedUTF8CString<R>(
-    expectedNullByteCount: Int,
-    _ closure: (UnsafePointer<CChar>) throws -> R
-  ) rethrows -> R {
-    let utf8 = utf8
-    return try withUnsafeTemporaryAllocation(
-      of: CChar.self,
-      capacity: utf8.count + expectedNullByteCount
-    ) { unsafeMutableBufferPointer in
-      var injectionCount: Int = 0
-      for (index, character) in utf8.enumerated() {
-        let baseIndex = index + injectionCount
-        switch character == .zero {
-        case true:
-          unsafeMutableBufferPointer.initializeElement(
-            at: baseIndex,
-            to: Int8(bitPattern: 0xC0 as UInt8)
-          )
-          unsafeMutableBufferPointer.initializeElement(
-            at: baseIndex + 1,
-            to: Int8(bitPattern: 0x80 as UInt8)
-          )
-          injectionCount += 1
-        case false:
-          unsafeMutableBufferPointer.initializeElement(
-            at: baseIndex,
-            to: Int8(bitPattern: character)
-          )
-        }
-      }
-      
-      guard let baseAddress = unsafeMutableBufferPointer.baseAddress else {
-        fatalError("Couldn't get a base address here!")
-      }
-      
-      return try closure(baseAddress)
-    }
-  }
-  
+
 }
 
 extension CharacterSet {

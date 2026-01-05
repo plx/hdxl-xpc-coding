@@ -1,15 +1,26 @@
 import Foundation
 
-// MARK: StringValueEmbeddedNullByteStrategy
+// MARK: XPCCodec.StringValueDataRepresentation
 
 extension XPCCodec {
 
+  /// Specifies the encoding to use when representing strings as binary data in XPC.
+  ///
+  /// When using the ``StringValueStrategy/useDataRepresentation(_:)`` strategy,
+  /// strings are encoded as binary data rather than as XPC strings. This enumeration
+  /// specifies which Unicode encoding to use for that representation.
   public enum StringValueDataRepresentation {
-    
+
+    /// Encode strings as UTF-8 binary data.
     case utf8
+
+    /// Encode strings as UTF-16 binary data.
     case utf16
+
+    /// Encode strings as UTF-32 binary data.
     case utf32
-    
+
+    /// The `String.Encoding` value corresponding to this data representation.
     @usableFromInline
     internal var stringEncoding: String.Encoding {
       switch self {

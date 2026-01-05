@@ -1,9 +1,10 @@
 import Foundation
 
 extension KeyedEncodingContainer {
-  
+
   // MARK: - Inline Arrays
-  
+
+  /// Convenience to efficiently encode the contents of an inline array as binary data.
   @inlinable
   public mutating func efficientlyEncodeBinaryData<let N: Int>(
     _ inlineArray: InlineArray<N, UInt8>,
@@ -18,7 +19,16 @@ extension KeyedEncodingContainer {
   }
   
   // MARK: - Data Elements
-  
+
+  /// Efficiently encodes raw binary data directly as XPC data for the given key.
+  ///
+  /// When used with ``XPCEncoder``, this method bypasses the standard `Data` encoding
+  /// path and directly creates an `xpc_data_t` object from the raw bytes.
+  ///
+  /// - Parameters:
+  ///   - unsafeRawPointer: A pointer to the raw bytes to encode, or `nil` for empty data.
+  ///   - count: The number of bytes to encode.
+  ///   - key: The key to associate the data with.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawPointer: UnsafeRawPointer?,
@@ -34,6 +44,15 @@ extension KeyedEncodingContainer {
     )
   }
 
+  /// Efficiently encodes raw binary data directly as XPC data for the given key.
+  ///
+  /// When used with ``XPCEncoder``, this method bypasses the standard `Data` encoding
+  /// path and directly creates an `xpc_data_t` object from the raw bytes.
+  ///
+  /// - Parameters:
+  ///   - unsafeMutableRawPointer: A pointer to the raw bytes to encode, or `nil` for empty data.
+  ///   - count: The number of bytes to encode.
+  ///   - key: The key to associate the data with.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawPointer: UnsafeMutableRawPointer?,
@@ -49,6 +68,14 @@ extension KeyedEncodingContainer {
     )
   }
 
+  /// Efficiently encodes raw binary data directly as XPC data for the given key.
+  ///
+  /// When used with ``XPCEncoder``, this method bypasses the standard `Data` encoding
+  /// path and directly creates an `xpc_data_t` object from the raw bytes.
+  ///
+  /// - Parameters:
+  ///   - unsafeRawBufferPointer: A buffer pointer to the raw bytes to encode.
+  ///   - key: The key to associate the data with.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawBufferPointer: UnsafeRawBufferPointer,
@@ -60,6 +87,14 @@ extension KeyedEncodingContainer {
     )
   }
 
+  /// Efficiently encodes raw binary data directly as XPC data for the given key.
+  ///
+  /// When used with ``XPCEncoder``, this method bypasses the standard `Data` encoding
+  /// path and directly creates an `xpc_data_t` object from the raw bytes.
+  ///
+  /// - Parameters:
+  ///   - unsafeMutableRawBufferPointer: A buffer pointer to the raw bytes to encode.
+  ///   - key: The key to associate the data with.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawBufferPointer: UnsafeMutableRawBufferPointer,
@@ -70,9 +105,15 @@ extension KeyedEncodingContainer {
       forKey: key
     )
   }
-  
+
   // MARK: - Element Buffers
 
+  /// Efficiently encodes a buffer of elements as a nested unkeyed container for the given key.
+  ///
+  /// - Parameters:
+  ///   - unsafePointer: A pointer to the elements to encode, or `nil` for an empty array.
+  ///   - count: The number of elements to encode.
+  ///   - key: The key to associate the array with.
   @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafePointer: UnsafePointer<T>?,
@@ -85,7 +126,13 @@ extension KeyedEncodingContainer {
       count: count
     )
   }
-  
+
+  /// Efficiently encodes a buffer of elements as a nested unkeyed container for the given key.
+  ///
+  /// - Parameters:
+  ///   - unsafeMutablePointer: A pointer to the elements to encode, or `nil` for an empty array.
+  ///   - count: The number of elements to encode.
+  ///   - key: The key to associate the array with.
   @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeMutablePointer: UnsafeMutablePointer<T>?,
@@ -98,7 +145,12 @@ extension KeyedEncodingContainer {
       count: count
     )
   }
-  
+
+  /// Efficiently encodes a buffer of elements as a nested unkeyed container for the given key.
+  ///
+  /// - Parameters:
+  ///   - unsafeBufferPointer: A buffer pointer to the elements to encode.
+  ///   - key: The key to associate the array with.
   @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeBufferPointer: UnsafeBufferPointer<T>,
@@ -107,7 +159,12 @@ extension KeyedEncodingContainer {
     var container = nestedUnkeyedContainer(forKey: key)
     try container.efficientlyEncodeElements(unsafeBufferPointer)
   }
-  
+
+  /// Efficiently encodes a buffer of elements as a nested unkeyed container for the given key.
+  ///
+  /// - Parameters:
+  ///   - unsafeMutableBufferPointer: A buffer pointer to the elements to encode.
+  ///   - key: The key to associate the array with.
   @inlinable
   public mutating func efficientlyEncodeBinaryData<T: Encodable>(
     _ unsafeMutableBufferPointer: UnsafeMutableBufferPointer<T>,
@@ -121,6 +178,23 @@ extension KeyedEncodingContainer {
 
 // MARK: - UnsafeRawPointerShim
 
+/// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
+/// 
+/// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
+/// 
+/// - unkeyed and snigle-value containers get used directly when encoding data
+/// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
+/// 
+/// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
+/// instead, the best we can do is:
+/// 
+/// - use a wrapper type as our encoded value
+/// - have the wrapper type use a single-value encoding container from its encoder
+/// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
+/// 
+/// - SeeAlso: ``UnsafeMutableRawPointerShim``
+/// - SeeAlso: ``UnsafeRawBufferPointerShim``
+/// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
 @usableFromInline
 internal struct UnsafeRawPointerShim: Encodable {
   
@@ -165,6 +239,23 @@ internal struct UnsafeRawPointerShim: Encodable {
 
 // MARK: - UnsafeMutableRawPointerShim
 
+/// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
+/// 
+/// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
+/// 
+/// - unkeyed and snigle-value containers get used directly when encoding data
+/// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
+/// 
+/// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
+/// instead, the best we can do is:
+/// 
+/// - use a wrapper type as our encoded value
+/// - have the wrapper type use a single-value encoding container from its encoder
+/// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
+/// 
+/// - SeeAlso: ``UnsafeRawPointerShim``
+/// - SeeAlso: ``UnsafeRawBufferPointerShim``
+/// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
 @usableFromInline
 internal struct UnsafeMutableRawPointerShim: Encodable {
   
@@ -209,6 +300,23 @@ internal struct UnsafeMutableRawPointerShim: Encodable {
 
 // MARK: - UnsafeRawBufferPointerShim
 
+/// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
+/// 
+/// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
+/// 
+/// - unkeyed and snigle-value containers get used directly when encoding data
+/// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
+/// 
+/// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
+/// instead, the best we can do is:
+/// 
+/// - use a wrapper type as our encoded value
+/// - have the wrapper type use a single-value encoding container from its encoder
+/// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
+/// 
+/// - SeeAlso: ``UnsafeRawPointerShim``
+/// - SeeAlso: ``UnsafeMutableRawPointerShim``
+/// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
 @usableFromInline
 internal struct UnsafeRawBufferPointerShim: Encodable {
   
@@ -246,6 +354,23 @@ internal struct UnsafeRawBufferPointerShim: Encodable {
 
 // MARK: - UnsafeMutableRawBufferPointerShim
 
+/// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
+/// 
+/// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
+/// 
+/// - unkeyed and snigle-value containers get used directly when encoding data
+/// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
+/// 
+/// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
+/// instead, the best we can do is:
+/// 
+/// - use a wrapper type as our encoded value
+/// - have the wrapper type use a single-value encoding container from its encoder
+/// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
+/// 
+/// - SeeAlso: ``UnsafeRawPointerShim``
+/// - SeeAlso: ``UnsafeMutableRawPointerShim``
+/// - SeeAlso: ``UnsafeRawBufferPointerShim``
 @usableFromInline
 internal struct UnsafeMutableRawBufferPointerShim: Encodable {
   

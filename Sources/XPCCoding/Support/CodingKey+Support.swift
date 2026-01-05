@@ -11,6 +11,7 @@ extension CodingKey {
     stringValue.isLosslesslyRepresentableAsXPCStringObject
   }
   
+  /// Access the UTF-8 representation of `self.stringValue` as a null-terminated C string, using the given `embeddedNullByteRepresentation`.
   @inlinable
   internal func withUTF8CString<R>(
     embeddedNullByteRepresentation: String.EmbeddedNullByteRepresentation,
@@ -22,4 +23,27 @@ extension CodingKey {
     )
   }
 
+  /// Access the UTF-8 representation of `self.stringValue` as a null-terminated C string, using the given `stringKeyStrategy`.
+  @inlinable
+  internal func withUTF8CString<R>(
+    stringKeyStrategy: XPCEncoder.StringKeyStrategy,
+    _ closure: (UnsafePointer<CChar>) throws -> R
+  ) rethrows -> R {
+    try withUTF8CString(
+      embeddedNullByteRepresentation: stringKeyStrategy.embeddedNullByteRepresentation,
+      closure
+    )
+  }
+
+  /// Access the UTF-8 representation of `self.stringValue` as a null-terminated C string, using the given `stringKeyStrategy`.
+  @inlinable
+  internal func withUTF8CString<R>(
+    stringKeyStrategy: XPCDecoder.StringKeyStrategy,
+    _ closure: (UnsafePointer<CChar>) throws -> R
+  ) rethrows -> R {
+    try withUTF8CString(
+      embeddedNullByteRepresentation: stringKeyStrategy.embeddedNullByteRepresentation,
+      closure
+    )
+  }
 }

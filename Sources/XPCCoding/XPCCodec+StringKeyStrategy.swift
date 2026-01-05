@@ -3,7 +3,7 @@
 
 extension XPCCodec {
 
-  /// Used to control how the XPC coders should handle strings with embedded null bytes.
+  /// Used to control how the XPC coders should handle *string keys* with embedded null bytes.
   ///
   /// The motivating issue is a mismatch between string representations at the Swift level
   /// and the string representations used by XPC:

@@ -1,5 +1,6 @@
 import XPC
 
+/// The internal `_XPCDecoder` implementation.
 @usableFromInline
 internal final class _XPCDecoder: Decoder {
 
@@ -9,22 +10,22 @@ internal final class _XPCDecoder: Decoder {
   @usableFromInline
   internal typealias StringValueStrategy = XPCDecoder.StringValueStrategy
 
+  /// The strategy to use for decoding `String` keys.
   @usableFromInline
   internal let stringKeyStrategy: XPCDecoder.StringKeyStrategy
 
+  /// The strategy to use for decoding `String` values.
   @usableFromInline
   internal let stringValueStrategy: XPCDecoder.StringValueStrategy
 
+  /// The underlying XPC message.
   @usableFromInline
   internal let underlyingMessage: xpc_object_t
   
+  /// The current coding path.
   @usableFromInline
-  internal var _codingPath: [CodingKey]
-  
-  @usableFromInline
-  internal var codingPath: [CodingKey] { _codingPath }
-  
-  
+  internal var codingPath: [CodingKey]
+    
   @usableFromInline
   internal var userInfo: [CodingUserInfoKey : Any] = [:]
   
@@ -34,13 +35,17 @@ internal final class _XPCDecoder: Decoder {
     stringValueStrategy: StringValueStrategy,
     decoding message: xpc_object_t,
     at codingPath: [CodingKey] = [],
+    userInfo: [CodingUserInfoKey : Any] = [:]
   ) {
     self.stringKeyStrategy = stringKeyStrategy
     self.stringValueStrategy = stringValueStrategy
     self.underlyingMessage = message
-    self._codingPath = codingPath
+    self.codingPath = codingPath
+    self.userInfo = userInfo
   }
   
+  // MARK: - Decoder
+
   @usableFromInline
   internal func container<Key>(
     keyedBy type: Key.Type
@@ -73,6 +78,8 @@ internal final class _XPCDecoder: Decoder {
   
 }
 
+// MARK: - Support API
+
 extension _XPCDecoder {
 
   @inlinable
@@ -80,22 +87,21 @@ extension _XPCDecoder {
     _ codingPathElement: Key,
     _ closure: ([any CodingKey]) throws -> R
   ) throws -> R where Key: CodingKey {
-    _codingPath.append(codingPathElement)
+    codingPath.append(codingPathElement)
     defer {
 #if DEBUG
-      assert(!_codingPath.isEmpty)
-      let popped = _codingPath.removeLast()
+      assert(!codingPath.isEmpty)
+      let popped = codingPath.removeLast()
       // `CodingKey` isn't `Equatable`, so we instead compare its concrete representations:
       assert(popped.stringValue == codingPathElement.stringValue)
       assert(popped.intValue == codingPathElement.intValue)
 #else
-      _codingPath.removeLast()
+      codingPath.removeLast()
 #endif
     }
-    let codingPath = _codingPath
+    let codingPath = codingPath
     return try closure(codingPath)
   }
   
-
 }
 

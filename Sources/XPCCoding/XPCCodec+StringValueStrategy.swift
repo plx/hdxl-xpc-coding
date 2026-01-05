@@ -1,9 +1,9 @@
 
-// MARK: StringValueEmbeddedNullByteStrategy
+// MARK: XPCCodec.StringValueStrategy
 
 extension XPCCodec {
 
-  /// Used to control how the XPC coders should handle strings with embedded null bytes.
+  /// Used to control how the XPC coders should handle *string values* with embedded null bytes.
   ///
   /// The motivating issue is a mismatch between string representations at the Swift level
   /// and the string representations used by XPC:
@@ -45,15 +45,15 @@ extension XPCCodec {
 
 }
 
-
-
-
 // MARK: - Synthesized Conformances
 
 extension XPCCodec.StringValueStrategy: Sendable { }
 extension XPCCodec.StringValueStrategy: Equatable { }
 extension XPCCodec.StringValueStrategy: Hashable { }
 extension XPCCodec.StringValueStrategy: Codable { }
+
+// MARK: - CaseIterable
+
 extension XPCCodec.StringValueStrategy: CaseIterable {
   
   static public let allCases: [Self] = {

@@ -1,7 +1,9 @@
+import Foundation
 import XPC
 
 // MARK: XPCSingleValueEncodingContainer
 
+/// Our internal implementation of `SingleValueEncodingContainer`.
 @usableFromInline
 internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   
@@ -10,26 +12,34 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   
   @usableFromInline
   internal typealias StringValueStrategy = XPCEncoder.StringValueStrategy
-  
+
+  /// We always use the encoder's string key strategy.  
   @inlinable @inline(__always)
   internal var stringKeyStrategy: StringKeyStrategy { encoder.stringKeyStrategy }
   
+  /// We always use the encoder's string value strategy.
   @inlinable @inline(__always)
   internal var stringValueStrategy: StringValueStrategy { encoder.stringValueStrategy }
-
-  // MARK: - Properties
-  @usableFromInline
-  internal var codingPath: [CodingKey] {
-    encoder.codingPath
-  }
   
+  /// We always source our codingPath from the encoder.
+  @usableFromInline @inline(__always)
+  internal var codingPath: [CodingKey] { encoder.codingPath } 
+  
+  /// Our parent encoder.
   @usableFromInline
   internal let encoder: _XPCEncoder
   
+  /// The closure we use to insert the encoded value into the parent encoder's XPC object.
   @usableFromInline
   internal let insertionClosure: (xpc_object_t) throws -> ()
   
   // MARK: - Initialization
+
+  /// Initialize a new `XPCSingleValueEncodingContainer`.
+  /// 
+  /// - Parameters:
+  ///   - encoder: The parent encoder.
+  ///   - insertionClosure: The closure we use to insert the encoded value into the parent encoder's XPC object.
   @usableFromInline
   internal init(
     referencing encoder: _XPCEncoder,
@@ -38,18 +48,8 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
     self.encoder = encoder
     self.insertionClosure = insertionClosure
   }
-  
-  // MARK: - SingleValueEncodingContainer protocol methods
 
-  @usableFromInline
-  internal func encodeLosslessXPCObjectConvertible(_ value: some LosslessXPCObjectConvertible) throws {
-    try insertionClosure(value.xpcObjectRepresentation)
-  }
-
-  @usableFromInline
-  internal func encodeStringValue(_ value: String) throws {
-    try insertionClosure(try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy))
-  }
+  // MARK: - SingleValueEncodingContainer 
 
   @inlinable
   internal mutating func encodeNil() throws {
@@ -146,6 +146,24 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
     )
     try insertionClosure(xpcObject)
   }
+}
+
+// MARK: - Support API
+
+extension XPCSingleValueEncodingContainer {
+
+  /// How we encode `LosslessXPCObjectConvertible` values (which cover almost all protocol requirements).
+  @usableFromInline
+  internal func encodeLosslessXPCObjectConvertible(_ value: some LosslessXPCObjectConvertible) throws {
+    try insertionClosure(value.xpcObjectRepresentation)
+  }
+
+  /// Special-case handling of `String` values (in order to support `stringValueStrategy`).
+  @usableFromInline
+  internal func encodeStringValue(_ value: String) throws {
+    try insertionClosure(try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy))
+  }
+
 }
 
 // MARK: - XPCEnhancedSingleValueEncodingContainer
