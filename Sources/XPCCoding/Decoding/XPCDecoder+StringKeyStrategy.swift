@@ -10,13 +10,13 @@ extension XPCDecoder {
 
     /// Decode string keys directly without any transformation.
     ///
-    /// Use this when keys were encoded with ``XPCEncoder.StringKeyStrategy.assumeAbsent``
+    /// Use this when keys were encoded with ``XPCEncoder/StringKeyStrategy/assumeAbsent``
     /// and are known not to contain any encoded null bytes.
     case passthrough
 
     /// Decode percent-encoded null bytes in string keys.
     ///
-    /// Use this when keys were encoded with ``XPCEncoder.stringKeyStrategy.percentEscape``.
+    /// Use this when keys were encoded with ``XPCEncoder/StringKeyStrategy/percentEscape``.
     /// This is the default strategy.
     case percentEscape
   }
