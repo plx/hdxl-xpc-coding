@@ -2,6 +2,22 @@ import Foundation
 
 extension KeyedEncodingContainer {
 
+  // MARK: - Inline Arrays
+
+  /// Convenience to efficiently encode the contents of an inline array as binary data.
+  @inlinable
+  public mutating func efficientlyEncodeBinaryData<let N: Int>(
+    _ inlineArray: InlineArray<N, UInt8>,
+    forKey key: Key
+  ) throws {
+    try inlineArray.span.withUnsafeBytes { unsafeBytes in
+      try efficientlyEncodeBinaryData(
+        unsafeBytes,
+        forKey: key
+      )
+    }
+  }
+  
   // MARK: - Data Elements
 
   /// Efficiently encodes raw binary data directly as XPC data for the given key.
@@ -389,3 +405,4 @@ internal struct UnsafeMutableRawBufferPointerShim: Encodable {
   }
   
 }
+

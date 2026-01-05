@@ -2,6 +2,17 @@ import Foundation
 
 extension SingleValueEncodingContainer {
   
+  @inlinable
+  public mutating func efficientlyEncodeBinaryData<let N: Int>(
+    _ inlineArray: InlineArray<N, UInt8>
+  ) throws {
+    try inlineArray.span.withUnsafeBytes { unsafeBytes in
+      try efficientlyEncodeBinaryData(
+        unsafeBytes
+      )
+    }
+  }
+  
   /// Convenience by-which external types can take advantage of "fewer-copy" XPC APIs without inlining the type-introspection checks at each call site.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
