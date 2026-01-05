@@ -2,11 +2,10 @@ import Foundation
 import XPC
 import Combine
 
-/// A decoder that decodes `Codable` values from `xpc_object_t`.
+/// The entrypoint for *decoding* `Decodable` values from XPC objects.
 ///
-/// `XPCDecoder` conforms to `TopLevelDecoder` and can be used with Combine publishers.
-/// It handles the conversion of XPC types to their Swift equivalents, including special
-/// handling for strings that may have been encoded with null-byte handling strategies.
+/// `XPCDecoder` conforms to `TopLevelDecoder` and provides a direct API for decoding
+/// `xpc_object_t` values into a `Decodable` Swift type.
 ///
 /// ## Usage
 ///
@@ -14,12 +13,6 @@ import Combine
 /// let decoder = XPCDecoder()
 /// let value = try decoder.decode(MyType.self, from: xpcObject)
 /// ```
-///
-/// ## String Handling
-///
-/// The decoder must be configured with strategies compatible with the encoder that
-/// produced the XPC data. Configure this using ``stringKeyStrategy`` and
-/// ``stringValueStrategy``.
 public final class XPCDecoder: TopLevelDecoder {
   public typealias Input = xpc_object_t
 
@@ -57,6 +50,13 @@ public final class XPCDecoder: TopLevelDecoder {
     )
   }
 
+  /// Decodes a value of the given type from the given XPC object.
+  ///
+  /// - Parameters:
+  ///   - type: The type of the value to decode.
+  ///   - input: The XPC object to decode from.
+  /// - Returns: A value of the requested type.
+  /// - Throws: An error if decoding failed.
   @inlinable
   public func decode<T>(
     _ type: T.Type,
@@ -69,6 +69,24 @@ public final class XPCDecoder: TopLevelDecoder {
     )
 
     return try T(from: decoder)
+  }
+
+}
+
+// MARK: - CustomStringConvertible
+
+extension XPCDecoder: CustomStringConvertible {
+  public var description: String {
+    "(string-keys: \(stringKeyStrategy), string-values: \(stringValueStrategy))"
+  }
+}
+
+// MARK: - CustomStringConvertible
+
+extension XPCDecoder: CustomDebugStringConvertible {
+
+  public var debugDescription: String {
+    "XPCDecoder(stringKeyStrategy: \(stringKeyStrategy), stringValueStrategy: \(stringValueStrategy))"
   }
 
 }

@@ -162,6 +162,23 @@ extension KeyedEncodingContainer {
 
 // MARK: - UnsafeRawPointerShim
 
+/// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
+/// 
+/// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
+/// 
+/// - unkeyed and snigle-value containers get used directly when encoding data
+/// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
+/// 
+/// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
+/// instead, the best we can do is:
+/// 
+/// - use a wrapper type as our encoded value
+/// - have the wrapper type use a single-value encoding container from its encoder
+/// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
+/// 
+/// - SeeAlso: ``UnsafeMutableRawPointerShim``
+/// - SeeAlso: ``UnsafeRawBufferPointerShim``
+/// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
 @usableFromInline
 internal struct UnsafeRawPointerShim: Encodable {
   
@@ -206,6 +223,23 @@ internal struct UnsafeRawPointerShim: Encodable {
 
 // MARK: - UnsafeMutableRawPointerShim
 
+/// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
+/// 
+/// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
+/// 
+/// - unkeyed and snigle-value containers get used directly when encoding data
+/// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
+/// 
+/// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
+/// instead, the best we can do is:
+/// 
+/// - use a wrapper type as our encoded value
+/// - have the wrapper type use a single-value encoding container from its encoder
+/// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
+/// 
+/// - SeeAlso: ``UnsafeRawPointerShim``
+/// - SeeAlso: ``UnsafeRawBufferPointerShim``
+/// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
 @usableFromInline
 internal struct UnsafeMutableRawPointerShim: Encodable {
   
@@ -250,6 +284,23 @@ internal struct UnsafeMutableRawPointerShim: Encodable {
 
 // MARK: - UnsafeRawBufferPointerShim
 
+/// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
+/// 
+/// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
+/// 
+/// - unkeyed and snigle-value containers get used directly when encoding data
+/// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
+/// 
+/// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
+/// instead, the best we can do is:
+/// 
+/// - use a wrapper type as our encoded value
+/// - have the wrapper type use a single-value encoding container from its encoder
+/// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
+/// 
+/// - SeeAlso: ``UnsafeRawPointerShim``
+/// - SeeAlso: ``UnsafeMutableRawPointerShim``
+/// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
 @usableFromInline
 internal struct UnsafeRawBufferPointerShim: Encodable {
   
@@ -287,6 +338,23 @@ internal struct UnsafeRawBufferPointerShim: Encodable {
 
 // MARK: - UnsafeMutableRawBufferPointerShim
 
+/// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
+/// 
+/// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
+/// 
+/// - unkeyed and snigle-value containers get used directly when encoding data
+/// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
+/// 
+/// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
+/// instead, the best we can do is:
+/// 
+/// - use a wrapper type as our encoded value
+/// - have the wrapper type use a single-value encoding container from its encoder
+/// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
+/// 
+/// - SeeAlso: ``UnsafeRawPointerShim``
+/// - SeeAlso: ``UnsafeMutableRawPointerShim``
+/// - SeeAlso: ``UnsafeRawBufferPointerShim``
 @usableFromInline
 internal struct UnsafeMutableRawBufferPointerShim: Encodable {
   

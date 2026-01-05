@@ -1,12 +1,11 @@
 import Foundation
 import XPC
 
+// MARK: XPCEncoder.StringValueStrategy
+
 extension XPCEncoder {
 
   /// The strategy for handling embedded null bytes in string values during encoding.
-  ///
-  /// XPC only supports C-style null-terminated strings. This strategy controls how
-  /// the encoder handles Swift strings that contain embedded null bytes.
   public enum StringValueStrategy {
 
     /// Assume no null bytes are present and encode directly.
@@ -38,10 +37,16 @@ extension XPCEncoder {
 
 }
 
+// MARK: - Synthesized Conformances
+
 extension XPCEncoder.StringValueStrategy: Sendable { }
 extension XPCEncoder.StringValueStrategy: Equatable { }
 extension XPCEncoder.StringValueStrategy: Hashable { }
 extension XPCEncoder.StringValueStrategy: Codable { }
+
+
+// MARK: - CaseIterable
+
 extension XPCEncoder.StringValueStrategy: CaseIterable {
   
   static public let allCases: [Self] = {
@@ -56,6 +61,42 @@ extension XPCEncoder.StringValueStrategy: CaseIterable {
   
 }
 
+// MARK: - CustomStringConvertible
+
+extension XPCEncoder.StringValueStrategy: CustomStringConvertible {
+  public var description: String {
+    switch self {
+    case .assumeAbsent:
+      "assume absent"
+    case .throwOnDiscovery:
+      "throw"
+    case .percentEscape:
+      "%-escape"
+    case .useDataRepresentation(let representation):
+      "\(representation)-data"
+    }
+  }
+}
+
+// MARK: - CustomDebugStringConvertible
+
+extension XPCEncoder.StringValueStrategy: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    switch self {
+    case .assumeAbsent:
+      "\(Self.self).assumeAbsent"
+    case .throwOnDiscovery:
+      "\(Self.self).throwOnDiscovery"
+    case .percentEscape:
+      "\(Self.self).percentEscape"
+    case .useDataRepresentation(let representation):
+      "\(Self.self).useDataRepresentation(\(representation))"
+    }
+  }
+}
+
+// MARK: - Well-Known Values
+
 extension XPCEncoder.StringValueStrategy {
 
   /// The standard (default) strategy for encoding string values.
@@ -63,6 +104,8 @@ extension XPCEncoder.StringValueStrategy {
   static let standard: Self = XPCCodec.StringValueStrategy.standard.encodingStrategy
 
 }
+
+// MARK: - From XPCCodec
 
 extension XPCCodec.StringValueStrategy {
   

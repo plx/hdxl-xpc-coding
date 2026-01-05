@@ -35,6 +35,8 @@ public protocol XPCEnhancedUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   
 }
 
+// MARK: - Default Implementations
+
 extension XPCEnhancedUnkeyedEncodingContainer {
   
   // MARK: - Individual Data Elements

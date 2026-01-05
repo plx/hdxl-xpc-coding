@@ -3,6 +3,7 @@ import Foundation
 
 extension xpc_type_t {
   
+  /// Shorthand for `xpc_type_get_name(self)`
   @inlinable @inline(__always)
   internal var typeDescription: String {
     String(cString: xpc_type_get_name(self), encoding: .utf8) ?? "<unknown: \(String(reflecting: self))>"
@@ -10,34 +11,35 @@ extension xpc_type_t {
   
 }
 
-@TaskLocal
-@usableFromInline
-internal var sharedNullObject = xpc_null_create()
-
 // MARK - Typechecks
 
 extension xpc_object_t {
   
+  /// `true` if `self` is of type `xpcType`
   @inlinable @inline(__always)
   internal func hasType(_ xpcType: xpc_type_t) -> Bool {
     xpc_get_type(self) == xpcType
   }
 
+  /// `true` if `self` is `XPC_TYPE_NULL`
   @inlinable @inline(__always)
   internal var isNull: Bool {
     hasType(XPC_TYPE_NULL)
   }
 
+  /// `true` if `self` is `XPC_TYPE_ARRAY`
   @inlinable @inline(__always)
   internal var isArray: Bool {
     hasType(XPC_TYPE_ARRAY)
   }
 
+  /// `true` if `self` is `XPC_TYPE_DICTIONARY`
   @inlinable @inline(__always)
   internal var isDictionary: Bool {
     hasType(XPC_TYPE_DICTIONARY)
   }
   
+  /// Shorthand for `xpc_get_type(self).typeDescription`
   @inlinable @inline(__always)
   internal var typeDescription: String {
     xpc_get_type(self).typeDescription
@@ -49,6 +51,7 @@ extension xpc_object_t {
 
 extension xpc_object_t {
   
+  /// Sets `nil` for `key`, using the indicated `strategy` for the `key`'s string representation.
   @inlinable @inline(__always)
   internal func setNil(
     forKey key: some CodingKey,
@@ -60,6 +63,7 @@ extension xpc_object_t {
     )
   }
   
+  /// Sets `nil` for `key`, using the indicated `strategy` for the `key`'s string representation.
   @inlinable @inline(__always)
   internal func setNil(
     forKey key: any CodingKey,
@@ -71,6 +75,7 @@ extension xpc_object_t {
     )
   }
   
+  /// Sets `nil` for `key`, using the indicated `strategy` for the `key`.
   @inlinable @inline(__always)
   internal func setNil(
     forKey key: String,
@@ -80,7 +85,7 @@ extension xpc_object_t {
       xpc_dictionary_set_value(
         self,
         keyCString,
-        sharedNullObject
+        xpc_null_create()
       )
     }
   }
@@ -91,6 +96,7 @@ extension xpc_object_t {
 
 extension xpc_object_t {
 
+  /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
   @inlinable @inline(__always)
   internal func setValue(
     _ value: some LosslessXPCObjectConvertible,
@@ -104,6 +110,7 @@ extension xpc_object_t {
     )
   }
 
+  /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
   @inlinable @inline(__always)
   internal func setValue(
     _ value: some LosslessXPCObjectConvertible,
@@ -117,6 +124,7 @@ extension xpc_object_t {
     )
   }
 
+  /// Sets `value` for `key`, using the indicated `strategy` for the `key`.
   @inlinable @inline(__always)
   internal func setValue(
     _ value: some LosslessXPCObjectConvertible,
@@ -136,6 +144,7 @@ extension xpc_object_t {
 
 extension xpc_object_t {
   
+  /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
   @inlinable @inline(__always)
   internal func setValue(
     _ value: xpc_object_t,
@@ -149,6 +158,7 @@ extension xpc_object_t {
     )
   }
   
+  /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
   @inlinable @inline(__always)
   internal func setValue(
     _ value: xpc_object_t,
@@ -162,6 +172,7 @@ extension xpc_object_t {
     )
   }
   
+  /// Sets `value` for `key`, using the indicated `strategy` for the `key`.
   @inlinable @inline(__always)
   internal func setValue(
     _ value: xpc_object_t,
@@ -183,6 +194,7 @@ extension xpc_object_t {
 
 extension xpc_object_t {
   
+  /// Appends `value` to `self`.
   @inlinable @inline(__always)
   internal func appendValue(_ value: some LosslessXPCObjectConvertible) {
     assert(xpc_get_type(self) == XPC_TYPE_ARRAY)
@@ -195,17 +207,24 @@ extension xpc_object_t {
 
 extension xpc_object_t {
   
+  /// `true` if `self` is actually an `XPC_TYPE_NULL`.
+  /// 
+  /// - Note: `codingPath` is supplied for diagnostics.
   @inlinable @inline(__always)
   func decodeNil(at codingPath: [CodingKey]) -> Bool {
     isNull
   }
   
+  /// `true` if an explicit `nil` value is encoded into this object under `key` (using `strategy`).
+  /// 
+  /// - Note: `codingPath` is supplied for diagnostics.
   @usableFromInline
   func decodeNil(
     at codingPath: [CodingKey],
-    forKey key: any CodingKey
+    forKey key: any CodingKey,
+    strategy stringKeyStrategy: XPCDecoder.StringKeyStrategy
   ) -> Bool {
-    let possibleValue = key.stringValue.withCString { cString in
+    let possibleValue = key.stringValue.withUTF8CString(stringKeyStrategy: stringKeyStrategy) { cString in
       xpc_dictionary_get_value(self, cString)
     }
     guard

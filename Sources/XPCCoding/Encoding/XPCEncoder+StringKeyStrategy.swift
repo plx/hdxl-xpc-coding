@@ -1,13 +1,11 @@
 import Foundation
 import XPC
 
+// MARK: XPCEncoder.StringKeyStrategy
+
 extension XPCEncoder {
 
   /// The strategy for handling embedded null bytes in string keys during encoding.
-  ///
-  /// XPC only supports C-style null-terminated strings for dictionary keys.
-  /// This strategy controls how the encoder handles Swift strings that contain
-  /// embedded null bytes.
   public enum StringKeyStrategy {
 
     /// Assume no null bytes are present and encode directly.
@@ -26,11 +24,41 @@ extension XPCEncoder {
 
 }
 
+// MARK: - Synthesized Conformances
+
 extension XPCEncoder.StringKeyStrategy: Sendable { }
 extension XPCEncoder.StringKeyStrategy: Equatable { }
 extension XPCEncoder.StringKeyStrategy: Hashable { }
 extension XPCEncoder.StringKeyStrategy: Codable { }
 extension XPCEncoder.StringKeyStrategy: CaseIterable { }
+
+// MARK: - CustomStringConvertible
+
+extension XPCEncoder.StringKeyStrategy: CustomStringConvertible {
+  public var description: String {
+    switch self {
+    case .assumeAbsent:
+      "assume absent"
+    case .percentEscape:
+      "%-escape"
+    }
+  }
+}
+
+// MARK: - CustomDebugStringConvertible
+
+extension XPCEncoder.StringKeyStrategy: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    switch self {
+    case .assumeAbsent:
+      "\(Self.self).assumeAbsent"
+    case .percentEscape:
+      "\(Self.self).percentEscape"
+    }
+  }
+}
+
+// MARK: - Well-Known Values
 
 extension XPCEncoder.StringKeyStrategy {
 
@@ -39,6 +67,24 @@ extension XPCEncoder.StringKeyStrategy {
   static let standard: Self = XPCCodec.StringKeyStrategy.standard.encodingStrategy
 
 }
+
+// MARK: - EmbeddedNullByteRepresentation
+
+extension XPCEncoder.StringKeyStrategy {
+
+  @usableFromInline
+  internal var embeddedNullByteRepresentation: String.EmbeddedNullByteRepresentation {
+    switch self {
+    case .assumeAbsent:
+      .passthrough
+    case .percentEscape:
+      .percentEscaped
+    }
+  }
+
+}
+
+// MARK: - From XPCCodec
 
 extension XPCCodec.StringKeyStrategy {
   

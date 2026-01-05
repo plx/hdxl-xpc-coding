@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: StringValueEmbeddedNullByteStrategy
+// MARK: XPCCodec.StringValueDataRepresentation
 
 extension XPCCodec {
 
@@ -20,6 +20,7 @@ extension XPCCodec {
     /// Encode strings as UTF-32 binary data.
     case utf32
 
+    /// The `String.Encoding` value corresponding to this data representation.
     @usableFromInline
     internal var stringEncoding: String.Encoding {
       switch self {

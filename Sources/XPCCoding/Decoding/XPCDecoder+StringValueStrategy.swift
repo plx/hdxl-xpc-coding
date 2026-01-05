@@ -2,6 +2,8 @@ import Foundation
 import XPC
 import Combine
 
+// MARK: XPCDecoder.StringValueStrategy
+
 extension XPCDecoder {
 
   /// The strategy for handling encoded null bytes in string values during decoding.
@@ -33,10 +35,15 @@ extension XPCDecoder {
 
 }
 
+// MARK: - Synthesized Conformances
+
 extension XPCDecoder.StringValueStrategy: Sendable { }
 extension XPCDecoder.StringValueStrategy: Equatable { }
 extension XPCDecoder.StringValueStrategy: Hashable { }
 extension XPCDecoder.StringValueStrategy: Codable { }
+
+// MARK: - CaseIterable
+
 extension XPCDecoder.StringValueStrategy: CaseIterable {
   
   static public let allCases: [Self] = {
@@ -50,12 +57,48 @@ extension XPCDecoder.StringValueStrategy: CaseIterable {
 
 }
 
+// MARK: - CustomStringConvertible
+
+extension XPCDecoder.StringValueStrategy: CustomStringConvertible {
+
+  public var description: String {
+    switch self {
+    case .passthrough:
+      "passthrough"
+    case .percentEscape:
+      "%-escape"
+    case .useDataRepresentation(let representation):
+      "\(representation)-data"
+    }
+  }
+
+}
+
+extension XPCDecoder.StringValueStrategy: CustomDebugStringConvertible {
+  
+  public var debugDescription: String {
+    switch self {
+    case .passthrough:
+      "\(Self.self).passthrough"
+    case .percentEscape:
+      "\(Self.self).percentEscape"
+    case .useDataRepresentation(let representation):
+      "\(Self.self).useDataRepresentation(\(String(reflecting: representation)))"
+    }
+  }
+  
+}
+
+// MARK: - Well-Known Values
+
 extension XPCDecoder.StringValueStrategy {
 
   /// The standard (default) strategy for decoding string values.
   public static let standard: Self = XPCCodec.StringValueStrategy.standard.decodingStrategy
 
 }
+
+// MARK: - From XPCCodec.StringValueStrategy
 
 extension XPCCodec.StringValueStrategy {
   

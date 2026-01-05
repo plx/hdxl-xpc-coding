@@ -3,28 +3,27 @@ import XPC
 
 extension String {
   
+  /// Represents errors that can occur when converting a string to an `xpc_object_t`.
   @usableFromInline
   internal enum XPCObjectConversionError: Error {
+    /// The string contains null bytes (relevant for the `.throwOnDiscovery` strategy).
     case containsNullBytes(String)
+
+    /// The string could not be converted to the specified data representation.
     case unableToConvertToData(String, XPCCodec.StringValueDataRepresentation)
   }
   
+  /// Converts the string to an `xpc_object_t` representation, as per `stringKeyStrategy`.
   @inlinable
   internal func makeXPCObjectRepresentation(
     stringKeyStrategy: XPCEncoder.StringKeyStrategy
   ) -> xpc_object_t {
-    switch stringKeyStrategy {
-    case .assumeAbsent:
-      return withCString { cStringPtr in
-        xpc_string_create(cStringPtr)
-      }
-    case .percentEscape:
-      return withStringWithEmbeddedNullBytesPercentEncoded { cStringPtr in
-        xpc_string_create(cStringPtr)
-      }
+    withUTF8CString(stringKeyStrategy: stringKeyStrategy) { cStringPtr in
+      xpc_string_create(cStringPtr)
     }
   }
 
+  /// Converts the string to an `xpc_object_t` representation, as per `stringValueStrategy`.
   @inlinable
   internal func makeXPCObjectRepresentation(
     stringValueStrategy: XPCEncoder.StringValueStrategy

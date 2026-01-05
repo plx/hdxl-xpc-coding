@@ -2,12 +2,16 @@ import Foundation
 import XPC
 import Combine
 
-/// An encoder that encodes `Codable` values to `xpc_object_t`.
+// MARK: XPCEncoder
+
+/// The entrypoint for *encoding* `Encodable` values into XPC objects.
 ///
-/// `XPCEncoder` conforms to `TopLevelEncoder` and can be used with Combine publishers.
-/// It handles the conversion of Swift types to their XPC equivalents, including special
-/// handling for strings that may contain embedded null bytes.
-///
+/// `XPCEncoder` conforms to `TopLevelEncoder`, which provides a standarized API 
+/// for encoding top-level values into encoder's native output format (XPC objects, here).
+/// 
+/// This class is *not* an `Encoder` itself—it's a facade that handles provisinion 
+/// the actual underlying `Encoder`-conformaing object. 
+/// 
 /// ## Usage
 ///
 /// ```swift
@@ -15,11 +19,6 @@ import Combine
 /// let xpcObject = try encoder.encode(myValue)
 /// ```
 ///
-/// ## String Handling
-///
-/// Because XPC only supports C-style null-terminated strings, Swift strings containing
-/// embedded null bytes require special handling. Configure this behavior using
-/// ``stringKeyStrategy`` and ``stringValueStrategy``.
 public final class XPCEncoder: TopLevelEncoder {
   public typealias Output = xpc_object_t
 
@@ -57,6 +56,7 @@ public final class XPCEncoder: TopLevelEncoder {
     )
   }
 
+  /// Encodes an encodable value into an `xpc_object_t`.
   @inlinable
   public func encode<T>(
     _ value: T
@@ -94,9 +94,30 @@ public final class XPCEncoder: TopLevelEncoder {
 
 }
 
+// MARK: - CustomStringConvertible
+
+extension XPCEncoder: CustomStringConvertible {
+  public var description: String {
+    "(string-keys: \(stringKeyStrategy), string-values: \(stringValueStrategy))"
+  }
+}
+
+// MARK: - CustomStringConvertible
+
+extension XPCEncoder: CustomDebugStringConvertible {
+
+  public var debugDescription: String {
+    "XPCEncoder(stringKeyStrategy: \(stringKeyStrategy), stringValueStrategy: \(stringValueStrategy))"
+  }
+
+}
+
+// MARK: - TransientEncoderError
+
 /// Errors that can occur when using ``XPCEncoder/withTransientEncoder(_:)``.
 public enum TransientEncoderError: Error {
 
   /// The closure provided to ``XPCEncoder/withTransientEncoder(_:)`` did not encode any value.
   case noEncodingOccurred
 }
+

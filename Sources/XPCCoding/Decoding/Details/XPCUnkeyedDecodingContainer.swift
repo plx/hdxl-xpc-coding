@@ -1,5 +1,8 @@
 import XPC
 
+// MARK: XPCUnkeyedDecodingContainer
+
+/// The `UnkeyedDecodingContainer` implementation for `XPCDecoder`.
 @usableFromInline
 internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   
@@ -9,56 +12,45 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   @usableFromInline
   internal typealias StringValueStrategy = XPCDecoder.StringValueStrategy
   
+  /// Always read the string key strategy from the decoder.
   @inlinable @inline(__always)
   internal var stringKeyStrategy: XPCDecoder.StringKeyStrategy { decoder.stringKeyStrategy }
   
+  /// Always read the string value strategy from the decoder.
   @inlinable @inline(__always)
   internal var stringValueStrategy: XPCDecoder.StringValueStrategy { decoder.stringValueStrategy }
 
-  // MARK: - Properties
+  /// The path of coding keys taken to get to this point in decoding (necessary to store @ creation for proper reporting).
   @usableFromInline
-  internal var codingPath: [CodingKey]
-  
+  internal var codingPath: [any CodingKey]
+
+  /// The index of the next element to decode.
   @usableFromInline
-  internal var count: Int? {
-    _count
-  }
+  internal var currentIndex: Int
   
+  /// The underlying XPC array.
   @usableFromInline
-  internal var _count: Int {
-    xpc_array_get_count(underlyingMessage)
-  }
+  internal let underlyingXPCArray: xpc_object_t
   
+  /// The parent decoder.
   @usableFromInline
-  internal var isAtEnd: Bool {
-    currentIndex >= _count
-  }
-  
-  @usableFromInline
-  internal var _currentIndex: Int
-  
-  @usableFromInline
-  internal var currentIndex: Int { _currentIndex }
-  
-  @usableFromInline
-  internal let underlyingMessage: xpc_object_t
-  
-  @usableFromInline
-  internal let decoder: _XPCDecoder
-  
-  @inlinable
-  internal var currentCodingKey: XPCCodingKey {
-    XPCCodingKey(intValue: _currentIndex)
-  }
-  
-  // MARK: - Initilization
+  internal let decoder: _XPCDecoder  
+
+  // MARK: - Initialization
+
+  /// Initialize a new unkeyed container.
+  /// - Parameters:
+  ///   - decoder: The decoder to use for decoding.
+  ///   - wrapping: The XPC object to wrap.
+  ///   - codingPath: The coding path to use for decoding.
+  /// - Throws: `DecodingError.dataCorrupted` if the XPC object is not an array.
   @usableFromInline
   internal init(
     referencing decoder: _XPCDecoder,
-    wrapping: xpc_object_t,
+    wrapping xpcObject: xpc_object_t,
     codingPath: [any CodingKey]
   ) throws {
-    guard wrapping.isArray else {
+    guard xpcObject.isArray else {
       throw DecodingError.dataCorrupted(
         DecodingError.Context(
           codingPath: codingPath,
@@ -67,65 +59,20 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       )
     }
     
-    self.underlyingMessage = wrapping
+    self.underlyingXPCArray = xpcObject
     self.decoder = decoder
     self.codingPath = codingPath
-    self._currentIndex = 0
-  }
-  
-  @usableFromInline
-  internal func withCurrentCodingKey<R>(_ closure: ([any CodingKey]) throws -> R) throws -> R {
-    try decoder.withTransientCodingPathElement(currentCodingKey, closure)
-  }
-  
-  @usableFromInline
-  internal mutating func handleNextDecodingKeyValue<R>(_ closure: (xpc_object_t, [any CodingKey]) throws -> R) throws -> R {
-    guard !isAtEnd else {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: codingPath,
-          debugDescription: "Reached end of unkeyed container."
-        )
-      )
-    }
-    
-    let foundValue = xpc_array_get_value(underlyingMessage, currentIndex)
-    
-    let interpretedValue = try decoder.withTransientCodingPathElement(currentCodingKey) { codingPath in
-      try closure(foundValue, codingPath)
-    }
-    
-    _currentIndex += 1
-    return interpretedValue
-  }
-  
-  @usableFromInline
-  internal mutating func decodeNextValue<Value>(
-    as valueType: Value.Type
-  ) throws -> Value where Value: XPCObjectExtractable {
-    try handleNextDecodingKeyValue { xpcValue, codingPath in
-      try xpcValue.extractValue(
-        ofType: valueType,
-        at: codingPath
-      )
-    }
+    self.currentIndex = 0
   }
 
-  @usableFromInline
-  internal mutating func decodeNextStringValue() throws -> String {
-    let stringValueStrategy = stringValueStrategy
-
-    return try handleNextDecodingKeyValue { xpcValue, codingPath in
-      try xpcValue.extractStringValue(
-        stringValueStrategy: stringValueStrategy,
-        at: codingPath
-      )
-    }
-  }
-
-  // MARK: - UnkeyedDecodingContainer protocol methods
+  // MARK: - UnkeyedDecodingContainer
   
-  @usableFromInline
+  @inlinable  
+  internal var count: Int? {
+    _count
+  }
+  
+  @inlinable
   internal mutating func decodeNil() throws -> Bool {
     guard !isAtEnd else {
       throw DecodingError.dataCorrupted(
@@ -137,10 +84,10 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     }
     
     return try withCurrentCodingKey { _ in
-      let foundValue = xpc_array_get_value(underlyingMessage, currentIndex)
+      let foundValue = xpc_array_get_value(underlyingXPCArray, currentIndex)
       
       if foundValue.decodeNil(at: codingPath) {
-        self._currentIndex += 1
+        self.currentIndex += 1
         return true
       }
       return false
@@ -148,87 +95,87 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     }
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: Bool.Type) throws -> Bool {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: String.Type) throws -> String {
     try decodeNextStringValue()
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: Double.Type) throws -> Double {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: Float.Type) throws -> Float {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: Int.Type) throws -> Int {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: Int8.Type) throws -> Int8 {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: Int16.Type) throws -> Int16 {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: Int32.Type) throws -> Int32 {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: Int64.Type) throws -> Int64 {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: Int128.Type) throws -> Int128 {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: UInt.Type) throws -> UInt {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: UInt8.Type) throws -> UInt8 {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: UInt16.Type) throws -> UInt16 {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: UInt32.Type) throws -> UInt32 {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: UInt64.Type) throws -> UInt64 {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode(_ type: UInt128.Type) throws -> UInt128 {
     try decodeNextValue(as: type)
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func decode<T: Decodable>(_ type: T.Type) throws -> T {
     let stringKeyStrategy = stringKeyStrategy
     let stringValueStrategy = stringValueStrategy
@@ -249,7 +196,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     }
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func nestedContainer<NestedKey>(
     keyedBy type: NestedKey.Type
   ) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
@@ -265,7 +212,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     }
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
     let decoder = decoder
     
@@ -278,7 +225,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     }
   }
   
-  @usableFromInline
+  @inlinable
   internal mutating func superDecoder() throws -> Decoder {
     let stringKeyStrategy = stringKeyStrategy
     let stringValueStrategy = stringValueStrategy
@@ -288,6 +235,83 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: stringValueStrategy,
         decoding: xpcValue,
+        at: codingPath
+      )
+    }
+  }
+  
+}
+
+// MARK: - Support API
+
+extension XPCUnkeyedDecodingContainer {
+  
+  /// The number of elements in the container.
+  @usableFromInline
+  internal var _count: Int {
+    xpc_array_get_count(underlyingXPCArray)
+  }
+  
+  /// True if we have reached the end of the container.
+  @usableFromInline
+  internal var isAtEnd: Bool {
+    currentIndex >= _count
+  }
+  
+  @inlinable
+  internal var currentCodingKey: XPCCodingKey {
+    XPCCodingKey(intValue: currentIndex)
+  }
+
+  /// Execute a closure with the current coding key added to the coding path.
+  @usableFromInline
+  internal func withCurrentCodingKey<R>(_ closure: ([any CodingKey]) throws -> R) throws -> R {
+    try decoder.withTransientCodingPathElement(currentCodingKey, closure)
+  }
+  
+  /// Decode the next value in the container, with proper coding-path management.
+  @usableFromInline
+  internal mutating func handleNextDecodingKeyValue<R>(_ closure: (xpc_object_t, [any CodingKey]) throws -> R) throws -> R {
+    guard !isAtEnd else {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: codingPath,
+          debugDescription: "Reached end of unkeyed container."
+        )
+      )
+    }
+    
+    let foundValue = xpc_array_get_value(underlyingXPCArray, currentIndex)
+    
+    let interpretedValue = try decoder.withTransientCodingPathElement(currentCodingKey) { codingPath in
+      try closure(foundValue, codingPath)
+    }
+    
+    currentIndex += 1
+    return interpretedValue
+  }
+  
+  /// Decode the next value in the container, with proper coding-path management.
+  @usableFromInline
+  internal mutating func decodeNextValue<Value>(
+    as valueType: Value.Type
+  ) throws -> Value where Value: XPCObjectExtractable {
+    try handleNextDecodingKeyValue { xpcValue, codingPath in
+      try xpcValue.extractValue(
+        ofType: valueType,
+        at: codingPath
+      )
+    }
+  }
+
+  /// Special-case logic for decoding string values.
+  @usableFromInline
+  internal mutating func decodeNextStringValue() throws -> String {
+    let stringValueStrategy = stringValueStrategy
+
+    return try handleNextDecodingKeyValue { xpcValue, codingPath in
+      try xpcValue.extractStringValue(
+        stringValueStrategy: stringValueStrategy,
         at: codingPath
       )
     }

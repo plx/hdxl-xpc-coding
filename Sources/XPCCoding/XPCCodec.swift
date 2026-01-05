@@ -35,6 +35,7 @@ public struct XPCCodec {
   /// The strategy for handling embedded null bytes in string values.
   public var stringValueStrategy: StringValueStrategy { configuration.stringValueStrategy }
   
+  /// Internal field-initialization constructor.
   @usableFromInline
   internal init(
     encoder: XPCEncoder,

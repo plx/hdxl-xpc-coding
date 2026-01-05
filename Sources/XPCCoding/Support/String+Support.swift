@@ -1,8 +1,6 @@
 import Foundation
 import XPC
 
-// auxiliary helper (no specific item)
-// put this in a new file inside `XPCCoding` (`Support/String+Support.swift`)
 extension String {
   
   /// `true` iff this string can be used by xpc *without* truncation.
@@ -14,16 +12,19 @@ extension String {
     // ^ may need further expansion if we discover other problematic content
   }
   
+  /// `true` iff this string contains null-bytes.
   @inlinable
   internal var containsNullBytes: Bool {
     utf8.contains(0)
   }
 
+  /// The number of null-bytes in this string.
   @inlinable
   internal var nullByteCount: Int {
     utf8.count { $0 == 0 }
   }
 
+  /// The number of percent characters in this string.
   @inlinable
   internal var percentCount: Int {
     utf8.count { $0 == UTF8.CodeUnit(ascii: "%") }

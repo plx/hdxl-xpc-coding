@@ -1,5 +1,9 @@
+import Foundation
 import XPC
 
+// MARK: XPCKeyedDecodingContainer
+
+/// Internal keyed-decoding container.
 @usableFromInline
 internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContainerProtocol {
 
@@ -9,9 +13,11 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   @usableFromInline
   internal typealias StringValueStrategy = XPCDecoder.StringValueStrategy
   
+  /// We always read the string key strategy from the decoder.
   @inlinable @inline(__always)
   internal var stringKeyStrategy: XPCDecoder.StringKeyStrategy { decoder.stringKeyStrategy }
   
+  /// We always read the string value strategy from the decoder.
   @inlinable @inline(__always)
   internal var stringValueStrategy: XPCDecoder.StringValueStrategy { decoder.stringValueStrategy }
   
@@ -25,19 +31,26 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   @usableFromInline
   internal var codingPath: [CodingKey]
   
+  /// The underlying XPC dictionary from which we're decoding.
   @usableFromInline
-  internal let underlyingMessage: xpc_object_t
+  internal let underlyingXPCDictionary: xpc_object_t
   
   // MARK: - Initialization
   
   /// Initializes `self` by referencing the given decoder and container.
+  /// 
+  /// - Parameters:
+  ///   - decoder: The decoder to reference.
+  ///   - underlyingXPCDictionary: The underlying XPC dictionary to wrap.
+  ///   - codingPath: The path of coding keys taken to get to this point in decoding.
+  /// - Throws: `DecodingError.dataCorrupted` if the underlying XPC object is not a dictionary.
   @usableFromInline
   internal init(
     referencing decoder: _XPCDecoder,
-    wrapping underlyingMessage: xpc_object_t,
+    wrapping underlyingXPCDictionary: xpc_object_t,
     codingPath: [any CodingKey]
   ) throws {
-    guard underlyingMessage.isDictionary else {
+    guard underlyingXPCDictionary.isDictionary else {
       throw DecodingError.dataCorrupted(
         DecodingError.Context(
           codingPath: codingPath,
@@ -46,7 +59,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
       )
     }
     self.decoder = decoder
-    self.underlyingMessage = underlyingMessage
+    self.underlyingXPCDictionary = underlyingXPCDictionary
     self.codingPath = codingPath
   }
   
@@ -56,7 +69,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   internal var allKeys: [Key] {
     var keys: [Key] = []
     let embeddedNullByteRepresentation = stringKeyStrategy.embeddedNullByteRepresentation
-    xpc_dictionary_apply(underlyingMessage) { (keyCString, _) -> Bool in
+    xpc_dictionary_apply(underlyingXPCDictionary) { (keyCString, _) -> Bool in
       guard
         let keyString = String(
           cString: keyCString,
@@ -75,17 +88,18 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   
   @usableFromInline
   internal func contains(_ key: Key) -> Bool {
-    key.withUTF8CString(embeddedNullByteRepresentation: stringKeyStrategy.embeddedNullByteRepresentation) { keyCString in
-      nil != xpc_dictionary_get_value(underlyingMessage, keyCString)
+    key.withUTF8CString(stringKeyStrategy: stringKeyStrategy) { keyCString in
+      nil != xpc_dictionary_get_value(underlyingXPCDictionary, keyCString)
     }
   }
   
   @inlinable
   internal func decodeNil(forKey key: Key) throws -> Bool {
     try withTransientCodingKey(key) { codingPath in
-      underlyingMessage.decodeNil(
+      underlyingXPCDictionary.decodeNil(
         at: codingPath,
-        forKey: key
+        forKey: key,
+        strategy: stringKeyStrategy
       )
     }
   }
@@ -173,7 +187,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   @inlinable
   internal func decode<T: Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
     try withTransientCodingKey(key) { codingPath in
-      let xpcObject = try getXPCObject(for: key)
+      let xpcObject = try requiredXPCObject(for: key)
 
       if let directExtraction = xpcObject.attemptDirectExtraction(type, stringValueStrategy: stringValueStrategy) {
         return directExtraction
@@ -196,7 +210,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
     forKey key: Key
   ) throws -> KeyedDecodingContainer<NestedKey> {
     try withTransientCodingKey(key) { codingPath in
-      let xpcObject = try getXPCObject(for: key)
+      let xpcObject = try requiredXPCObject(for: key)
       
       let container = try XPCKeyedDecodingContainer<NestedKey>(
         referencing: decoder,
@@ -213,7 +227,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
     try withTransientCodingKey(key) { codingPath in
       try XPCUnkeyedDecodingContainer(
         referencing: decoder,
-        wrapping: try getXPCObject(for: key),
+        wrapping: try requiredXPCObject(for: key),
         codingPath: codingPath
       )
     }
@@ -225,7 +239,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
       _XPCDecoder(
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: stringValueStrategy,
-        decoding: try getXPCObject(for: XPCCodingKey.superKey),
+        decoding: try requiredXPCObject(for: XPCCodingKey.superKey),
         at: codingPath
       )
     }
@@ -237,23 +251,22 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
       _XPCDecoder(
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: stringValueStrategy,
-        decoding: try getXPCObject(for: key),
+        decoding: try requiredXPCObject(for: key),
         at: codingPath
       )
     }
   }
 }
 
-// MARK: - Support
+// MARK: - Support API
 
 extension XPCKeyedDecodingContainer {
-  
-  
+
+  /// Locates the XPC object for the given `key`; throws an error when not found.
   @usableFromInline
-  internal func getXPCObject(for key: CodingKey) throws -> xpc_object_t {
-    
-    let possibleValue = key.withUTF8CString(embeddedNullByteRepresentation: stringKeyStrategy.embeddedNullByteRepresentation) { keyCString in
-      xpc_dictionary_get_value(underlyingMessage, keyCString)
+  internal func requiredXPCObject(for key: CodingKey) throws -> xpc_object_t {
+    let possibleValue = key.withUTF8CString(stringKeyStrategy: stringKeyStrategy) { keyCString in
+      xpc_dictionary_get_value(underlyingXPCDictionary, keyCString)
     }
     guard let value = possibleValue else {
       throw DecodingError.keyNotFound(
@@ -268,6 +281,7 @@ extension XPCKeyedDecodingContainer {
     return value
   }
 
+  /// Performs `closure` with `key` added to the coding path, then removes it.
   @inlinable
   internal func withTransientCodingKey<R>(
     _ key: Key,
@@ -286,6 +300,9 @@ extension XPCKeyedDecodingContainer {
     return try closure(codingPath)
   }
   
+  /// Special-case transient-coding-key helper for `XPCCodingKey`.
+  /// 
+  /// - Note: used for encoding superclasses (etc.).
   @inlinable
   internal func withTransientCodingKey<R>(
     _ key: XPCCodingKey,
@@ -304,13 +321,14 @@ extension XPCKeyedDecodingContainer {
     return try closure(codingPath)
   }
   
+  /// General-purpose extraction for a value of a specific type.
   @inlinable
   internal func extractValue<Value>(
     ofType valueType: Value.Type,
     forKey key: Key
   ) throws -> Value where Value: XPCObjectExtractable {
     try withTransientCodingKey(key) { codingPath in
-      try underlyingMessage.extractValue(
+      try underlyingXPCDictionary.extractValue(
         ofType: valueType,
         at: codingPath,
         forKey: key,
@@ -318,13 +336,14 @@ extension XPCKeyedDecodingContainer {
       )
     }
   }
-
+  
+  /// Special-case extraction for `String`, respecting our string key and value strategies.
   @inlinable
   internal func extractString(
     forKey key: Key
   ) throws -> String {
     try withTransientCodingKey(key) { codingPath in
-      try underlyingMessage.extractString(
+      try underlyingXPCDictionary.extractString(
         at: codingPath,
         forKey: key,
         stringKeyStrategy: stringKeyStrategy,

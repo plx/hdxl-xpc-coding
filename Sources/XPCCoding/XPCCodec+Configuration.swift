@@ -1,6 +1,8 @@
 import XPC
 import Foundation
 
+// MARK: XPCCodec.Configuration
+
 extension XPCCodec {
 
   /// Configuration options for an ``XPCCodec``.
@@ -33,10 +35,16 @@ extension XPCCodec {
 
 }
 
+// MARK: - Synthesized Conformances
+
 extension XPCCodec.Configuration: Sendable { }
 extension XPCCodec.Configuration: Equatable { }
 extension XPCCodec.Configuration: Hashable { }
 extension XPCCodec.Configuration: Codable { }
+
+
+// MARK: - CaseIterable
+
 extension XPCCodec.Configuration: CaseIterable {
   
   public static let allCases: [Self] = {

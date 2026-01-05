@@ -1,5 +1,9 @@
+import Foundation
 import XPC
 
+// MARK: XPCUnkeyedEncodingContainer
+
+/// Our internal unkeyed encoding container.
 @usableFromInline
 internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
@@ -9,103 +13,65 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   @usableFromInline
   internal typealias StringValueStrategy = XPCEncoder.StringValueStrategy
   
+  /// We always retrieve our string key strategy from our parent encoder.
   @inlinable @inline(__always)
   internal var stringKeyStrategy: StringKeyStrategy { encoder.stringKeyStrategy }
   
+  /// We always retrieve our string value strategy from our parent encoder.
   @inlinable @inline(__always)
   internal var stringValueStrategy: StringValueStrategy { encoder.stringValueStrategy }
 
-  // MARK: - Properties
-  @usableFromInline
-  internal var codingPath: [CodingKey] {
-    encoder.codingPath
-  }
+  /// We always retrieve our coding path from our parent encoder.
+  @usableFromInline  @inline(__always)
+  internal var codingPath: [CodingKey] { encoder.codingPath }
   
+  /// Count of already-encoded items in this container.
   @usableFromInline
   internal var count: Int {
-    xpc_array_get_count(underlyingMessage)
+    xpc_array_get_count(underlyingXPCArray)
   }
   
+  /// The encoder into-which we're doing our encoding.
   @usableFromInline
   internal let encoder: _XPCEncoder
   
+  /// The underlying XPC array we're encoding into.
   @usableFromInline
-  internal let underlyingMessage: xpc_object_t
+  internal let underlyingXPCArray: xpc_object_t
   
   // MARK: - Initialization
+
+  /// Memberwise-initialize a new unkeyed encoding container.
+  /// - Parameters:
+  ///   - encoder: The encoder into-which we're doing our encoding.
+  ///   - underlyingXPCArray: The underlying XPC array we're encoding into.
+  /// - Throws: `EncodingError.invalidValue` if `underlyingXPCArray` is not an XPC array.
   @usableFromInline
   internal init(
     referencing encoder: _XPCEncoder,
-    wrapping underlyingMessage: xpc_object_t
+    wrapping underlyingXPCArray: xpc_object_t
   ) throws {
     self.encoder = encoder
     
-    guard underlyingMessage.isArray else {
+    guard underlyingXPCArray.isArray else {
       throw EncodingError.invalidValue(
-        underlyingMessage,
+        underlyingXPCArray,
         EncodingError.Context(
           codingPath: encoder.codingPath,
-          debugDescription: "Supplied a non-array xpc object (actual type: `\(underlyingMessage.typeDescription))"
+          debugDescription: "Supplied a non-array xpc object (actual type: `\(underlyingXPCArray.typeDescription))"
         )
       )
     }
     
-    self.underlyingMessage = underlyingMessage
-  }
-  
-  @usableFromInline
-  internal var nextCodingKey: XPCCodingKey {
-    XPCCodingKey(intValue: count)
-  }
-  
-  @inlinable
-  internal func withNextCodingKey<R>(_ closure: ([any CodingKey]) throws -> R) throws -> R {
-    try encoder.withTransientCodingPathElement(nextCodingKey) { codingPath in
-      try closure(codingPath)
-    }
-  }
-  
-  @inlinable
-  internal func appendNextXPCValue(_ value: xpc_object_t) throws {
-    try withNextCodingKey { _ in
-      xpc_array_append_value(underlyingMessage, value)
-    }
+    self.underlyingXPCArray = underlyingXPCArray
   }
 
-  @inlinable
-  internal func appendNextLosslesslyConvertibleValue(_ value: some LosslessXPCObjectConvertible) throws {
-    try withNextCodingKey { _ in
-      underlyingMessage.appendValue(value)
-    }
-  }
-  
-  @inlinable
-  internal func appendNextStringValue(_ value: String) throws {
-    try withNextCodingKey { codingPath in
-      
-      do {
-        let xpcObject = try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy)
-        xpc_array_append_value(underlyingMessage, xpcObject)
-      }
-      catch let incompatibilityError {
-        throw EncodingError.invalidValue(
-          value,
-          EncodingError.Context(
-            codingPath: codingPath,
-            debugDescription: "Attempted to append xpc-incompatible value \(value).",
-            underlyingError: incompatibilityError
-          )
-        )
-      }
-    }
-  }
-
-  // MARK: - UnkeyedEncodingContainer protocol methods
+  // MARK: - UnkeyedEncodingContainer
   
   @usableFromInline
   internal mutating func encodeNil() throws {
     try withNextCodingKey { _ in
-      xpc_array_append_value(underlyingMessage, xpc_null_create())
+      xpc_array_append_value(underlyingXPCArray, xpc_null_create())
     }
   }
   
@@ -116,6 +82,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
   @usableFromInline
   internal mutating func encode(_ value: String) throws {
+    // string needs special handling to respect our string-value strategy
     try appendNextStringValue(value)
   }
   
@@ -199,9 +166,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
           stringKeyStrategy: stringKeyStrategy,
           stringValueStrategy: stringValueStrategy
         )
-        xpc_array_append_value(underlyingMessage, xpcObject)
-      } catch let error as EncodingError {
-        throw error
+        xpc_array_append_value(underlyingXPCArray, xpcObject)
       } catch let underlyingError {
         throw EncodingError.invalidValue(
           value,
@@ -220,7 +185,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     do {
       return try withNextCodingKey { _ in
         let xpcDictionary = xpc_dictionary_create(nil, nil, 0)
-        xpc_array_append_value(underlyingMessage, xpcDictionary)
+        xpc_array_append_value(underlyingXPCArray, xpcDictionary)
         
         let container = try XPCKeyedEncodingContainer<NestedKey>(referencing: encoder, wrapping: xpcDictionary)
         return KeyedEncodingContainer(container)
@@ -243,7 +208,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     do {
       return try withNextCodingKey { _ in
         let xpcArray = xpc_array_create(nil, 0)
-        xpc_array_append_value(underlyingMessage, xpcArray)
+        xpc_array_append_value(underlyingXPCArray, xpcArray)
         
         return try XPCUnkeyedEncodingContainer(referencing: encoder, wrapping: xpcArray)
       }
@@ -263,14 +228,14 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   internal mutating func superEncoder() -> Encoder {
     do {
       return try withNextCodingKey { codingPath in
-        // Insert dummy value in array so we don't get bit later
-        xpc_array_append_value(underlyingMessage, xpc_null_create())
-        return XPCArrayReferencingEncoder(
+        // TODO: investigate if we can refactor so as to avoid injecting this placeholder value
+        xpc_array_append_value(underlyingXPCArray, xpc_null_create())
+        return _XPCArrayReferencingEncoder(
           stringKeyStrategy: stringKeyStrategy,
           stringValueStrategy: stringValueStrategy,
           codingPath: codingPath,
           index: count - 1,
-          array: underlyingMessage
+          array: underlyingXPCArray
         )
       }
     }
@@ -285,6 +250,69 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
   }
 }
+
+// MARK: - Support API
+
+extension XPCUnkeyedEncodingContainer {
+  
+  /// The coding key suitable-for appending our next encoded value.
+  @usableFromInline
+  internal var nextCodingKey: XPCCodingKey {
+    XPCCodingKey(intValue: count)
+  }
+  
+  /// Executes `closure` while temporarily extending our coding path with the value of `nextCodingKey`.
+  /// 
+  /// - Parameter closure: The closure to execute.
+  /// - Returns: The return value of `closure`.
+  /// - Throws: Any error thrown by `closure`.
+  /// 
+  /// - SeeAlso: ``_XPCEncoder.withTransientCodingPathElement(_:_:)```
+  /// - SeeAlso: ``nextCodingKey``
+  @inlinable
+  internal func withNextCodingKey<R>(_ closure: ([any CodingKey]) throws -> R) throws -> R {
+    try encoder.withTransientCodingPathElement(nextCodingKey) { codingPath in
+      try closure(codingPath)
+    }
+  }
+  
+  /// Directly appends an XPC object to our underlying XPC array, with proper coding-path management.
+  @inlinable
+  internal func appendNextXPCValue(_ value: xpc_object_t) throws {
+    try withNextCodingKey { _ in
+      xpc_array_append_value(underlyingXPCArray, value)
+    }
+  }
+
+  /// Directly appends a losslessly-convertible value to our underlying XPC array, with proper coding-path management.
+  @inlinable
+  internal func appendNextLosslesslyConvertibleValue(_ value: some LosslessXPCObjectConvertible) throws {
+    try appendNextXPCValue(value.xpcObjectRepresentation)
+  }
+
+  /// Directly appends a string value to our underlying XPC array, with proper coding-path management (and ensuring proper string-value strategy handling). 
+  @inlinable
+  internal func appendNextStringValue(_ value: String) throws {
+    try withNextCodingKey { codingPath in      
+      do {
+        let xpcObject = try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy)
+        xpc_array_append_value(underlyingXPCArray, xpcObject)
+      }
+      catch let incompatibilityError {
+        throw EncodingError.invalidValue(
+          value,
+          EncodingError.Context(
+            codingPath: codingPath,
+            debugDescription: "Attempted to append xpc-incompatible value \(value).",
+            underlyingError: incompatibilityError
+          )
+        )
+      }
+    }
+  }
+}
+
+// MARK: - XPCEnhancedUnkeyedEncodingContainer
 
 extension XPCUnkeyedEncodingContainer: XPCEnhancedUnkeyedEncodingContainer {
     
@@ -333,103 +361,6 @@ extension XPCUnkeyedEncodingContainer: XPCEnhancedUnkeyedEncodingContainer {
       )
     )
   }
-
-  
-}
-
-// This is used for encoding super classes, we don't know yet what kind of
-// container the caller will request so we can not prepoluate in superEncoder().
-// To overcome this we alias the encoder, the underlying array, this way we can
-// insert the key-value pair upon request and use the encoder to maintain the
-// encoding state
-@usableFromInline
-internal final class XPCArrayReferencingEncoder: _XPCEncoder {
-  
-  @usableFromInline
-  internal let xpcArray: xpc_object_t
-  
-  @usableFromInline
-  internal let index: Int
-  
-  @usableFromInline
-  internal init(
-    stringKeyStrategy: StringKeyStrategy,
-    stringValueStrategy: StringValueStrategy,
-    codingPath: [CodingKey],
-    index: Int,
-    array: xpc_object_t
-  ) {
-    self.xpcArray = array
-    self.index = index
-    super.init(
-      stringKeyStrategy: stringKeyStrategy,
-      stringValueStrategy: stringValueStrategy,
-      codingPath: codingPath
-    )
-  }
-  
-  @usableFromInline
-  internal override func container<Key>(
-    keyedBy type: Key.Type
-  ) -> KeyedEncodingContainer<Key> where Key : CodingKey {
-    let newDictionary = xpc_dictionary_create(nil, nil, 0)
-    xpc_array_set_value(xpcArray, index, newDictionary)
-    
-    do {
-      let container = try XPCKeyedEncodingContainer<Key>(
-        referencing: self,
-        wrapping: newDictionary
-      )
-      return KeyedEncodingContainer(container)
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable internal error creating keyed-container:
-        
-        - keyedBy: \(type)
-        - error: \(String(reflecting: error))
-        """
-      )
-    }
-  }
-  
-  @usableFromInline
-  internal override func unkeyedContainer() -> UnkeyedEncodingContainer {
-    let newArray = xpc_array_create(nil, 0)
-    xpc_array_set_value(xpcArray, index, newArray)
-    
-    do {
-      return try XPCUnkeyedEncodingContainer(
-        referencing: self,
-        wrapping: newArray
-      )
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable internal error creating keyed-container:
-        
-        - error: \(String(reflecting: error))
-        """
-      )
-    }
-  }
-  
-  @usableFromInline
-  internal override func singleValueContainer() -> SingleValueEncodingContainer {
-    XPCSingleValueEncodingContainer(referencing: self) { [unowned(unsafe) self] value in
-      guard index < xpc_array_get_count(xpcArray) else {
-        throw EncodingError.invalidValue(
-          xpcArray,
-          EncodingError.Context(
-            codingPath: codingPath,
-            debugDescription: "Overshot end index on an array: index \(index) vs count \(xpc_array_get_count(xpcArray))."
-          )
-        )
-      }
-      xpc_array_set_value(xpcArray, index, value)
-    }
-  }
+ 
 }
 
