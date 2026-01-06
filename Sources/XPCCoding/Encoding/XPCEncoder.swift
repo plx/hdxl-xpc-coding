@@ -68,29 +68,6 @@ public final class XPCEncoder: TopLevelEncoder {
     )
   }
 
-  /// Provides direct access to the underlying `Encoder` for manual encoding operations.
-  ///
-  /// Use this method when you need to perform encoding operations that don't fit the
-  /// standard `Encodable` pattern. The closure receives an `Encoder` instance that you
-  /// can use to manually encode values.
-  ///
-  /// - Parameter closure: A closure that performs encoding operations using the provided encoder.
-  /// - Returns: The encoded `xpc_object_t`.
-  /// - Throws: ``TransientEncoderError/noEncodingOccurred`` if the closure doesn't encode anything,
-  ///   or any error thrown by the closure.
-  @inlinable
-  public func withTransientEncoder(_ closure: (any Encoder) throws -> Void) throws -> Output {
-    let encoder = _XPCEncoder(
-      stringKeyStrategy: stringKeyStrategy,
-      stringValueStrategy: stringValueStrategy,
-      codingPath: []
-    )
-    try closure(encoder)
-    guard let result = encoder.topLevelContainer else {
-      throw TransientEncoderError.noEncodingOccurred
-    }
-    return result
-  }
 
 }
 
@@ -111,13 +88,3 @@ extension XPCEncoder: CustomDebugStringConvertible {
   }
 
 }
-
-// MARK: - TransientEncoderError
-
-/// Errors that can occur when using ``XPCEncoder/withTransientEncoder(_:)``.
-public enum TransientEncoderError: Error {
-
-  /// The closure provided to ``XPCEncoder/withTransientEncoder(_:)`` did not encode any value.
-  case noEncodingOccurred
-}
-
