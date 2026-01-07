@@ -138,6 +138,15 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   
   @inlinable
   internal mutating func encode<T: Encodable>(_ value: T) throws {
+    // Fast path for Data - encode directly as xpc_data_t
+    if let data = value as? Data {
+      let xpcObject = data.withUnsafeBytes { buffer in
+        xpc_data_create(buffer.baseAddress, buffer.count)
+      }
+      try insertionClosure(xpcObject)
+      return
+    }
+
     let xpcObject = try _XPCEncoder.encode(
       value,
       at: codingPath,

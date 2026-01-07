@@ -1,0 +1,44 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:hdxl-xpc-coding}",
+      "name": "Debug IPCBenchmarks",
+      "target": "IPCBenchmarks",
+      "configuration": "debug",
+      "preLaunchTask": "swift: Build Debug IPCBenchmarks"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:hdxl-xpc-coding}",
+      "name": "Release IPCBenchmarks",
+      "target": "IPCBenchmarks",
+      "configuration": "release",
+      "preLaunchTask": "swift: Build Release IPCBenchmarks"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:hdxl-xpc-coding}",
+      "name": "Debug EncodingBenchmarks",
+      "target": "EncodingBenchmarks",
+      "configuration": "debug",
+      "preLaunchTask": "swift: Build Debug EncodingBenchmarks"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:hdxl-xpc-coding}",
+      "name": "Release EncodingBenchmarks",
+      "target": "EncodingBenchmarks",
+      "configuration": "release",
+      "preLaunchTask": "swift: Build Release EncodingBenchmarks"
+    }
+  ]
+}

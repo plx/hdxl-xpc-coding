@@ -149,6 +149,20 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   
   @inlinable
   internal mutating func encode<T : Encodable>(_ value: T, forKey key: Key) throws {
+    // Fast path for Data - encode directly as xpc_data_t
+    if let data = value as? Data {
+      try encoder.withTransientCodingPathElement(key) { _ in
+        data.withUnsafeBytes { buffer in
+          underlyingXPCDictionary.setValue(
+            xpc_data_create(buffer.baseAddress, buffer.count),
+            forKey: key,
+            strategy: stringKeyStrategy
+          )
+        }
+      }
+      return
+    }
+
     try encoder.withTransientCodingPathElement(key) { codingPath in
       do {
         underlyingXPCDictionary.setValue(

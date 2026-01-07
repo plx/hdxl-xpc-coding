@@ -158,6 +158,19 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
   @usableFromInline
   internal mutating func encode<T: Encodable>(_ value: T) throws {
+    // Fast path for Data - encode directly as xpc_data_t
+    if let data = value as? Data {
+      try withNextCodingKey { _ in
+        data.withUnsafeBytes { buffer in
+          xpc_array_append_value(
+            underlyingXPCArray,
+            xpc_data_create(buffer.baseAddress, buffer.count)
+          )
+        }
+      }
+      return
+    }
+
     try withNextCodingKey { codingPath in
       do {
         let xpcObject = try _XPCEncoder.encode(

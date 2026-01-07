@@ -18,6 +18,7 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.0.0"),
+    .package(url: "https://github.com/ordo-one/package-benchmark", from: "1.4.0"),
   ],
   targets: [
     .target(
@@ -34,7 +35,39 @@ let package = Package(
         .enableExperimentalFeature("StrictConcurrency")
       ]
     ),
-    
+
+    // MARK: - Benchmarks
+
+    .executableTarget(
+      name: "EncodingBenchmarks",
+      dependencies: [
+        "XPCCoding",
+        .product(name: "Benchmark", package: "package-benchmark"),
+      ],
+      path: "Benchmarks/EncodingBenchmarks",
+      swiftSettings: [
+        .enableExperimentalFeature("StrictConcurrency")
+      ],
+      plugins: [
+        .plugin(name: "BenchmarkPlugin", package: "package-benchmark"),
+      ]
+    ),
+
+    .executableTarget(
+      name: "IPCBenchmarks",
+      dependencies: [
+        "XPCCoding",
+        .product(name: "Benchmark", package: "package-benchmark"),
+      ],
+      path: "Benchmarks/IPCBenchmarks",
+      swiftSettings: [
+        .enableExperimentalFeature("StrictConcurrency")
+      ],
+      plugins: [
+        .plugin(name: "BenchmarkPlugin", package: "package-benchmark"),
+      ]
+    ),
+
   ],
   swiftLanguageModes: [.v6],
 )

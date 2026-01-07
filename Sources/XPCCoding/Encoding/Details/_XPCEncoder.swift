@@ -176,6 +176,13 @@ extension _XPCEncoder {
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy
   ) throws -> xpc_object_t {
+    // Fast path for Data - encode directly as xpc_data_t
+    if let data = value as? Data {
+      return data.withUnsafeBytes { buffer in
+        xpc_data_create(buffer.baseAddress, buffer.count)
+      }
+    }
+
     let encoder = _XPCEncoder(
       stringKeyStrategy: stringKeyStrategy,
       stringValueStrategy: stringValueStrategy,
