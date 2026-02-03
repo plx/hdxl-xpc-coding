@@ -74,31 +74,27 @@ let dataBackedCodec = XPCCodec(configuration: .init(
 
 ### Integration with XPC Services
 
-A common pattern is to store your encoded payload in an XPC dictionary message.
+`XPCCoding` produces an `xpc_object_t`, so you can send that object directly.
 
 ```swift
 import XPC
 import XPCCoding
 
 struct Request: Codable { let command: String }
-struct Response: Codable { let ok: Bool }
 
 let codec = XPCCodec()
 let request = Request(command: "ping")
 
-// Client side: encode payload and attach to message dictionary.
-let message = xpc_dictionary_create(nil, nil, 0)
-let payload = try codec.encode(request)
-xpc_dictionary_set_value(message, "payload", payload)
+// Client side: encode the request as an xpc_object_t.
+let outbound = try codec.encode(request)
 
-// Send `message` through your connection API.
+// Send `outbound` through your connection API.
 // ...
 
-// Server/reply side: read payload back and decode.
-if let responsePayload = xpc_dictionary_get_value(message, "payload") {
-    let response = try codec.decode(Response.self, from: responsePayload)
-    _ = response
-}
+// Server side: decode from the received xpc_object_t.
+let inbound: xpc_object_t = outbound
+let decodedRequest = try codec.decode(Request.self, from: inbound)
+_ = decodedRequest
 ```
 
 ## See Also
