@@ -1,6 +1,6 @@
 # Relationship to `CodableXPC`
 
-When I started out to write an `Encoder`/`Decoder` pair for `xpc_object_t`, I quickly discovered the pre-existing [CodableXPC](https://github.com/daniel-grumberg/CodableXPC) package.
+When I started out to write an `Encoder`/`Decoder` pair for `xpc_object_t`, I quickly discovered the pre-existing `CodableXPC` package.
 
 My initial plan was simply to fork the project, ensure it handled Swift 6, expand the unit test suite to verify its correctness, and then open a PR back to the original project. 
 
@@ -84,3 +84,7 @@ As such, in `XPCCoding` I ensured the encoder and decoder can handle embedded nu
 Additionally, I made this handling configurable, with safe default strategies for keys and values.
 
 [^not-a-criticism]: I don't mean to criticize the original library authors here, because it's a very defensible approach—strings with embedded null bytes are rare, often considered "pathological", and are the kind of thing you'd generally prefer to avoid having or using.
+
+## External Reference
+
+- [CodableXPC](https://github.com/daniel-grumberg/CodableXPC)

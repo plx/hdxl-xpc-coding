@@ -23,19 +23,45 @@ XPCCoding defines two protocols that extend the standard encoding containers:
 
 ### Usage Pattern
 
-*(Placeholder: examples of using the enhanced APIs)*
+Use the convenience helpers on standard containers. They detect enhanced container support and choose the efficient path automatically.
 
 ```swift
-// Conceptual example
-var container = encoder.singleValueContainer()
-if var enhanced = container as? XPCEnhancedSingleValueEncodingContainer {
-    try enhanced.directlyEncodeXPCData(pointer, count: byteCount)
+struct Blob: Encodable {
+    let pointer: UnsafeRawPointer?
+    let count: Int
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.efficientlyEncodeBinaryData(pointer, count: count)
+    }
 }
+```
+
+For keyed and unkeyed contexts:
+
+```swift
+var keyed = encoder.container(keyedBy: CodingKeys.self)
+try keyed.efficientlyEncodeBinaryData(bytesPointer, count: byteCount, forKey: .payload)
+
+var unkeyed = encoder.unkeyedContainer()
+try unkeyed.efficientlyEncodeBinaryData(bytesPointer, count: byteCount)
 ```
 
 ### Convenience Extensions
 
-*(Placeholder: describe the public-facing extensions on standard containers)*
+Public extension methods exist on:
+
+- `SingleValueEncodingContainer`
+- `UnkeyedEncodingContainer`
+- `KeyedEncodingContainer`
+
+When the backing container conforms to an enhanced protocol, the method calls `directlyEncodeXPCData(...)`. Otherwise it falls back to standard `Data` encoding behavior, preserving correctness on non-XPC encoders.
+
+## Safety Notes
+
+- This optimization avoids transient `Data` wrappers; it is not zero-copy across the full pipeline.
+- XPC still copies payload bytes into the resulting `xpc_data_t`.
+- Pointer lifetimes must remain valid for the duration of the encode call.
 
 ## See Also
 

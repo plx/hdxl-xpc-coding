@@ -55,27 +55,27 @@ For further usage examples, see <doc:UsageExamples>.
 
 Encoding is performed via the ``XPCEncoder`` type, which conforms to [Combine's `TopLevelEncoder` protocol](https://developer.apple.com/documentation/combine/toplevelencoder).
 
-- ``XPCEncoder``: facade used for encoding top-level (root) values *to* `xpc_object_t`
-- ``XPCEncoder/StringKeyStrategy``: encoding-time strategies for string keys
-- ``XPCEncoder/StringValueStrategy``: encoding-time strategies for string values
+- ``XPCEncoder``
+- ``XPCEncoder/StringKeyStrategy``
+- ``XPCEncoder/StringValueStrategy``
 
 ### Decoding
 
 Decoding is performed via the ``XPCDecoder`` type, which conforms to [Combine's `TopLevelDecoder` protocol](https://developer.apple.com/documentation/combine/topleveldecoder).
 
-- ``XPCDecoder``: facade used for decoding top-level (root) values *from* `xpc_object_t`
-- ``XPCDecoder/StringKeyStrategy``: decoding-time strategies for string keys
-- ``XPCDecoder/StringValueStrategy``: decoding-time strategies for string values
+- ``XPCDecoder``
+- ``XPCDecoder/StringKeyStrategy``
+- ``XPCDecoder/StringValueStrategy``
 
 ### Codec
 
 The ``XPCCodec`` type provides a convenient way to create matched encoder/decoder pairs with compatible configurations.
 
-- ``XPCCodec``: convenience for creating matched encoder/decoder pairs
-- ``XPCCodec/Configuration``: unified configuration for encoder/decoder pairs
-- ``XPCCodec/StringKeyStrategy``: codec-level configuration for string keys
-- ``XPCCodec/StringValueStrategy``: codec-level configuration for string values
+- ``XPCCodec``
+- ``XPCCodec/Configuration``
+- ``XPCCodec/StringKeyStrategy``
+- ``XPCCodec/StringValueStrategy``
 
 ### Efficient Binary Encoding
 
-When working with binary data represented as length/pointer pairs, you can use avoid the overhead of transient `Data` wrappers via `XPCCoding`'s extension methods like ``SingleValueEncodingContainer/efficientlyEncodeBinaryData(_:count:)-(UnsafeRawPointer,_)``. For more information, see <doc:EnhancedBinaryAPIs>.
+When working with binary data represented as length/pointer pairs, you can avoid transient `Data` wrappers via helper methods such as `efficientlyEncodeBinaryData(_:count:)` on encoding containers. For details, see <doc:EnhancedBinaryAPIs>.

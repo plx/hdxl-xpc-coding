@@ -40,11 +40,66 @@ let decoded = try codec.decode(MyType.self, from: encoded)
 
 ### Configuring String Strategies
 
-*(Placeholder: examples of different string handling strategies)*
+Pick strategies based on trust level and interoperability requirements.
+
+```swift
+// Fastest, but unsafe for embedded null bytes.
+let fastEncoder = XPCEncoder(
+    stringKeyStrategy: .assumeAbsent,
+    stringValueStrategy: .assumeAbsent
+)
+let fastDecoder = XPCDecoder(
+    stringKeyStrategy: .passthrough,
+    stringValueStrategy: .passthrough
+)
+
+// Safe defaults: round-trips embedded null bytes via percent escaping.
+let safeCodec = XPCCodec(configuration: .init(
+    stringKeyStrategy: .percentEscape,
+    stringValueStrategy: .percentEscape
+))
+
+// Strict values: fail fast if a value contains an embedded null byte.
+let strictEncoder = XPCEncoder(
+    stringKeyStrategy: .percentEscape,
+    stringValueStrategy: .throwOnDiscovery
+)
+
+// Preserve value bytes as xpc_data_t instead of xpc_string_t.
+let dataBackedCodec = XPCCodec(configuration: .init(
+    stringKeyStrategy: .percentEscape,
+    stringValueStrategy: .useDataRepresentation(.utf8)
+))
+```
 
 ### Integration with XPC Services
 
-*(Placeholder: examples of using XPCCoding with XPC connections)*
+A common pattern is to store your encoded payload in an XPC dictionary message.
+
+```swift
+import XPC
+import XPCCoding
+
+struct Request: Codable { let command: String }
+struct Response: Codable { let ok: Bool }
+
+let codec = XPCCodec()
+let request = Request(command: "ping")
+
+// Client side: encode payload and attach to message dictionary.
+let message = xpc_dictionary_create(nil, nil, 0)
+let payload = try codec.encode(request)
+xpc_dictionary_set_value(message, "payload", payload)
+
+// Send `message` through your connection API.
+// ...
+
+// Server/reply side: read payload back and decode.
+if let responsePayload = xpc_dictionary_get_value(message, "payload") {
+    let response = try codec.decode(Response.self, from: responsePayload)
+    _ = response
+}
+```
 
 ## See Also
 
