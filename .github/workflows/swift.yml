@@ -33,7 +33,7 @@ jobs:
           ${{ runner.os }}-xcode-${{ matrix.xcode }}-spm-
 
     - name: Build
-      run: swift build -q
+      run: swift build -q --product XPCCoding
 
     - name: Run tests
       run: swift test -q
