@@ -56,8 +56,11 @@ extension XPCObjectExtractable where Self: XPCBinaryDataRepresentationConvertibl
       return nil
     }
     
-    let unsafeBaseAddress = xpc_data_get_bytes_ptr(object)!
-    
+    let unsafeBaseAddress = infalliblyUnwrap(
+      xpc_data_get_bytes_ptr(object),
+      explanation: "`xpc_data_get_bytes_ptr` returns NULL only for non-data xpc objects, but `object`'s type was already checked above."
+    )
+
     return Self(
       unsafeXPCBinaryDataRepresentationRawBufferPointer: UnsafeRawBufferPointer(
         start: unsafeBaseAddress,
@@ -162,15 +165,24 @@ extension Data: XPCObjectExtractable {
       return Self()
     }
     var result = Data(repeating: 0, count: length)
-    result.withUnsafeMutableBytes { unsafeMutableBufferPtr in
-      _ = xpc_data_get_bytes(
+    let copiedOK = result.withUnsafeMutableBytes { unsafeMutableBufferPtr in
+      let baseAddress = infalliblyUnwrap(
+        unsafeMutableBufferPtr.baseAddress,
+        explanation: "`UnsafeMutableRawBufferPointer.baseAddress` is nil only for empty buffers, but we already early-returned for `length == 0`."
+      )
+
+      let copiedAmount = xpc_data_get_bytes(
         object,
-        unsafeMutableBufferPtr.baseAddress!,
+        baseAddress,
         0,
         length
       )
+      return copiedAmount == length
     }
-    
+    guard copiedOK else {
+      return nil
+    }
+
     return result
   }
   

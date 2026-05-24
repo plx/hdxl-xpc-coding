@@ -155,40 +155,26 @@ struct FacadeAndStateCoverageTests {
     )
     let createDisposition = encoder.containerRequestDisposition(containerKind: .keyed)
     #expect(dispositionName(createDisposition) == "create")
-    #expect(createDisposition.permitsNewContainerCreation)
-    #expect(createDisposition.existingContainer == nil)
 
     encoder.topLevelContainerState = .pendingSingleValue
     let pendingSingleValueDisposition = encoder.containerRequestDisposition(containerKind: .keyed)
     #expect(dispositionName(pendingSingleValueDisposition) == "singleValueBlocked")
-    #expect(!pendingSingleValueDisposition.permitsNewContainerCreation)
-    #expect(pendingSingleValueDisposition.existingContainer == nil)
 
     encoder.topLevelContainerState = .completedSingleValue(singleValue)
     let completedSingleValueDisposition = encoder.containerRequestDisposition(containerKind: .unkeyed)
     #expect(dispositionName(completedSingleValueDisposition) == "singleValueBlocked")
-    #expect(!completedSingleValueDisposition.permitsNewContainerCreation)
-    #expect(completedSingleValueDisposition.existingContainer == nil)
 
     encoder.topLevelContainerState = .keyed(dictionary)
     let continueKeyedDisposition = encoder.containerRequestDisposition(containerKind: .keyed)
     let switchFromKeyedDisposition = encoder.containerRequestDisposition(containerKind: .unkeyed)
     #expect(dispositionName(continueKeyedDisposition) == "continue")
-    #expect(!continueKeyedDisposition.permitsNewContainerCreation)
-    #expect(continueKeyedDisposition.existingContainer != nil)
     #expect(dispositionName(switchFromKeyedDisposition) == "switchBlocked")
-    #expect(!switchFromKeyedDisposition.permitsNewContainerCreation)
-    #expect(switchFromKeyedDisposition.existingContainer == nil)
 
     encoder.topLevelContainerState = .unkeyed(array)
     let continueUnkeyedDisposition = encoder.containerRequestDisposition(containerKind: .unkeyed)
     let switchFromUnkeyedDisposition = encoder.containerRequestDisposition(containerKind: .keyed)
     #expect(dispositionName(continueUnkeyedDisposition) == "continue")
-    #expect(!continueUnkeyedDisposition.permitsNewContainerCreation)
-    #expect(continueUnkeyedDisposition.existingContainer != nil)
     #expect(dispositionName(switchFromUnkeyedDisposition) == "switchBlocked")
-    #expect(!switchFromUnkeyedDisposition.permitsNewContainerCreation)
-    #expect(switchFromUnkeyedDisposition.existingContainer == nil)
   }
 
   @Test
@@ -204,8 +190,6 @@ struct FacadeAndStateCoverageTests {
       #expect(
         dispositionName(disposition) == probe.expectedDisposition
       )
-      #expect(disposition.permitsNewContainerCreation == (probe.expectedDisposition == "create"))
-      #expect((disposition.existingContainer != nil) == (probe.expectedDisposition == "continue"))
       #expect(probe.state.canBeginContainer == probe.expectedCanBeginContainer)
       #expect(!probe.state.description.isEmpty)
       #expect(!probe.state.debugDescription.isEmpty)

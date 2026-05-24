@@ -54,7 +54,10 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
     }
     
     self = xpcBinaryDataRepresentation.withUnsafeBytes { (pointerToData: UnsafeRawBufferPointer) in
-      Self(unsafeXPCBinaryDataRepresentationRawBufferPointer: pointerToData)!
+      infalliblyUnwrap(
+        Self(unsafeXPCBinaryDataRepresentationRawBufferPointer: pointerToData),
+        explanation: "The size of `xpcBinaryDataRepresentation` was just verified to equal `MemoryLayout<Self>.size`, which is the only condition under which the unsafe initializer can fail for a `Numeric` type."
+      )
     }
   }
   

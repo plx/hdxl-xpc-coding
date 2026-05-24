@@ -40,10 +40,13 @@ extension String {
         xpc_string_create(cStringPtr)
       }
     case .useDataRepresentation(let representation):
-      let dataRepresentation = data(
-        using: representation.stringEncoding,
-        allowLossyConversion: false
-      )!
+      let dataRepresentation = infalliblyUnwrap(
+        data(
+          using: representation.stringEncoding,
+          allowLossyConversion: false
+        ),
+        explanation: "Every `XPCCodec.StringValueDataRepresentation` case (`.utf8`, `.utf16`, `.utf32`) is a lossless Unicode encoding, so `String.data(using:allowLossyConversion: false)` is total over all valid `String` values."
+      )
       return dataRepresentation.withUnsafeBytes { (unsafeRawBufferPointer: UnsafeRawBufferPointer) in
         xpc_data_create(
           unsafeRawBufferPointer.baseAddress,

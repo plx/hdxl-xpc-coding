@@ -37,23 +37,46 @@ internal final class _XPCArrayReferencingEncoder: _XPCEncoder {
   ) -> KeyedEncodingContainer<Key> where Key : CodingKey {
     let newDictionary = xpc_dictionary_create(nil, nil, 0)
     xpc_array_set_value(xpcArray, index, newDictionary)
-    
-    let container = try! XPCKeyedEncodingContainer<Key>(
-      referencing: self,
-      wrapping: newDictionary
-    )
-    return KeyedEncodingContainer(container)
+
+    do {
+      let container = try XPCKeyedEncodingContainer<Key>(
+        referencing: self,
+        wrapping: newDictionary
+      )
+      return KeyedEncodingContainer(container)
+    }
+    catch let error {
+      fatalError(
+        """
+        Encountered unrecoverable internal error creating keyed-container:
+
+        - keyedBy: \(type)
+        - error: \(String(reflecting: error))
+        """
+      )
+    }
   }
-  
+
   @usableFromInline
   internal override func unkeyedContainer() -> UnkeyedEncodingContainer {
     let newArray = xpc_array_create(nil, 0)
     xpc_array_set_value(xpcArray, index, newArray)
-    
-    return try! XPCUnkeyedEncodingContainer(
-      referencing: self,
-      wrapping: newArray
-    )
+
+    do {
+      return try XPCUnkeyedEncodingContainer(
+        referencing: self,
+        wrapping: newArray
+      )
+    }
+    catch let error {
+      fatalError(
+        """
+        Encountered unrecoverable internal error creating unkeyed-container:
+
+        - error: \(String(reflecting: error))
+        """
+      )
+    }
   }
   
   @usableFromInline

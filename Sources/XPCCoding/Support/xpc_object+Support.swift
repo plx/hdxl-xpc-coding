@@ -54,7 +54,7 @@ extension xpc_object_t {
   /// Sets `nil` for `key`, using the indicated `strategy` for the `key`'s string representation.
   @inlinable @inline(__always)
   internal func setNil(
-    forKey key: any CodingKey,
+    forKey key: some CodingKey,
     strategy: XPCEncoder.StringKeyStrategy
   ) {
     setNil(
@@ -62,7 +62,7 @@ extension xpc_object_t {
       strategy: strategy
     )
   }
-  
+
   /// Sets `nil` for `key`, using the indicated `strategy` for the `key`.
   @inlinable @inline(__always)
   internal func setNil(
@@ -119,6 +119,25 @@ extension xpc_object_t {
 extension xpc_object_t {
   
   /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
+  ///
+  /// - Note: there are two `CodingKey`-taking overloads here: a `some CodingKey` variant that
+  ///   specializes for the common case where a concrete generic key type is known at the call
+  ///   site (e.g. inside `XPCKeyedEncodingContainer`), and an `any CodingKey` variant that handles
+  ///   the existential case used by `_XPCDictionaryReferencingEncoder.codingKey`.
+  @inlinable @inline(__always)
+  internal func setValue(
+    _ value: xpc_object_t,
+    forKey key: some CodingKey,
+    strategy: XPCEncoder.StringKeyStrategy
+  ) {
+    setValue(
+      value,
+      forKey: key.stringValue,
+      strategy: strategy
+    )
+  }
+
+  /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
   @inlinable @inline(__always)
   internal func setValue(
     _ value: xpc_object_t,
@@ -131,7 +150,7 @@ extension xpc_object_t {
       strategy: strategy
     )
   }
-  
+
   /// Sets `value` for `key`, using the indicated `strategy` for the `key`.
   @inlinable @inline(__always)
   internal func setValue(

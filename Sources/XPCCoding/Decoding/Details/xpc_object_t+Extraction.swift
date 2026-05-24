@@ -13,6 +13,9 @@ internal enum XPCStringExtractionError: Error {
   /// We were unable to remove percent escapes from the string.
   case unableToRemovePercentEscapes(String)
 
+  /// We were unable to copy the string content from the xpc data object.
+  case unableToCopyStringContent(String)
+
   /// We were unable to decode the string content from the xpc data object.
   case unableToDecode(String)
 }
@@ -86,7 +89,10 @@ extension xpc_object_t {
       guard expectedLength > 0 else {
         return ""
       }
-      let cString = xpc_string_get_string_ptr(self)!
+      let cString = infalliblyUnwrap(
+        xpc_string_get_string_ptr(self),
+        explanation: "`xpc_string_get_string_ptr` returns NULL only for non-string xpc objects, but `self` was just verified to be `XPC_TYPE_STRING`."
+      )
       
       let string = String(cString: cString)
       guard stringValueStrategy == .percentEscape else {
@@ -105,14 +111,22 @@ extension xpc_object_t {
         return ""
       }
       var data = Data(repeating: 0, count: expectedLength)
-      data.withUnsafeMutableBytes { (unsafeMutableBytesPtr: UnsafeMutableRawBufferPointer) in
+      let copiedOK = data.withUnsafeMutableBytes { (unsafeMutableBytesPtr: UnsafeMutableRawBufferPointer) in
+        let baseAddress = infalliblyUnwrap(
+          unsafeMutableBytesPtr.baseAddress,
+          explanation: "`UnsafeMutableRawBufferPointer.baseAddress` is nil only for empty buffers, but we already early-returned for `expectedLength == 0`."
+        )
+
         let copiedCount = xpc_data_get_bytes(
           self,
-          unsafeMutableBytesPtr.baseAddress!,
+          baseAddress,
           0,
           expectedLength
         )
-        precondition(copiedCount == expectedLength)
+        return expectedLength == copiedCount
+      }
+      guard copiedOK else {
+        throw .unableToCopyStringContent("Unable to copy \(expectedLength) bytes from xpc data.")
       }
       
       guard
