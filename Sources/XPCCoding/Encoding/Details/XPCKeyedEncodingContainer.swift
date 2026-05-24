@@ -181,32 +181,18 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
     keyedBy keyType: NestedKey.Type, 
     forKey key: Key
   ) -> KeyedEncodingContainer<NestedKey> {
-    do {
-      return try encoder.withTransientCodingPathElement(key) { _ in
-        let xpcDictionary = xpc_dictionary_create(nil, nil, 0)
-        underlyingXPCDictionary.setValue(
-          xpcDictionary,
-          forKey: key,
-          strategy: stringKeyStrategy
-        )
-        // It is OK to force this through because we know we are providing a dictionary
-        let container = try XPCKeyedEncodingContainer<NestedKey>(
-          referencing: encoder,
-          wrapping: xpcDictionary
-        )
-        return KeyedEncodingContainer(container)
-      }
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable error preparing nested keyed container (due to API limitations requiring non-throwing construction here).
-        
-        - keyType: \(keyType)
-        - key: \(key)
-        - error: \(String(reflecting: error))
-        """
+    try! encoder.withTransientCodingPathElement(key) { _ in
+      let xpcDictionary = xpc_dictionary_create(nil, nil, 0)
+      underlyingXPCDictionary.setValue(
+        xpcDictionary,
+        forKey: key,
+        strategy: stringKeyStrategy
       )
+      let container = try! XPCKeyedEncodingContainer<NestedKey>(
+        referencing: encoder,
+        wrapping: xpcDictionary
+      )
+      return KeyedEncodingContainer(container)
     }
   }
   
@@ -214,79 +200,43 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   internal mutating func nestedUnkeyedContainer(
     forKey key: Key
   ) -> UnkeyedEncodingContainer {
-    do {
-      let xpcArray = xpc_array_create(nil, 0)
-      underlyingXPCDictionary.setValue(
-        xpcArray,
-        forKey: key,
-        strategy: stringKeyStrategy
-      )
-      
-      return try encoder.withTransientCodingPathElement(key) { _ in
-        let container = try XPCUnkeyedEncodingContainer(
-          referencing: encoder,
-          wrapping: xpcArray
-        )
-        return container
-      }
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable error preparing nested unkeyed container (due to API limitations requiring non-throwing construction here).
-        
-        - key: \(key)
-        - error: \(String(reflecting: error))
-        """
+    let xpcArray = xpc_array_create(nil, 0)
+    underlyingXPCDictionary.setValue(
+      xpcArray,
+      forKey: key,
+      strategy: stringKeyStrategy
+    )
+
+    return try! encoder.withTransientCodingPathElement(key) { _ in
+      try! XPCUnkeyedEncodingContainer(
+        referencing: encoder,
+        wrapping: xpcArray
       )
     }
   }
   
   @inlinable
   internal mutating func superEncoder() -> Encoder {
-    do {
-      return try encoder.withTransientCodingPathElement(XPCCodingKey.superKey) { codingPath in
-        _XPCDictionaryReferencingEncoder(
-          stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: stringValueStrategy,
-          codingPath: codingPath,
-          codingKey: XPCCodingKey.superKey,
-          dictionary: underlyingXPCDictionary
-        )
-      }
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable error preparing superEncoder (due to API limitations requiring non-throwing construction here).
-        
-        - error: \(String(reflecting: error))
-        """
+    try! encoder.withTransientCodingPathElement(XPCCodingKey.superKey) { codingPath in
+      _XPCDictionaryReferencingEncoder(
+        stringKeyStrategy: stringKeyStrategy,
+        stringValueStrategy: stringValueStrategy,
+        codingPath: codingPath,
+        codingKey: XPCCodingKey.superKey,
+        dictionary: underlyingXPCDictionary
       )
     }
   }
   
   @inlinable
   internal mutating func superEncoder(forKey key: Key) -> Encoder {
-    do {
-      return try encoder.withTransientCodingPathElement(key) { codingPath in
-        _XPCDictionaryReferencingEncoder(
-          stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: stringValueStrategy,
-          codingPath: codingPath,
-          codingKey: key,
-          dictionary: underlyingXPCDictionary
-        )
-      }
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable error preparing superEncoder (due to API limitations requiring non-throwing construction here).
-        
-        - key: \(key)
-        - error: \(String(reflecting: error))
-        """
+    try! encoder.withTransientCodingPathElement(key) { codingPath in
+      _XPCDictionaryReferencingEncoder(
+        stringKeyStrategy: stringKeyStrategy,
+        stringValueStrategy: stringValueStrategy,
+        codingPath: codingPath,
+        codingKey: key,
+        dictionary: underlyingXPCDictionary
       )
     }
   }

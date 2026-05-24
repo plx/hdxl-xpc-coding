@@ -39,23 +39,11 @@ internal final class _XPCDictionaryReferencingEncoder: _XPCEncoder {
       strategy: stringKeyStrategy
     )
 
-    do {
-      let container = try XPCKeyedEncodingContainer<Key>(
-        referencing: self,
-        wrapping: newDictionary
-      )
-      return KeyedEncodingContainer(container)
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable internal error creating keyed-container:
-        
-        - keyedBy: \(type)
-        - error: \(String(reflecting: error))
-        """
-      )
-    }
+    let container = try! XPCKeyedEncodingContainer<Key>(
+      referencing: self,
+      wrapping: newDictionary
+    )
+    return KeyedEncodingContainer(container)
   }
   
   @usableFromInline
@@ -67,21 +55,10 @@ internal final class _XPCDictionaryReferencingEncoder: _XPCEncoder {
       strategy: stringKeyStrategy
     )
 
-    do {
-      return try XPCUnkeyedEncodingContainer(
-        referencing: self,
-        wrapping: newArray
-      )
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable internal error creating unkeyed-container:
-        
-        - error: \(String(reflecting: error))
-        """
-      )
-    }
+    return try! XPCUnkeyedEncodingContainer(
+      referencing: self,
+      wrapping: newArray
+    )
   }
   
   @usableFromInline
@@ -95,4 +72,3 @@ internal final class _XPCDictionaryReferencingEncoder: _XPCEncoder {
     }
   }
 }
-

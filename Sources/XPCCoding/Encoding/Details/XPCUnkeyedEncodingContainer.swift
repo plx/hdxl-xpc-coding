@@ -182,70 +182,42 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   
   @usableFromInline
   internal mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
-    do {
-      return try withNextCodingKey { _ in
-        let xpcDictionary = xpc_dictionary_create(nil, nil, 0)
-        xpc_array_append_value(underlyingXPCArray, xpcDictionary)
-        
-        let container = try XPCKeyedEncodingContainer<NestedKey>(referencing: encoder, wrapping: xpcDictionary)
-        return KeyedEncodingContainer(container)
-      }
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable error preparing nested keyed container (due to API limitations requiring non-throwing construction here).
-        
-        - keyType: \(keyType)
-        - error: \(String(reflecting: error))
-        """
+    try! withNextCodingKey { _ in
+      let xpcDictionary = xpc_dictionary_create(nil, nil, 0)
+      xpc_array_append_value(underlyingXPCArray, xpcDictionary)
+
+      let container = try! XPCKeyedEncodingContainer<NestedKey>(
+        referencing: encoder,
+        wrapping: xpcDictionary
       )
+      return KeyedEncodingContainer(container)
     }
   }
   
   @usableFromInline
   internal mutating func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-    do {
-      return try withNextCodingKey { _ in
-        let xpcArray = xpc_array_create(nil, 0)
-        xpc_array_append_value(underlyingXPCArray, xpcArray)
-        
-        return try XPCUnkeyedEncodingContainer(referencing: encoder, wrapping: xpcArray)
-      }
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable error preparing nested unkeyed container (due to API limitations requiring non-throwing construction here).
-        
-        - error: \(String(reflecting: error))
-        """
+    try! withNextCodingKey { _ in
+      let xpcArray = xpc_array_create(nil, 0)
+      xpc_array_append_value(underlyingXPCArray, xpcArray)
+
+      return try! XPCUnkeyedEncodingContainer(
+        referencing: encoder,
+        wrapping: xpcArray
       )
     }
   }
   
   @usableFromInline
   internal mutating func superEncoder() -> Encoder {
-    do {
-      return try withNextCodingKey { codingPath in
-        // TODO: investigate if we can refactor so as to avoid injecting this placeholder value
-        xpc_array_append_value(underlyingXPCArray, xpc_null_create())
-        return _XPCArrayReferencingEncoder(
-          stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: stringValueStrategy,
-          codingPath: codingPath,
-          index: count - 1,
-          array: underlyingXPCArray
-        )
-      }
-    }
-    catch let error {
-      fatalError(
-        """
-        Encountered unrecoverable error preparing nested unkeyed container (due to API limitations requiring non-throwing construction here).
-        
-        - error: \(String(reflecting: error))
-        """
+    try! withNextCodingKey { codingPath in
+      // TODO: investigate if we can refactor so as to avoid injecting this placeholder value
+      xpc_array_append_value(underlyingXPCArray, xpc_null_create())
+      return _XPCArrayReferencingEncoder(
+        stringKeyStrategy: stringKeyStrategy,
+        stringValueStrategy: stringValueStrategy,
+        codingPath: codingPath,
+        index: count - 1,
+        array: underlyingXPCArray
       )
     }
   }
@@ -363,4 +335,3 @@ extension XPCUnkeyedEncodingContainer: XPCEnhancedUnkeyedEncodingContainer {
   }
  
 }
-

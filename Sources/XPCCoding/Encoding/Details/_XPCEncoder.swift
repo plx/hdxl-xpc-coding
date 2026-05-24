@@ -71,68 +71,46 @@ internal class _XPCEncoder: Encoder {
   
   @usableFromInline
   internal func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
-    switch containerRequestDisposition(containerKind: .keyed) {
-    case .proceedWithContainerCreation:
-      let dictionaryLikeTopLevelObject = xpc_dictionary_create_empty()
-      topLevelContainerState = .keyed(dictionaryLikeTopLevelObject)
-      return prepareKeyedEncodingContainer(
-        keyedBy: type,
-        wrapping: dictionaryLikeTopLevelObject
-      )
-    case .continueExistingContainer(let existingXPCDictionary):
+    let disposition = containerRequestDisposition(containerKind: .keyed)
+    if let existingXPCDictionary = disposition.existingContainer {
       return prepareKeyedEncodingContainer(
         keyedBy: type,
         wrapping: existingXPCDictionary
       )
-    case .unableToContinueSingleValueContainer:
-      abortDueToImpossibleSingleValueContainerContinuation()
-    case .unableToSwitchContainerKind(let currentKind, let requestedKind):
-      abortDueToImpossibleContainerKindSwitch(
-        currentKind: currentKind,
-        requestedKind: requestedKind
-      )
     }
+
+    precondition(disposition.permitsNewContainerCreation)
+    let dictionaryLikeTopLevelObject = xpc_dictionary_create_empty()
+    topLevelContainerState = .keyed(dictionaryLikeTopLevelObject)
+    return prepareKeyedEncodingContainer(
+      keyedBy: type,
+      wrapping: dictionaryLikeTopLevelObject
+    )
   }
   
   @usableFromInline
   internal func unkeyedContainer() -> UnkeyedEncodingContainer {
-    switch containerRequestDisposition(containerKind: .unkeyed) {
-    case .proceedWithContainerCreation:
-      let arrayLikeTopLevelObject = xpc_array_create_empty()
-      topLevelContainerState = .unkeyed(arrayLikeTopLevelObject)
-      return prepareUnkeyedEncodingContainer(
-        wrapping: arrayLikeTopLevelObject
-      )
-    case .continueExistingContainer(let existingXPCArray):
+    let disposition = containerRequestDisposition(containerKind: .unkeyed)
+    if let existingXPCArray = disposition.existingContainer {
       return prepareUnkeyedEncodingContainer(
         wrapping: existingXPCArray
       )
-    case .unableToContinueSingleValueContainer:
-      abortDueToImpossibleSingleValueContainerContinuation()
-    case .unableToSwitchContainerKind(let currentKind, let requestedKind):
-      abortDueToImpossibleContainerKindSwitch(
-        currentKind: currentKind,
-        requestedKind: requestedKind
-      )
     }
+
+    precondition(disposition.permitsNewContainerCreation)
+    let arrayLikeTopLevelObject = xpc_array_create_empty()
+    topLevelContainerState = .unkeyed(arrayLikeTopLevelObject)
+    return prepareUnkeyedEncodingContainer(
+      wrapping: arrayLikeTopLevelObject
+    )
   }
   
   @usableFromInline
   internal func singleValueContainer() -> SingleValueEncodingContainer {
-    switch containerRequestDisposition(containerKind: .unkeyed) {
-    case .proceedWithContainerCreation:
-      topLevelContainerState = .pendingSingleValue
-      return prepareSingleValueEncodingContainer()
-    case .continueExistingContainer:
-      abortDueToImpossibleSingleValueContainerContinuation()
-    case .unableToContinueSingleValueContainer:
-      abortDueToImpossibleSingleValueContainerContinuation()
-    case .unableToSwitchContainerKind(let currentKind, let requestedKind):
-      abortDueToImpossibleContainerKindSwitch(
-        currentKind: currentKind,
-        requestedKind: requestedKind
-      )
-    }
+    let disposition = containerRequestDisposition(containerKind: .pendingSingleValue)
+    precondition(disposition.permitsNewContainerCreation)
+    topLevelContainerState = .pendingSingleValue
+    return prepareSingleValueEncodingContainer()
   }
 
 }
@@ -239,38 +217,26 @@ extension _XPCEncoder {
 
     /// We should proceed with creating the requested container.
     case proceedWithContainerCreation
-  }
-  
-  /// Used to "crash out" when we're asked to create a container of a different kind from the active one (e.g. single-value -> keyed, or keyed -> unkeyed, etc.).
-  @inlinable
-  internal func abortDueToImpossibleContainerKindSwitch(
-    currentKind: ContainerKind,
-    requestedKind: ContainerKind,
-    file: StaticString = #file,
-    line: UInt = #line
-  ) -> Never {
-    preconditionFailure(
-      """
-      This container has received an impossible request to transition from a \(currentKind) container to a \(requestedKind) container.
-      """,
-      file: file,
-      line: line
-    )
-  }
 
-  /// Used to "crash out" when we're asked to *continue* a single-value container (e.g. to vend another single-value container after already vending one).
-  @inlinable
-  internal func abortDueToImpossibleSingleValueContainerContinuation(
-    file: StaticString = #file,
-    line: UInt = #line
-  ) -> Never {
-    preconditionFailure(
-      """
-      This container has received an impossible request to continue a single-valued container.
-      """,
-      file: file,
-      line: line
-    )
+    @usableFromInline
+    internal var existingContainer: xpc_object_t? {
+      switch self {
+      case .continueExistingContainer(let xpcObject):
+        xpcObject
+      default:
+        nil
+      }
+    }
+
+    @usableFromInline
+    internal var permitsNewContainerCreation: Bool {
+      switch self {
+      case .proceedWithContainerCreation:
+        true
+      default:
+        false
+      }
+    }
   }
 
   /// Determine how we should proceed after being asked to create a container of a given kind.
@@ -299,7 +265,7 @@ extension _XPCEncoder {
       .continueExistingContainer(xpcObject)
     case (.unkeyed, _):
       // not ok to "switch" from unkeyed to keyed
-      .unableToSwitchContainerKind(.keyed, containerKind)
+      .unableToSwitchContainerKind(.unkeyed, containerKind)
     }
   }
   
@@ -313,31 +279,12 @@ extension _XPCEncoder {
     file: StaticString = #file,
     line: UInt = #line
   ) -> KeyedEncodingContainer<Key> where Key : CodingKey {
-    precondition(
-      xpcDictionary.isDictionary,
-      "Internal error: non-dictionary xpc object provided when we *must* have a dictionary!",
-      file: file,
-      line: line
+    precondition(xpcDictionary.isDictionary, file: file, line: line)
+    let container = try! XPCKeyedEncodingContainer<Key>(
+      referencing: self,
+      wrapping: xpcDictionary
     )
-    do {
-      let container = try XPCKeyedEncodingContainer<Key>(
-        referencing: self,
-        wrapping: xpcDictionary
-      )
-      return KeyedEncodingContainer(container)
-    }
-    catch let error {
-      preconditionFailure(
-        """
-        Encountered unrecoverable internal error creating keyed-container:
-        
-        - keyedBy: \(type)
-        - error: \(String(reflecting: error))
-        """,
-        file: file,
-        line: line
-      )
-    }
+    return KeyedEncodingContainer(container)
   }
   
   /// Internal helper to create-or-continue an unkeyed container.
@@ -349,29 +296,11 @@ extension _XPCEncoder {
     file: StaticString = #file,
     line: UInt = #line
   ) -> any UnkeyedEncodingContainer {
-    precondition(
-      xpcArray.isArray,
-      "Internal error: non-array xpc object provided when we *must* have a array!",
-      file: file,
-      line: line
+    precondition(xpcArray.isArray, file: file, line: line)
+    return try! XPCUnkeyedEncodingContainer(
+      referencing: self,
+      wrapping: xpcArray
     )
-    do {
-      return try XPCUnkeyedEncodingContainer(
-        referencing: self,
-        wrapping: xpcArray
-      )
-    }
-    catch let error {
-      preconditionFailure(
-        """
-        Encountered unrecoverable internal error creating unkeyed-container:
-        
-        - error: \(String(reflecting: error))
-        """,
-        file: file,
-        line: line
-      )
-    }
   }
   
   /// Internal helper to create a single-value container.
@@ -380,12 +309,7 @@ extension _XPCEncoder {
     file: StaticString = #file,
     line: UInt = #line
   ) -> any SingleValueEncodingContainer {
-    precondition(
-      topLevelContainerKind == .pendingSingleValue,
-      "Internal error: creating a single-value container when *not* in the pending-single-value state",
-      file: file,
-      line: line
-    )
+    precondition(topLevelContainerKind == .pendingSingleValue, file: file, line: line)
     return XPCSingleValueEncodingContainer(referencing: self) { [self] singleValueXPCObject in
       topLevelContainerState = .completedSingleValue(singleValueXPCObject)
     }
@@ -396,7 +320,7 @@ extension _XPCEncoder {
 // MARK: _XPCEncoder.ContainerKind
 
 extension _XPCEncoder {
-    /// The types of container we can have already created.
+  /// The types of container we can have already created.
   @usableFromInline
   internal enum ContainerKind {
     /// We have created a keyed container.
@@ -547,13 +471,13 @@ extension _XPCEncoder.ContainerState: CustomStringConvertible {
     case .noContainerYet:
       ".noContainerYet"
     case .keyed(let xpcObject):
-      ".keyed(\(xpcObject))"
+      ".keyed(\(xpcObject.typeDescription))"
     case .unkeyed(let xpcObject):
-      ".unkeyed(\(xpcObject))"
+      ".unkeyed(\(xpcObject.typeDescription))"
     case .pendingSingleValue:
       ".pendingSingleValue"
     case .completedSingleValue(let xpcObject):
-      ".completedSingleValue(\(xpcObject))"
+      ".completedSingleValue(\(xpcObject.typeDescription))"
     }
   }
 
@@ -568,13 +492,13 @@ extension _XPCEncoder.ContainerState: CustomDebugStringConvertible {
     case .noContainerYet:
       "\(Self.self).noContainerYet"
     case .keyed(let xpcObject):
-      "\(Self.self).keyed(\(String(reflecting: xpcObject))"
+      "\(Self.self).keyed(\(xpcObject.typeDescription))"
     case .unkeyed(let xpcObject):
-      "\(Self.self).unkeyed(\(String(reflecting: xpcObject))"
+      "\(Self.self).unkeyed(\(xpcObject.typeDescription))"
     case .pendingSingleValue:
       "\(Self.self).pendingSingleValue"
     case .completedSingleValue(let xpcObject):
-      "\(Self.self).completedSingleValue(\(String(reflecting: xpcObject))"
+      "\(Self.self).completedSingleValue(\(xpcObject.typeDescription))"
     }
   }
 }

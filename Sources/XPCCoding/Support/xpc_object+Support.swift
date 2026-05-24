@@ -6,7 +6,7 @@ extension xpc_type_t {
   /// Shorthand for `xpc_type_get_name(self)`
   @inlinable @inline(__always)
   internal var typeDescription: String {
-    String(cString: xpc_type_get_name(self), encoding: .utf8) ?? "<unknown: \(String(reflecting: self))>"
+    String(cString: xpc_type_get_name(self))
   }
   
 }
@@ -50,18 +50,6 @@ extension xpc_object_t {
 // MARK - Setters - Nil
 
 extension xpc_object_t {
-  
-  /// Sets `nil` for `key`, using the indicated `strategy` for the `key`'s string representation.
-  @inlinable @inline(__always)
-  internal func setNil(
-    forKey key: some CodingKey,
-    strategy: XPCEncoder.StringKeyStrategy
-  ) {
-    setNil(
-      forKey: key.stringValue,
-      strategy: strategy
-    )
-  }
   
   /// Sets `nil` for `key`, using the indicated `strategy` for the `key`'s string representation.
   @inlinable @inline(__always)
@@ -110,20 +98,6 @@ extension xpc_object_t {
     )
   }
 
-  /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
-  @inlinable @inline(__always)
-  internal func setValue(
-    _ value: some LosslessXPCObjectConvertible,
-    forKey key: any CodingKey,
-    strategy: XPCEncoder.StringKeyStrategy
-  ) {
-    setValue(
-      value.xpcObjectRepresentation,
-      forKey: key.stringValue,
-      strategy: strategy
-    )
-  }
-
   /// Sets `value` for `key`, using the indicated `strategy` for the `key`.
   @inlinable @inline(__always)
   internal func setValue(
@@ -143,20 +117,6 @@ extension xpc_object_t {
 // MARK: - Value-Setting - Direct
 
 extension xpc_object_t {
-  
-  /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
-  @inlinable @inline(__always)
-  internal func setValue(
-    _ value: xpc_object_t,
-    forKey key: some CodingKey,
-    strategy: XPCEncoder.StringKeyStrategy
-  ) {
-    setValue(
-      value,
-      forKey: key.stringValue,
-      strategy: strategy
-    )
-  }
   
   /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
   @inlinable @inline(__always)
@@ -238,4 +198,3 @@ extension xpc_object_t {
   }
   
 }
-

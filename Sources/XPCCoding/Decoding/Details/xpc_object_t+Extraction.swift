@@ -10,14 +10,8 @@ internal enum XPCStringExtractionError: Error {
   /// The xpc object is not of the expected type.
   case typeMismatch(String)
 
-  /// The xpc string object's c string pointer is nil.
-  case unexpectedNilCString
-
   /// We were unable to remove percent escapes from the string.
   case unableToRemovePercentEscapes(String)
-
-  /// We were unable to copy the string content from the xpc data object.
-  case unableToCopyStringContent(String)
 
   /// We were unable to decode the string content from the xpc data object.
   case unableToDecode(String)
@@ -92,9 +86,7 @@ extension xpc_object_t {
       guard expectedLength > 0 else {
         return ""
       }
-      guard let cString = xpc_string_get_string_ptr(self) else {
-        throw .unexpectedNilCString
-      }
+      let cString = xpc_string_get_string_ptr(self)!
       
       let string = String(cString: cString)
       guard stringValueStrategy == .percentEscape else {
@@ -113,21 +105,14 @@ extension xpc_object_t {
         return ""
       }
       var data = Data(repeating: 0, count: expectedLength)
-      let copiedOK = data.withUnsafeMutableBytes { (unsafeMutableBytesPtr: UnsafeMutableRawBufferPointer) in
-        guard let baseAddress = unsafeMutableBytesPtr.baseAddress else {
-          return false
-        }
-        
+      data.withUnsafeMutableBytes { (unsafeMutableBytesPtr: UnsafeMutableRawBufferPointer) in
         let copiedCount = xpc_data_get_bytes(
           self,
-          baseAddress,
+          unsafeMutableBytesPtr.baseAddress!,
           0,
           expectedLength
         )
-        return expectedLength == copiedCount
-      }
-      guard copiedOK else {
-        throw .unableToCopyStringContent("Unable to copy \(expectedLength) bytes from xpc data.")
+        precondition(copiedCount == expectedLength)
       }
       
       guard
