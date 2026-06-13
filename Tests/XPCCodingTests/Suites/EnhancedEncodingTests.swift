@@ -591,7 +591,7 @@ private enum ElementEncodingMode: CaseIterable, Sendable, CustomStringConvertibl
     case .mutableBuffer:
       var mutableElements = elements
       try mutableElements.withUnsafeMutableBufferPointer { buffer in
-        try container.efficientlyEncodeBinaryData(buffer, forKey: key)
+        try container.efficientlyEncodeElements(buffer, forKey: key)
       }
     case .nilPointer:
       let pointer: UnsafePointer<Int>? = nil

@@ -167,14 +167,32 @@ struct FacadeAndStateCoverageTests {
     encoder.topLevelContainerState = .keyed(dictionary)
     let continueKeyedDisposition = encoder.containerRequestDisposition(containerKind: .keyed)
     let switchFromKeyedDisposition = encoder.containerRequestDisposition(containerKind: .unkeyed)
+    let singleValueFromKeyedDisposition = encoder.containerRequestDisposition(containerKind: .pendingSingleValue)
     #expect(dispositionName(continueKeyedDisposition) == "continue")
     #expect(dispositionName(switchFromKeyedDisposition) == "switchBlocked")
+    // A kind switch must report the *current* container kind first and the *requested* one
+    // second. A regression that swaps or mislabels them still lands in `switchBlocked`, so the
+    // category check above is not enough — assert the associated values explicitly.
+    #expect(switchKinds(switchFromKeyedDisposition)?.current == .keyed)
+    #expect(switchKinds(switchFromKeyedDisposition)?.requested == .unkeyed)
+    // Requesting a single-value container while a keyed container exists is a kind switch whose
+    // *requested* kind is `.pendingSingleValue` (not a single-value continuation, and not the
+    // active container's own kind).
+    #expect(dispositionName(singleValueFromKeyedDisposition) == "switchBlocked")
+    #expect(switchKinds(singleValueFromKeyedDisposition)?.current == .keyed)
+    #expect(switchKinds(singleValueFromKeyedDisposition)?.requested == .pendingSingleValue)
 
     encoder.topLevelContainerState = .unkeyed(array)
     let continueUnkeyedDisposition = encoder.containerRequestDisposition(containerKind: .unkeyed)
     let switchFromUnkeyedDisposition = encoder.containerRequestDisposition(containerKind: .keyed)
+    let singleValueFromUnkeyedDisposition = encoder.containerRequestDisposition(containerKind: .pendingSingleValue)
     #expect(dispositionName(continueUnkeyedDisposition) == "continue")
     #expect(dispositionName(switchFromUnkeyedDisposition) == "switchBlocked")
+    #expect(switchKinds(switchFromUnkeyedDisposition)?.current == .unkeyed)
+    #expect(switchKinds(switchFromUnkeyedDisposition)?.requested == .keyed)
+    #expect(dispositionName(singleValueFromUnkeyedDisposition) == "switchBlocked")
+    #expect(switchKinds(singleValueFromUnkeyedDisposition)?.current == .unkeyed)
+    #expect(switchKinds(singleValueFromUnkeyedDisposition)?.requested == .pendingSingleValue)
   }
 
   @Test
@@ -244,6 +262,20 @@ private func dispositionName(_ disposition: _XPCEncoder.ContainerRequestDisposit
   case .unableToSwitchContainerKind:
     "switchBlocked"
   }
+}
+
+/// Surfaces the associated `(current, requested)` kinds of a `switchBlocked` disposition.
+///
+/// `dispositionName(_:)` deliberately collapses to the disposition *category*, so it cannot
+/// distinguish a correctly-reported kind switch from one whose current/requested kinds are
+/// swapped or mislabeled. This accessor lets the tests pin those associated values directly.
+private func switchKinds(
+  _ disposition: _XPCEncoder.ContainerRequestDisposition
+) -> (current: _XPCEncoder.ContainerKind, requested: _XPCEncoder.ContainerKind)? {
+  guard case .unableToSwitchContainerKind(let current, let requested) = disposition else {
+    return nil
+  }
+  return (current, requested)
 }
 
 private struct FacadeSeededGenerator: RandomNumberGenerator {
