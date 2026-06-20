@@ -53,15 +53,12 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
       return nil
     }
     
-    let dereferenced = xpcBinaryDataRepresentation.withUnsafeBytes { (pointerToData: UnsafeRawBufferPointer) in
-      Self(unsafeXPCBinaryDataRepresentationRawBufferPointer: pointerToData)
+    self = xpcBinaryDataRepresentation.withUnsafeBytes { (pointerToData: UnsafeRawBufferPointer) in
+      infalliblyUnwrap(
+        Self(unsafeXPCBinaryDataRepresentationRawBufferPointer: pointerToData),
+        explanation: "The size of `xpcBinaryDataRepresentation` was just verified to equal `MemoryLayout<Self>.size`, which is the only condition under which the unsafe initializer can fail for a `Numeric` type."
+      )
     }
-    
-    guard let dereferenced else {
-      return nil
-    }
-    
-    self = dereferenced
   }
   
 }

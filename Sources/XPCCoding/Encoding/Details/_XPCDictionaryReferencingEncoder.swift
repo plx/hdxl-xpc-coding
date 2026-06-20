@@ -50,14 +50,14 @@ internal final class _XPCDictionaryReferencingEncoder: _XPCEncoder {
       fatalError(
         """
         Encountered unrecoverable internal error creating keyed-container:
-        
+
         - keyedBy: \(type)
         - error: \(String(reflecting: error))
         """
       )
     }
   }
-  
+
   @usableFromInline
   override func unkeyedContainer() -> UnkeyedEncodingContainer {
     let newArray = xpc_array_create(nil, 0)
@@ -77,7 +77,7 @@ internal final class _XPCDictionaryReferencingEncoder: _XPCEncoder {
       fatalError(
         """
         Encountered unrecoverable internal error creating unkeyed-container:
-        
+
         - error: \(String(reflecting: error))
         """
       )
@@ -95,4 +95,3 @@ internal final class _XPCDictionaryReferencingEncoder: _XPCEncoder {
     }
   }
 }
-

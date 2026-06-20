@@ -178,7 +178,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   
   @inlinable
   internal mutating func nestedContainer<NestedKey>(
-    keyedBy keyType: NestedKey.Type, 
+    keyedBy keyType: NestedKey.Type,
     forKey key: Key
   ) -> KeyedEncodingContainer<NestedKey> {
     do {
@@ -201,7 +201,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
       fatalError(
         """
         Encountered unrecoverable error preparing nested keyed container (due to API limitations requiring non-throwing construction here).
-        
+
         - keyType: \(keyType)
         - key: \(key)
         - error: \(String(reflecting: error))
@@ -209,7 +209,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
       )
     }
   }
-  
+
   @inlinable
   internal mutating func nestedUnkeyedContainer(
     forKey key: Key
@@ -221,7 +221,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
         forKey: key,
         strategy: stringKeyStrategy
       )
-      
+
       return try encoder.withTransientCodingPathElement(key) { _ in
         let container = try XPCUnkeyedEncodingContainer(
           referencing: encoder,
@@ -234,14 +234,14 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
       fatalError(
         """
         Encountered unrecoverable error preparing nested unkeyed container (due to API limitations requiring non-throwing construction here).
-        
+
         - key: \(key)
         - error: \(String(reflecting: error))
         """
       )
     }
   }
-  
+
   @inlinable
   internal mutating func superEncoder() -> Encoder {
     do {
@@ -259,13 +259,13 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
       fatalError(
         """
         Encountered unrecoverable error preparing superEncoder (due to API limitations requiring non-throwing construction here).
-        
+
         - error: \(String(reflecting: error))
         """
       )
     }
   }
-  
+
   @inlinable
   internal mutating func superEncoder(forKey key: Key) -> Encoder {
     do {
@@ -283,7 +283,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
       fatalError(
         """
         Encountered unrecoverable error preparing superEncoder (due to API limitations requiring non-throwing construction here).
-        
+
         - key: \(key)
         - error: \(String(reflecting: error))
         """

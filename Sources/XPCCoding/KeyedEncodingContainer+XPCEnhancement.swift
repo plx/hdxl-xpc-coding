@@ -166,7 +166,7 @@ extension KeyedEncodingContainer {
   ///   - unsafeMutableBufferPointer: A buffer pointer to the elements to encode.
   ///   - key: The key to associate the array with.
   @inlinable
-  public mutating func efficientlyEncodeBinaryData<T: Encodable>(
+  public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeMutableBufferPointer: UnsafeMutableBufferPointer<T>,
     forKey key: Key
   ) throws {

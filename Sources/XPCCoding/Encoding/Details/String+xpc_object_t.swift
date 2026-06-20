@@ -8,9 +8,6 @@ extension String {
   internal enum XPCObjectConversionError: Error {
     /// The string contains null bytes (relevant for the `.throwOnDiscovery` strategy).
     case containsNullBytes(String)
-
-    /// The string could not be converted to the specified data representation.
-    case unableToConvertToData(String, XPCCodec.StringValueDataRepresentation)
   }
   
   /// Converts the string to an `xpc_object_t` representation, as per `stringKeyStrategy`.
@@ -43,17 +40,13 @@ extension String {
         xpc_string_create(cStringPtr)
       }
     case .useDataRepresentation(let representation):
-      guard
-        let dataRepresentation = data(
+      let dataRepresentation = infalliblyUnwrap(
+        data(
           using: representation.stringEncoding,
           allowLossyConversion: false
-        )
-      else {
-        throw .unableToConvertToData(
-          self,
-          representation
-        )
-      }
+        ),
+        explanation: "Every `XPCCodec.StringValueDataRepresentation` case (`.utf8`, `.utf16`, `.utf32`) is a lossless Unicode encoding, so `String.data(using:allowLossyConversion: false)` is total over all valid `String` values."
+      )
       return dataRepresentation.withUnsafeBytes { (unsafeRawBufferPointer: UnsafeRawBufferPointer) in
         xpc_data_create(
           unsafeRawBufferPointer.baseAddress,

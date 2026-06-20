@@ -10,9 +10,6 @@ internal enum XPCStringExtractionError: Error {
   /// The xpc object is not of the expected type.
   case typeMismatch(String)
 
-  /// The xpc string object's c string pointer is nil.
-  case unexpectedNilCString
-
   /// We were unable to remove percent escapes from the string.
   case unableToRemovePercentEscapes(String)
 
@@ -92,9 +89,10 @@ extension xpc_object_t {
       guard expectedLength > 0 else {
         return ""
       }
-      guard let cString = xpc_string_get_string_ptr(self) else {
-        throw .unexpectedNilCString
-      }
+      let cString = infalliblyUnwrap(
+        xpc_string_get_string_ptr(self),
+        explanation: "`xpc_string_get_string_ptr` returns NULL only for non-string xpc objects, but `self` was just verified to be `XPC_TYPE_STRING`."
+      )
       
       let string = String(cString: cString)
       guard stringValueStrategy == .percentEscape else {
@@ -114,10 +112,11 @@ extension xpc_object_t {
       }
       var data = Data(repeating: 0, count: expectedLength)
       let copiedOK = data.withUnsafeMutableBytes { (unsafeMutableBytesPtr: UnsafeMutableRawBufferPointer) in
-        guard let baseAddress = unsafeMutableBytesPtr.baseAddress else {
-          return false
-        }
-        
+        let baseAddress = infalliblyUnwrap(
+          unsafeMutableBytesPtr.baseAddress,
+          explanation: "`UnsafeMutableRawBufferPointer.baseAddress` is nil only for empty buffers, but we already early-returned for `expectedLength == 0`."
+        )
+
         let copiedCount = xpc_data_get_bytes(
           self,
           baseAddress,

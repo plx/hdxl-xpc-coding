@@ -93,7 +93,7 @@ internal class _XPCEncoder: Encoder {
       )
     }
   }
-  
+
   @usableFromInline
   internal func unkeyedContainer() -> UnkeyedEncodingContainer {
     switch containerRequestDisposition(containerKind: .unkeyed) {
@@ -116,10 +116,10 @@ internal class _XPCEncoder: Encoder {
       )
     }
   }
-  
+
   @usableFromInline
   internal func singleValueContainer() -> SingleValueEncodingContainer {
-    switch containerRequestDisposition(containerKind: .unkeyed) {
+    switch containerRequestDisposition(containerKind: .pendingSingleValue) {
     case .proceedWithContainerCreation:
       topLevelContainerState = .pendingSingleValue
       return prepareSingleValueEncodingContainer()
@@ -240,7 +240,7 @@ extension _XPCEncoder {
     /// We should proceed with creating the requested container.
     case proceedWithContainerCreation
   }
-  
+
   /// Used to "crash out" when we're asked to create a container of a different kind from the active one (e.g. single-value -> keyed, or keyed -> unkeyed, etc.).
   @inlinable
   internal func abortDueToImpossibleContainerKindSwitch(
@@ -299,12 +299,12 @@ extension _XPCEncoder {
       .continueExistingContainer(xpcObject)
     case (.unkeyed, _):
       // not ok to "switch" from unkeyed to keyed
-      .unableToSwitchContainerKind(.keyed, containerKind)
+      .unableToSwitchContainerKind(.unkeyed, containerKind)
     }
   }
   
   /// Internal helper to create-or-continue a keyed container.
-  /// 
+  ///
   /// - Note: the associated `Encoder` API doesn't support failure here, so we just "crash out" upon improper usage.
   @usableFromInline
   internal final func prepareKeyedEncodingContainer<Key>(
@@ -330,7 +330,7 @@ extension _XPCEncoder {
       preconditionFailure(
         """
         Encountered unrecoverable internal error creating keyed-container:
-        
+
         - keyedBy: \(type)
         - error: \(String(reflecting: error))
         """,
@@ -339,9 +339,9 @@ extension _XPCEncoder {
       )
     }
   }
-  
+
   /// Internal helper to create-or-continue an unkeyed container.
-  /// 
+  ///
   /// - Note: the associated `Encoder` API doesn't support failure here, so we just "crash out" upon improper usage.
   @usableFromInline
   internal final func prepareUnkeyedEncodingContainer(
@@ -365,7 +365,7 @@ extension _XPCEncoder {
       preconditionFailure(
         """
         Encountered unrecoverable internal error creating unkeyed-container:
-        
+
         - error: \(String(reflecting: error))
         """,
         file: file,
@@ -373,7 +373,7 @@ extension _XPCEncoder {
       )
     }
   }
-  
+
   /// Internal helper to create a single-value container.
   @usableFromInline
   internal final func prepareSingleValueEncodingContainer(
@@ -396,7 +396,7 @@ extension _XPCEncoder {
 // MARK: _XPCEncoder.ContainerKind
 
 extension _XPCEncoder {
-    /// The types of container we can have already created.
+  /// The types of container we can have already created.
   @usableFromInline
   internal enum ContainerKind {
     /// We have created a keyed container.
@@ -547,13 +547,13 @@ extension _XPCEncoder.ContainerState: CustomStringConvertible {
     case .noContainerYet:
       ".noContainerYet"
     case .keyed(let xpcObject):
-      ".keyed(\(xpcObject))"
+      ".keyed(\(xpcObject.typeDescription))"
     case .unkeyed(let xpcObject):
-      ".unkeyed(\(xpcObject))"
+      ".unkeyed(\(xpcObject.typeDescription))"
     case .pendingSingleValue:
       ".pendingSingleValue"
     case .completedSingleValue(let xpcObject):
-      ".completedSingleValue(\(xpcObject))"
+      ".completedSingleValue(\(xpcObject.typeDescription))"
     }
   }
 
@@ -568,13 +568,13 @@ extension _XPCEncoder.ContainerState: CustomDebugStringConvertible {
     case .noContainerYet:
       "\(Self.self).noContainerYet"
     case .keyed(let xpcObject):
-      "\(Self.self).keyed(\(String(reflecting: xpcObject))"
+      "\(Self.self).keyed(\(xpcObject.typeDescription))"
     case .unkeyed(let xpcObject):
-      "\(Self.self).unkeyed(\(String(reflecting: xpcObject))"
+      "\(Self.self).unkeyed(\(xpcObject.typeDescription))"
     case .pendingSingleValue:
       "\(Self.self).pendingSingleValue"
     case .completedSingleValue(let xpcObject):
-      "\(Self.self).completedSingleValue(\(String(reflecting: xpcObject))"
+      "\(Self.self).completedSingleValue(\(xpcObject.typeDescription))"
     }
   }
 }
