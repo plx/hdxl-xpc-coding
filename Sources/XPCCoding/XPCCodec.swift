@@ -78,7 +78,10 @@ extension XPCCodec {
   ///
   /// - Parameter value: The value to encode.
   /// - Returns: An `xpc_object_t` representing the encoded value.
-  /// - Throws: An error if the value cannot be encoded.
+  /// - Throws: An error deliberately thrown by the value's `Encodable`
+  ///   implementation is propagated unchanged. XPCCoding-originated
+  ///   representation failures use `EncodingError` at the most-specific
+  ///   available coding path.
   @inlinable
   public func encode<T>(_ value: T) throws -> xpc_object_t where T: Encodable {
     let configuration = configuration

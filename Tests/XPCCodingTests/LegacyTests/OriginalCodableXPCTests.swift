@@ -226,7 +226,14 @@ fileprivate struct EncodeFailure : Encodable {
   
   var someValue: Double
   func encode(to encoder: Encoder) throws {
-    throw Failure.Failure
+    throw EncodingError.invalidValue(
+      self,
+      EncodingError.Context(
+        codingPath: encoder.codingPath,
+        debugDescription: "Intentional encoding failure.",
+        underlyingError: Failure.Failure
+      )
+    )
   }
 }
 

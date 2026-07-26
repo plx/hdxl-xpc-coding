@@ -60,4 +60,30 @@ extension String {
     }
   }
 
+  /// Converts this string into its XPC representation and normalizes any
+  /// codec-originated conversion failure at the exact value path.
+  @inlinable
+  internal func makeXPCObjectRepresentation(
+    stringValueStrategy: XPCEncoder.StringValueStrategy,
+    codingPath: [any CodingKey]
+  ) throws -> xpc_object_t {
+    do {
+      return try makeXPCObjectRepresentation(
+        stringValueStrategy: stringValueStrategy
+      )
+    } catch let underlyingError {
+      throw EncodingError.invalidValue(
+        self,
+        EncodingError.Context(
+          codingPath: codingPath,
+          debugDescription: """
+            Unable to represent a string containing an embedded null byte with \
+            the .throwOnDiscovery string-value strategy.
+            """,
+          underlyingError: underlyingError
+        )
+      )
+    }
+  }
+
 }

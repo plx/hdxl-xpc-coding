@@ -169,7 +169,12 @@ extension XPCSingleValueEncodingContainer {
   /// Special-case handling of `String` values (in order to support `stringValueStrategy`).
   @usableFromInline
   internal func encodeStringValue(_ value: String) throws {
-    try insertionClosure(try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy))
+    try insertionClosure(
+      try value.makeXPCObjectRepresentation(
+        stringValueStrategy: stringValueStrategy,
+        codingPath: codingPath
+      )
+    )
   }
 
 }

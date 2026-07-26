@@ -164,25 +164,14 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   @usableFromInline
   internal mutating func encode<T: Encodable>(_ value: T) throws {
     try withNextCodingKey { codingPath in
-      do {
-        let xpcObject = try _XPCEncoder.encode(
-          value,
-          at: codingPath,
-          stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: stringValueStrategy,
-          userInfo: encoder.userInfo
-        )
-        xpc_array_append_value(underlyingXPCArray, xpcObject)
-      } catch let underlyingError {
-        throw EncodingError.invalidValue(
-          value,
-          EncodingError.Context(
-            codingPath: codingPath,
-            debugDescription: "Unabled to append value: \(String(reflecting: value))!",
-            underlyingError: underlyingError
-          )
-        )
-      }
+      let xpcObject = try _XPCEncoder.encode(
+        value,
+        at: codingPath,
+        stringKeyStrategy: stringKeyStrategy,
+        stringValueStrategy: stringValueStrategy,
+        userInfo: encoder.userInfo
+      )
+      xpc_array_append_value(underlyingXPCArray, xpcObject)
     }
   }
   
@@ -305,21 +294,12 @@ extension XPCUnkeyedEncodingContainer {
   /// Directly appends a string value to our underlying XPC array, with proper coding-path management (and ensuring proper string-value strategy handling). 
   @inlinable
   internal func appendNextStringValue(_ value: String) throws {
-    try withNextCodingKey { codingPath in      
-      do {
-        let xpcObject = try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy)
-        xpc_array_append_value(underlyingXPCArray, xpcObject)
-      }
-      catch let incompatibilityError {
-        throw EncodingError.invalidValue(
-          value,
-          EncodingError.Context(
-            codingPath: codingPath,
-            debugDescription: "Attempted to append xpc-incompatible value \(value).",
-            underlyingError: incompatibilityError
-          )
-        )
-      }
+    try withNextCodingKey { codingPath in
+      let xpcObject = try value.makeXPCObjectRepresentation(
+        stringValueStrategy: stringValueStrategy,
+        codingPath: codingPath
+      )
+      xpc_array_append_value(underlyingXPCArray, xpcObject)
     }
   }
 }

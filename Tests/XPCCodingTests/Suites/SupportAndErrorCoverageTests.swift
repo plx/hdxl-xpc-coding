@@ -423,9 +423,8 @@ struct SupportAndErrorCoverageTests {
 
   @Test
   func `manual encoding error paths report invalid values`() throws {
-    // The container initializers and encode wrappers translate malformed
-    // internal state and arbitrary Encodable failures into EncodingError values
-    // at the boundary Swift's Encoder APIs expose.
+    // Container-originated failures use EncodingError, while arbitrary errors
+    // deliberately thrown by Encodable values retain their public type.
     let encoder = _XPCEncoder(stringKeyStrategy: .standard, stringValueStrategy: .throwOnDiscovery)
     #expect(throws: EncodingError.self) {
       _ = try XPCKeyedEncodingContainer<SupportCoverageKey>(
@@ -448,10 +447,10 @@ struct SupportAndErrorCoverageTests {
       codingPath: encoder.codingPath
     )
     #expect(keyed.codingPath.isEmpty)
-    #expect(throws: EncodingError.self) {
+    #expect(throws: SupportCoverageThrownError.self) {
       try keyed.encode(ThrowingEncodable(id: 1), forKey: .value)
     }
-    #expect(throws: String.XPCObjectConversionError.self) {
+    #expect(throws: EncodingError.self) {
       try keyed.encode("a\0b", forKey: .name)
     }
 
@@ -464,7 +463,7 @@ struct SupportAndErrorCoverageTests {
     #expect(throws: EncodingError.self) {
       try unkeyed.encode("a\0b")
     }
-    #expect(throws: EncodingError.self) {
+    #expect(throws: SupportCoverageThrownError.self) {
       try unkeyed.encode(ThrowingEncodable(id: 2))
     }
 
@@ -497,10 +496,10 @@ struct SupportAndErrorCoverageTests {
         codingPath: encoder.codingPath
       )
       #expect(keyed.codingPath.map(\.stringValue) == [probe.key])
-      #expect(throws: EncodingError.self) {
+      #expect(throws: SupportCoverageThrownError.self) {
         try keyed.encode(ThrowingEncodable(id: Int(probe.value)), forKey: .value)
       }
-      #expect(throws: String.XPCObjectConversionError.self) {
+      #expect(throws: EncodingError.self) {
         try keyed.encode("\(probe.key)\0", forKey: .name)
       }
 
@@ -513,7 +512,7 @@ struct SupportAndErrorCoverageTests {
       #expect(throws: EncodingError.self) {
         try unkeyed.encode("\(probe.key)\0")
       }
-      #expect(throws: EncodingError.self) {
+      #expect(throws: SupportCoverageThrownError.self) {
         try unkeyed.encode(ThrowingEncodable(id: Int(probe.value)))
       }
 

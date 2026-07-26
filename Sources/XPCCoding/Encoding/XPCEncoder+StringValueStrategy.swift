@@ -18,7 +18,9 @@ extension XPCEncoder {
     /// Throw an error if a null byte is discovered during encoding.
     ///
     /// Use this when you want to explicitly forbid null bytes in string values
-    /// and receive an error rather than silent truncation.
+    /// and receive an error rather than silent truncation. Discovery produces
+    /// `EncodingError.invalidValue` at the string's exact value path. The
+    /// low-level conversion cause is retained as `underlyingError`.
     case throwOnDiscovery
 
     /// Apply XPCCoding's reversible percent-escape grammar before encoding.
