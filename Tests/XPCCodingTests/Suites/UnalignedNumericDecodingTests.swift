@@ -6,7 +6,7 @@ import XPC
 
 // MARK: - Unaligned Numeric Decoding Tests
 
-/// Verifies that binary-data-backed numeric decoding never assumes XPC-owned storage is aligned.
+/// Verifies that 128-bit integer decoding never assumes XPC-owned storage is aligned.
 ///
 /// XPC makes no promise that `xpc_data_get_bytes_ptr` satisfies the decoded type's alignment: a
 /// perfectly valid data object backed by a `DispatchData` slice beginning one byte into a larger
@@ -20,7 +20,7 @@ struct UnalignedNumericDecodingTests {
 
   /// Isolates the alignment trap in a subprocess, so a regression fails instead of aborting the test runner.
   @Test(.enabled(if: subprocessIsolationIsSupported, subprocessIsolationRequirement))
-  func `unaligned decoding of every affected type survives in a subprocess`() async {
+  func `unaligned decoding of both 128-bit integer types survives in a subprocess`() async {
     await #expect(processExitsWith: .success) {
       try decodeEveryProbeFromUnalignedStorage()
     }
@@ -109,14 +109,14 @@ private let subprocessIsolationIsSupported: Bool = {
 
 // MARK: - Subprocess Entry Points
 
-/// Decodes every affected type from deliberately-misaligned storage; the subprocess harness body.
+/// Decodes both supported 128-bit types from deliberately-misaligned storage.
 private func decodeEveryProbeFromUnalignedStorage() throws {
   for probe in binaryDataNumericProbes {
     try probe.verifyUnalignedDecoding()
   }
 }
 
-/// Rejects a one-byte-short payload for every affected type; the guarded-page harness body.
+/// Rejects a one-byte-short payload for both supported 128-bit types.
 private func rejectEveryProbeShortPayloadAdjacentToUnreadableMemory() throws {
   for probe in binaryDataNumericProbes {
     try probe.verifyShortPayloadIsRejectedWithoutReadingAdjacentBytes()
@@ -127,25 +127,27 @@ private func rejectEveryProbeShortPayloadAdjacentToUnreadableMemory() throws {
 ///
 /// Returning normally means the load did *not* trap, which fails the calling expectation.
 private func performAlignmentRequiringLoadOnUnalignedStorage() throws {
-  let object = try misalignedXPCData(containing: [UInt8](Int16(0x1234).xpcBinaryDataRepresentation))
+  let object = try misalignedXPCData(
+    containing: [UInt8](Int128(0x1234).xpcBinaryDataRepresentation)
+  )
   let baseAddress = try #require(
     xpc_data_get_bytes_ptr(object),
     "`xpc_data_get_bytes_ptr` must supply the payload of a non-empty xpc data object."
   )
   try #require(
-    UInt(bitPattern: baseAddress) % UInt(MemoryLayout<Int16>.alignment) != 0,
+    UInt(bitPattern: baseAddress) % UInt(MemoryLayout<Int128>.alignment) != 0,
     "The negative control needs genuinely misaligned storage to be meaningful."
   )
 
   // This mirrors the pre-fix implementation of
   // `init?(unsafeXPCBinaryDataRepresentationRawBufferPointer:)`.
-  let loaded = baseAddress.load(as: Int16.self)
+  let loaded = baseAddress.load(as: Int128.self)
   print("An alignment-requiring load unexpectedly succeeded, producing \(loaded).")
 }
 
 // MARK: - Probes
 
-/// One binary-data-backed numeric conformance affected by this ticket.
+/// One supported binary-data-backed 128-bit integer conformance.
 protocol BinaryDataNumericProbe: Sendable, CustomTestStringConvertible {
 
   /// Verifies decoding from deliberately-misaligned storage on every container path.
@@ -162,18 +164,10 @@ protocol BinaryDataNumericProbe: Sendable, CustomTestStringConvertible {
 
 }
 
-/// Every binary-data-backed numeric conformance affected by this ticket.
+/// Every supported binary-data-backed numeric conformance.
 private let binaryDataNumericProbes: [any BinaryDataNumericProbe] = [
-  NumericProbe(values: Int8.exampleValues),
-  NumericProbe(values: Int16.exampleValues),
-  NumericProbe(values: Int32.exampleValues),
   NumericProbe(values: Int128.exampleValues),
-  NumericProbe(values: UInt8.exampleValues),
-  NumericProbe(values: UInt16.exampleValues),
-  NumericProbe(values: UInt32.exampleValues),
   NumericProbe(values: UInt128.exampleValues),
-  NumericProbe(values: Float16.exampleValues) { equivalentFloats($0, $1) },
-  NumericProbe(values: Float.exampleValues) { equivalentFloats($0, $1) },
 ]
 
 /// The probe implementation for a single binary-data-backed numeric type.
@@ -432,10 +426,7 @@ private enum PayloadInterpretation: Sendable {
 
   /// The payload is the type's own binary-data representation.
   ///
-  /// A type whose `Codable` conformance encodes a *widened* representation reaches its own binary
-  /// representation only through a container's generic `decode<T: Decodable>` shortcut. `Float16`
-  /// is exactly that case: it encodes as a `Float`, so the facade's bare root decoding of a
-  /// two-byte payload legitimately reports `dataCorrupted` instead of a `Float16`.
+  /// The 128-bit integer's target-native binary representation.
   case binaryRepresentation
 
 }

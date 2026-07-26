@@ -94,11 +94,11 @@ struct SupportAndErrorCoverageTests {
     array.appendValue(UInt8(9))
     #expect(xpc_array_get_count(array) == 1)
 
-    let original: Int16 = -1234
+    let original: Int128 = -1234
     let representation = original.xpcBinaryDataRepresentation
-    #expect(Int16(xpcBinaryDataRepresentation: representation) == original)
-    #expect(Int16(xpcBinaryDataRepresentation: Data([0])) == nil)
-    #expect(Int16(unsafeXPCBinaryDataRepresentationRawBufferPointer: UnsafeRawBufferPointer(start: nil, count: 0)) == nil)
+    #expect(Int128(xpcBinaryDataRepresentation: representation) == original)
+    #expect(Int128(xpcBinaryDataRepresentation: Data([0])) == nil)
+    #expect(Int128(unsafeXPCBinaryDataRepresentationRawBufferPointer: UnsafeRawBufferPointer(start: nil, count: 0)) == nil)
   }
 
   @Test
@@ -157,9 +157,10 @@ struct SupportAndErrorCoverageTests {
         ) == probe.value &+ 2
       )
 
-      let representation = probe.short.xpcBinaryDataRepresentation
-      #expect(Int16(xpcBinaryDataRepresentation: representation) == probe.short)
-      #expect(Int16(xpcBinaryDataRepresentation: Data(repeating: 0, count: probe.invalidByteCount)) == nil)
+      let value = Int128(probe.short)
+      let representation = value.xpcBinaryDataRepresentation
+      #expect(Int128(xpcBinaryDataRepresentation: representation) == value)
+      #expect(Int128(xpcBinaryDataRepresentation: Data(repeating: 0, count: probe.invalidByteCount)) == nil)
     }
   }
 
@@ -212,7 +213,7 @@ struct SupportAndErrorCoverageTests {
     #expect(Double.extracting(from: xpc_int64_create(1)) == nil)
     #expect(Int._extracting(from: xpc_double_create(1)) == nil)
     #expect(UInt._extracting(from: xpc_int64_create(1)) == nil)
-    #expect(Int16._extracting(from: xpcData(Data([0]))) == nil)
+    #expect(Int16._extracting(from: xpc_int64_create(Int64(Int16.max) + 1)) == nil)
 
     let array = xpc_array_create(nil, 0)
     #expect(throws: DecodingError.self) {
@@ -281,7 +282,7 @@ struct SupportAndErrorCoverageTests {
       #expect(Bool.extracting(from: xpc_int64_create(probe.value)) == nil)
       #expect(Int._extracting(from: xpc_double_create(Double(probe.value))) == nil)
       #expect(UInt._extracting(from: xpc_int64_create(probe.value)) == nil)
-      #expect(UInt32._extracting(from: xpcData(Data([UInt8(truncatingIfNeeded: probe.value)]))) == nil)
+      #expect(UInt32._extracting(from: xpc_uint64_create(UInt64(UInt32.max) + 1)) == nil)
 
       let dictionary = xpc_dictionary_create(nil, nil, 0)
       dictionary.setValue(xpc_double_create(Double(probe.value)), forKey: key, strategy: .percentEscape)
