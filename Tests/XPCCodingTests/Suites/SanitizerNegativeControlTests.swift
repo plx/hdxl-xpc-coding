@@ -1,4 +1,3 @@
-import Dispatch
 import Foundation
 import SanitizerNegativeControlSupport
 import Testing
@@ -35,16 +34,7 @@ struct SanitizerNegativeControlTests {
     )
   )
   func `ThreadSanitizer detects a data race`() {
-    let box = SanitizerNegativeControlRaceBox()
-    DispatchQueue.concurrentPerform(iterations: 2) { _ in
-      for _ in 0..<10_000 {
-        box.value += 1
-      }
-    }
+    sanitizer_negative_control_thread()
   }
 
-}
-
-private final class SanitizerNegativeControlRaceBox: @unchecked Sendable {
-  var value = 0
 }

@@ -2,5 +2,6 @@
 #define SANITIZER_NEGATIVE_CONTROL_SUPPORT_H
 
 void sanitizer_negative_control_undefined_behavior(void);
+void sanitizer_negative_control_thread(void);
 
 #endif
