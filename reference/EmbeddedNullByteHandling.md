@@ -98,6 +98,12 @@ created by that defective pre-release representation.
 
 As with other `Encoder`/`Decoder`-based systems, successful round-tripping is only guaranteed between instances with "compatible configurations"; tl;dr: if your encoder is using `.useDataRepresentation(.utf16)`, your decoder *must* also be using `.useDataRepresentation(.utf16)` (and so on and so forth).
 
+This configuration agreement is deliberately out of band. XPCCoding targets
+applications and XPC services that are designed, configured, built, and
+deployed together on one host; it does not serialize strategy metadata or
+support independently versioned peers. See
+[XPCCoding XPC Object Representation](WireFormat.md).
+
 To simplify obtaining such compatible pairs, the library provides an `XPCCodec` type, which streamlines the process of creating compatible pairs:
 
 - it has its own `Configuration` type, which contains its own `StringValueStrategy` and its own `StringKeyStrategy`
