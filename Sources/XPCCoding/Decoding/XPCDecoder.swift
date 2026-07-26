@@ -30,6 +30,15 @@ public final class XPCDecoder: TopLevelDecoder {
   /// The strategy for handling encoded null bytes in string values.
   public var stringValueStrategy: StringValueStrategy
 
+  /// Contextual values made available to each `Decodable` value.
+  ///
+  /// The dictionary is shallow-copied when a decoding operation begins and is
+  /// never read from the XPC object. Reference-valued entries therefore
+  /// preserve their identity. Mutating this task-confined facade during an
+  /// active operation is unsupported; mutations between operations affect only
+  /// subsequent operations.
+  public var userInfo: [CodingUserInfoKey: Any]
+
   /// Finite resource limits applied independently to each call to ``decode(_:from:)``.
   ///
   /// The value is snapshotted when decoding begins. Mutating this property
@@ -56,6 +65,7 @@ public final class XPCDecoder: TopLevelDecoder {
     self.stringKeyStrategy = stringKeyStrategy
     self.stringValueStrategy = stringValueStrategy
     self.resourceLimits = resourceLimits
+    self.userInfo = [:]
   }
 
   /// Creates a new decoder from an ``XPCCodec/Configuration``.
@@ -86,12 +96,14 @@ public final class XPCDecoder: TopLevelDecoder {
     _ type: T.Type,
     from input: Input
   ) throws -> T where T: Decodable {
-    try _XPCDecoder.decode(
+    let userInfo = userInfo
+    return try _XPCDecoder.decode(
       type,
       from: input,
       stringKeyStrategy: stringKeyStrategy,
       stringValueStrategy: stringValueStrategy,
-      resourceLimits: resourceLimits
+      resourceLimits: resourceLimits,
+      userInfo: userInfo
     )
   }
 

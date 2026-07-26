@@ -36,6 +36,15 @@ public final class XPCEncoder: TopLevelEncoder {
   /// The strategy for handling embedded null bytes in string values.
   public var stringValueStrategy: StringValueStrategy
 
+  /// Contextual values made available to each `Encodable` value.
+  ///
+  /// The dictionary is shallow-copied when an encoding operation begins and is
+  /// not serialized into the XPC object. Reference-valued entries therefore
+  /// preserve their identity. Mutating this task-confined facade during an
+  /// active operation is unsupported; mutations between operations affect only
+  /// subsequent operations.
+  public var userInfo: [CodingUserInfoKey: Any]
+
   /// An encoder with the standard (default) configuration.
   public static var standard: Self {
     Self()
@@ -52,6 +61,7 @@ public final class XPCEncoder: TopLevelEncoder {
   ) {
     self.stringKeyStrategy = stringKeyStrategy
     self.stringValueStrategy = stringValueStrategy
+    self.userInfo = [:]
   }
 
   /// Creates a new encoder from an ``XPCCodec/Configuration``.
@@ -69,10 +79,12 @@ public final class XPCEncoder: TopLevelEncoder {
   public func encode<T>(
     _ value: T
   ) throws -> Output where T: Encodable {
-    try _XPCEncoder.encode(
+    let userInfo = userInfo
+    return try _XPCEncoder.encode(
       value,
       stringKeyStrategy: stringKeyStrategy,
-      stringValueStrategy: stringValueStrategy
+      stringValueStrategy: stringValueStrategy,
+      userInfo: userInfo
     )
   }
 
@@ -88,10 +100,12 @@ public final class XPCEncoder: TopLevelEncoder {
   ///   or any error thrown by the closure.
   @inlinable
   public func withTransientEncoder(_ closure: (any Encoder) throws -> Void) throws -> Output {
+    let userInfo = userInfo
     let encoder = _XPCEncoder(
       stringKeyStrategy: stringKeyStrategy,
       stringValueStrategy: stringValueStrategy,
-      codingPath: []
+      codingPath: [],
+      userInfo: userInfo
     )
     try closure(encoder)
     guard let result = encoder.topLevelContainer else {

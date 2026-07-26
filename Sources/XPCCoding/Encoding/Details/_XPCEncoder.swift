@@ -35,7 +35,7 @@ internal class _XPCEncoder: Encoder {
   
   /// Backing storage for the user info.
   @usableFromInline
-  internal var _userInfo: [CodingUserInfoKey : Any] = [:]
+  internal let _userInfo: [CodingUserInfoKey : Any]
   
   /// Read-only access to the user info (protocol requirement).
   @inlinable
@@ -212,6 +212,7 @@ extension _XPCEncoder {
   ///   - codingPath: The coding path to report in case of errors.
   ///   - stringKeyStrategy: The string key strategy to use.
   ///   - stringValueStrategy: The string value strategy to use.
+  ///   - userInfo: The operation-local user information to expose.
   /// - Returns: The encoded value.
   /// - Throws: An error if encoding fails.
   @inlinable
@@ -219,7 +220,8 @@ extension _XPCEncoder {
     _ value: T,
     at codingPath: [any CodingKey] = [],
     stringKeyStrategy: StringKeyStrategy,
-    stringValueStrategy: StringValueStrategy
+    stringValueStrategy: StringValueStrategy,
+    userInfo: [CodingUserInfoKey: Any] = [:]
   ) throws -> xpc_object_t {
     if let data = value as? Data {
       return data.xpcObjectRepresentation
@@ -228,7 +230,8 @@ extension _XPCEncoder {
     let encoder = _XPCEncoder(
       stringKeyStrategy: stringKeyStrategy,
       stringValueStrategy: stringValueStrategy,
-      codingPath: codingPath
+      codingPath: codingPath,
+      userInfo: userInfo
     )
     try value.encode(to: encoder)
     guard let topLevelContainer = encoder.topLevelContainer else {
