@@ -2,6 +2,7 @@
 // Licensed under Apache License v2.0 with Runtime Library Exception.
 // See LICENSE and THIRD_PARTY_NOTICES.md for details.
 
+import Foundation
 import XPC
 
 /// The internal `_XPCDecoder` implementation.
@@ -101,6 +102,46 @@ internal final class _XPCDecoder: Decoder {
 
 extension _XPCDecoder {
 
+  /// Decodes `Data` through XPCCoding's one-object representation when the
+  /// requested generic type is exactly `Data`.
+  ///
+  /// `Data`'s standard `Codable` implementation uses an unkeyed byte array.
+  /// XPCCoding deliberately does not fall back to that historical accidental
+  /// representation when the XPC object has the wrong kind.
+  @usableFromInline
+  internal func decodeVisitedDataIfRequested<T: Decodable>(
+    _ valueType: T.Type,
+    from object: xpc_object_t,
+    at codingPath: [any CodingKey]
+  ) throws -> T? {
+    guard valueType is Data.Type else {
+      return nil
+    }
+    guard object.hasType(XPC_TYPE_DATA) else {
+      throw DecodingError.typeMismatch(
+        Data.self,
+        DecodingError.Context(
+          codingPath: codingPath,
+          debugDescription:
+            """
+            Expected Data to use XPCCoding's XPC_TYPE_DATA representation, but found \
+            \(object.typeDescription). Historical unkeyed byte-array representations are not \
+            supported.
+            """
+        )
+      )
+    }
+
+    try decodingState.validateDataValue(
+      object,
+      codingPath: codingPath
+    )
+    guard let data = Data.extracting(from: object) as? T else {
+      preconditionFailure("A Data metatype must accept a Data value.")
+    }
+    return data
+  }
+
   /// Validates and consumes a child-object traversal.
   @usableFromInline
   internal func prepareToVisitChild(
@@ -196,6 +237,14 @@ extension _XPCDecoder {
     at codingPath: [any CodingKey],
     depth: Int
   ) throws -> T {
+    if let data = try decodeVisitedDataIfRequested(
+      valueType,
+      from: object,
+      at: codingPath
+    ) {
+      return data
+    }
+
     if valueType is String.Type {
       let string = try extractVisitedString(
         from: object,

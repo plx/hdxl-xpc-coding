@@ -96,6 +96,14 @@ public final class XPCDecoder: TopLevelDecoder {
       depth: 0
     )
 
+    if let data = try decoder.decodeVisitedDataIfRequested(
+      type,
+      from: input,
+      at: []
+    ) {
+      return data
+    }
+
     return try T(from: decoder)
   }
 

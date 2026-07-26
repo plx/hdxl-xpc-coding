@@ -240,6 +240,10 @@ extension _XPCEncoder {
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy
   ) throws -> xpc_object_t {
+    if let data = value as? Data {
+      return data.xpcObjectRepresentation
+    }
+
     let encoder = _XPCEncoder(
       stringKeyStrategy: stringKeyStrategy,
       stringValueStrategy: stringValueStrategy,
