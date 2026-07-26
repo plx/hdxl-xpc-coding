@@ -315,19 +315,32 @@ struct SupportAndErrorCoverageTests {
       depth: 0
     )
 
-    #expect(throws: DecodingError.self) {
+    let keyedMismatch = try #require(throws: DecodingError.self) {
       _ = try XPCKeyedDecodingContainer<SupportCoverageKey>(
         referencing: decoder,
         wrapping: xpc_array_create(nil, 0),
         codingPath: [SupportCoverageKey.value]
       )
     }
-    #expect(throws: DecodingError.self) {
+    guard case .typeMismatch = keyedMismatch else {
+      Issue.record(
+        "Expected keyed-container typeMismatch, received \(String(reflecting: keyedMismatch))."
+      )
+      return
+    }
+
+    let unkeyedMismatch = try #require(throws: DecodingError.self) {
       _ = try XPCUnkeyedDecodingContainer(
         referencing: decoder,
         wrapping: xpc_dictionary_create(nil, nil, 0),
         codingPath: [SupportCoverageKey.value]
       )
+    }
+    guard case .typeMismatch = unkeyedMismatch else {
+      Issue.record(
+        "Expected unkeyed-container typeMismatch, received \(String(reflecting: unkeyedMismatch))."
+      )
+      return
     }
 
     let dictionary = xpc_dictionary_create(nil, nil, 0)
@@ -339,8 +352,14 @@ struct SupportAndErrorCoverageTests {
       codingPath: []
     )
     #expect(keyed.allKeys == [RejectingCodingKey("keep")])
-    #expect(throws: DecodingError.self) {
+    let missingKey = try #require(throws: DecodingError.self) {
       try keyed.requiredXPCObject(for: SupportCoverageKey("missing"))
+    }
+    guard case .keyNotFound = missingKey else {
+      Issue.record(
+        "Expected keyNotFound, received \(String(reflecting: missingKey))."
+      )
+      return
     }
 
     var unkeyed = try XPCUnkeyedDecodingContainer(
@@ -348,8 +367,17 @@ struct SupportAndErrorCoverageTests {
       wrapping: xpc_array_create(nil, 0),
       codingPath: []
     )
-    #expect(throws: DecodingError.self) {
+    let endOfUnkeyedContainer = try #require(throws: DecodingError.self) {
       try unkeyed.decodeNil()
+    }
+    guard case .dataCorrupted = endOfUnkeyedContainer else {
+      Issue.record(
+        """
+        Expected dataCorrupted at the end of an unkeyed container, received \
+        \(String(reflecting: endOfUnkeyedContainer)).
+        """
+      )
+      return
     }
 
     #expect("bad%zz".removingXPCCodingPercentEscapes() == nil)
@@ -375,18 +403,33 @@ struct SupportAndErrorCoverageTests {
         depth: 0
       )
 
-      #expect(throws: DecodingError.self) {
+      let keyedMismatch = try #require(throws: DecodingError.self) {
         _ = try XPCKeyedDecodingContainer<SupportCoverageKey>(
           referencing: decoder,
           wrapping: xpc_array_create(nil, 0),
           codingPath: [codingPathKey]
         )
       }
-      #expect(throws: DecodingError.self) {
+      if case .typeMismatch = keyedMismatch {
+        // Expected.
+      } else {
+        Issue.record(
+          "Expected keyed-container typeMismatch, received \(String(reflecting: keyedMismatch))."
+        )
+      }
+
+      let unkeyedMismatch = try #require(throws: DecodingError.self) {
         _ = try XPCUnkeyedDecodingContainer(
           referencing: decoder,
           wrapping: xpc_dictionary_create(nil, nil, 0),
           codingPath: [codingPathKey]
+        )
+      }
+      if case .typeMismatch = unkeyedMismatch {
+        // Expected.
+      } else {
+        Issue.record(
+          "Expected unkeyed-container typeMismatch, received \(String(reflecting: unkeyedMismatch))."
         )
       }
 
@@ -401,8 +444,15 @@ struct SupportAndErrorCoverageTests {
         codingPath: [codingPathKey]
       )
       #expect(keyed.allKeys == [RejectingCodingKey(acceptedKey)])
-      #expect(throws: DecodingError.self) {
+      let missingKey = try #require(throws: DecodingError.self) {
         try keyed.requiredXPCObject(for: SupportCoverageKey("missing-\(probe.explanation)"))
+      }
+      if case .keyNotFound = missingKey {
+        // Expected.
+      } else {
+        Issue.record(
+          "Expected keyNotFound, received \(String(reflecting: missingKey))."
+        )
       }
 
       var unkeyed = try XPCUnkeyedDecodingContainer(
@@ -410,8 +460,18 @@ struct SupportAndErrorCoverageTests {
         wrapping: xpc_array_create(nil, 0),
         codingPath: [codingPathKey]
       )
-      #expect(throws: DecodingError.self) {
+      let endOfUnkeyedContainer = try #require(throws: DecodingError.self) {
         try unkeyed.decodeNil()
+      }
+      if case .dataCorrupted = endOfUnkeyedContainer {
+        // Expected.
+      } else {
+        Issue.record(
+          """
+          Expected dataCorrupted at the end of an unkeyed container, received \
+          \(String(reflecting: endOfUnkeyedContainer)).
+          """
+        )
       }
 
       #expect(

@@ -28,7 +28,7 @@ internal enum XPCStringExtractionError: Error {
 
 extension xpc_object_t {
 
-  /// Entry point for string-value extraction. 
+  /// Entry point for string-value extraction.
   @usableFromInline
   internal func extractStringValue(
     stringValueStrategy: XPCDecoder.StringValueStrategy,
@@ -36,18 +36,45 @@ extension xpc_object_t {
   ) throws(DecodingError) -> String {
     do {
       return try _extractStringValue(stringValueStrategy: stringValueStrategy)
-    }
-    catch let error {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: codingPath,
-          debugDescription: "Couldn't extract a string value!",
-          underlyingError: error
+    } catch let error {
+      switch error {
+      case .typeMismatch:
+        if isNull {
+          throw DecodingError.valueNotFound(
+            String.self,
+            DecodingError.Context(
+              codingPath: codingPath,
+              debugDescription: "Expected a String value, but found XPC null."
+            )
+          )
+        }
+        throw DecodingError.typeMismatch(
+          String.self,
+          DecodingError.Context(
+            codingPath: codingPath,
+            debugDescription:
+              """
+              Expected the XPC object kind required by the \
+              \(String(reflecting: stringValueStrategy)) string-value strategy, but found \
+              \(typeDescription).
+              """,
+            underlyingError: nil
+          )
         )
-      )
+      case .unableToRemovePercentEscapes,
+        .unableToCopyStringContent,
+        .unableToDecode:
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: codingPath,
+            debugDescription: "Unable to extract a valid string value from its XPC representation.",
+            underlyingError: error
+          )
+        )
+      }
     }
   }
-  
+
   /// Underlying logic for string extraction from an `xpc_object_t`.
   @usableFromInline
   internal func _extractStringValue(
@@ -128,40 +155,54 @@ extension xpc_object_t {
       return decodedString
     }
   }
-  
+
   /// Extract a value of type `Value` directly from the receiving `xpc_object_t`, reporting errors as having occurred at the given `codingPath`.
   @usableFromInline
   func extractValue<Value>(
     ofType valueType: Value.Type,
     at codingPath: [any CodingKey]
   ) throws -> Value where Value: XPCObjectExtractable {
-    guard hasType(valueType.associatedXPCObjectType) else {
+    let actualXPCObjectType = xpc_get_type(self)
+    guard actualXPCObjectType == valueType.associatedXPCObjectType else {
+      if actualXPCObjectType == XPC_TYPE_NULL {
+        throw DecodingError.valueNotFound(
+          valueType,
+          DecodingError.Context(
+            codingPath: codingPath,
+            debugDescription:
+              "Expected a nonoptional \(String(reflecting: valueType)) value, but found XPC null."
+          )
+        )
+      }
       throw DecodingError.typeMismatch(
         valueType,
         DecodingError.Context(
           codingPath: codingPath,
           debugDescription:
-          """
-          Type mismatch: expected \(String(reflecting: valueType)) represented-as \(valueType.associatedXPCObjectType.typeDescription), but xpc object is actually \(typeDescription).",
-          """,
+            """
+            Type mismatch: expected \(String(reflecting: valueType)) represented as \
+            \(valueType.associatedXPCObjectType.typeDescription), but the XPC object is actually \
+            \(actualXPCObjectType.typeDescription).
+            """,
           underlyingError: nil
         )
       )
     }
-    
+
     guard let extractedValue = valueType.extracting(from: self) else {
       throw DecodingError.dataCorrupted(
         DecodingError.Context(
           codingPath: codingPath,
           debugDescription:
-          """
-          Data corruption: unable to construct a value of type \(String(reflecting: valueType)) from an xpc object of type \(typeDescription).",
-          """,
+            """
+            Data corruption: unable to construct \(String(reflecting: valueType)) from an XPC \
+            object of type \(typeDescription).
+            """,
           underlyingError: nil
         )
       )
     }
-    
+
     return extractedValue
   }
 
@@ -171,39 +212,44 @@ extension xpc_object_t {
     ofType valueType: Value.Type,
     at codingPath: [any CodingKey],
     forKey key: any CodingKey,
-    stringKeyStrategy: XPCDecoder.StringKeyStrategy    
+    stringKeyStrategy: XPCDecoder.StringKeyStrategy
   ) throws -> Value where Value: XPCObjectExtractable {
     guard isDictionary else {
-      throw DecodingError.dataCorrupted(
+      throw DecodingError.typeMismatch(
+        [String: Any].self,
         DecodingError.Context(
           codingPath: codingPath,
           debugDescription:
-          """
-          Data corruption: expected to be extracting a value of type \(String(reflecting: valueType)) for key `\(key)` from a dictionary, but our xpc object is actually \(typeDescription).",
-          """,
+            """
+            Type mismatch: expected to extract \(String(reflecting: valueType)) for key `\(key)` \
+            from an XPC dictionary, but the object is \(typeDescription).
+            """,
           underlyingError: nil
         )
       )
     }
-    
-    let possible_xpc_value = key.withUTF8CString(embeddedNullByteRepresentation: stringKeyStrategy.embeddedNullByteRepresentation) { cString in
+
+    let possibleXPCValue = key.withUTF8CString(
+      embeddedNullByteRepresentation: stringKeyStrategy.embeddedNullByteRepresentation
+    ) { cString in
       xpc_dictionary_get_value(self, cString)
     }
-    guard let xpc_value = possible_xpc_value else {
+    guard let xpcValue = possibleXPCValue else {
       throw DecodingError.keyNotFound(
         key,
         DecodingError.Context(
           codingPath: codingPath,
           debugDescription:
-          """
-          Key not found: couldn't find expected value of type \(String(reflecting: valueType)) for key: `\(key.stringValue)`.",
-          """,
+            """
+            Key not found: couldn't find an expected \(String(reflecting: valueType)) value for \
+            key `\(key.stringValue)`.
+            """,
           underlyingError: nil
         )
       )
     }
-    
-    return try xpc_value.extractValue(
+
+    return try xpcValue.extractValue(
       ofType: valueType,
       at: codingPath
     )
@@ -218,50 +264,43 @@ extension xpc_object_t {
     stringValueStrategy: XPCDecoder.StringValueStrategy
   ) throws -> String {
     guard isDictionary else {
-      throw DecodingError.dataCorrupted(
+      throw DecodingError.typeMismatch(
+        [String: Any].self,
         DecodingError.Context(
           codingPath: codingPath,
           debugDescription:
-          """
-          Data corruption: expected to be extracting a `String` for key `\(key)` from a dictionary, but our xpc object is actually \(typeDescription).",
-          """,
+            """
+            Type mismatch: expected to extract a String for key `\(key)` from an XPC dictionary, \
+            but the object is \(typeDescription).
+            """,
           underlyingError: nil
         )
       )
     }
-    
-    let possible_xpc_value = key.withUTF8CString(embeddedNullByteRepresentation: stringKeyStrategy.embeddedNullByteRepresentation) { cString in
+
+    let possibleXPCValue = key.withUTF8CString(
+      embeddedNullByteRepresentation: stringKeyStrategy.embeddedNullByteRepresentation
+    ) { cString in
       xpc_dictionary_get_value(self, cString)
     }
-    guard let xpcValue = possible_xpc_value else {
+    guard let xpcValue = possibleXPCValue else {
       throw DecodingError.keyNotFound(
         key,
         DecodingError.Context(
           codingPath: codingPath,
           debugDescription:
-          """
-          Key not found: couldn't find expected value for key: `\(key.stringValue)`.",
-          """,
+            """
+            Key not found: couldn't find the expected value for key `\(key.stringValue)`.
+            """,
           underlyingError: nil
         )
       )
     }
-    
-    do {
-      return try xpcValue._extractStringValue(stringValueStrategy: stringValueStrategy)
-    }
-    catch let error {
-      throw DecodingError.dataCorrupted(
-        DecodingError.Context(
-          codingPath: codingPath,
-          debugDescription:
-          """
-          Data corrupted: unable to decode string value for key: `\(key.stringValue)`.",
-          """,
-          underlyingError: error
-        )
-      )
-    }
+
+    return try xpcValue.extractStringValue(
+      stringValueStrategy: stringValueStrategy,
+      at: codingPath
+    )
   }
 
 }
