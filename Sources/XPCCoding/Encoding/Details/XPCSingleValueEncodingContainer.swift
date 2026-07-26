@@ -25,9 +25,9 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   @inlinable @inline(__always)
   internal var stringValueStrategy: StringValueStrategy { encoder.stringValueStrategy }
   
-  /// We always source our codingPath from the encoder.
-  @usableFromInline @inline(__always)
-  internal var codingPath: [CodingKey] { encoder.codingPath } 
+  /// The immutable path at which this container was created.
+  @usableFromInline
+  internal let codingPath: [any CodingKey]
   
   /// Our parent encoder.
   @usableFromInline
@@ -43,13 +43,16 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   /// 
   /// - Parameters:
   ///   - encoder: The parent encoder.
+  ///   - codingPath: The immutable path at which the container was created.
   ///   - insertionClosure: The closure we use to insert the encoded value into the parent encoder's XPC object.
   @usableFromInline
   internal init(
     referencing encoder: _XPCEncoder,
+    codingPath: [any CodingKey],
     insertionClosure: @escaping (xpc_object_t) throws -> ()
   ) {
     self.encoder = encoder
+    self.codingPath = codingPath
     self.insertionClosure = insertionClosure
   }
 

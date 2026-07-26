@@ -61,12 +61,12 @@ struct EncodingCodingPathTests {
       UnkeyedSuperEncoderPathProbe(recorder: recorder)
     )
 
-    #expect(recorder["keyed-super.encoder"] == ["namedSuper"])
-    #expect(recorder["keyed-super.single-value"] == ["namedSuper"])
-    #expect(recorder["default-super.encoder"] == ["super"])
-    #expect(recorder["default-super.single-value"] == ["super"])
-    #expect(recorder["unkeyed-super.encoder"] == ["0"])
-    #expect(recorder["unkeyed-super.single-value"] == ["0"])
+    #expect(recorder["keyed-super.encoder"] == ["outer", "namedSuper"])
+    #expect(recorder["keyed-super.single-value"] == ["outer", "namedSuper"])
+    #expect(recorder["default-super.encoder"] == ["outer", "super"])
+    #expect(recorder["default-super.single-value"] == ["outer", "super"])
+    #expect(recorder["unkeyed-super.encoder"] == ["outer", "0"])
+    #expect(recorder["unkeyed-super.single-value"] == ["outer", "0"])
   }
 
   @Test
@@ -214,7 +214,11 @@ private struct KeyedSuperEncoderPathProbe: Encodable {
   let recorder: EncodingPathRecorder
 
   func encode(to encoder: any Encoder) throws {
-    var container = encoder.container(keyedBy: EncodingPathKey.self)
+    var root = encoder.container(keyedBy: EncodingPathKey.self)
+    var container = root.nestedContainer(
+      keyedBy: EncodingPathKey.self,
+      forKey: .outer
+    )
     try RecordingEncodingLeaf(
       label: "keyed-super",
       recorder: recorder
@@ -232,7 +236,8 @@ private struct UnkeyedSuperEncoderPathProbe: Encodable {
   let recorder: EncodingPathRecorder
 
   func encode(to encoder: any Encoder) throws {
-    var container = encoder.unkeyedContainer()
+    var root = encoder.container(keyedBy: EncodingPathKey.self)
+    var container = root.nestedUnkeyedContainer(forKey: .outer)
     try RecordingEncodingLeaf(
       label: "unkeyed-super",
       recorder: recorder
