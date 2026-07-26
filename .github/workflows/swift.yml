@@ -69,6 +69,128 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  address-sanitizer:
+    name: Address Sanitizer (Xcode 26.6)
+    runs-on: macos-26
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          clean: true
+          persist-credentials: false
+
+      - name: Verify the supported toolchain and manifest
+        run: bash Scripts/verify-support-policy.sh
+
+      - name: Run the complete suite under AddressSanitizer
+        env:
+          ASAN_OPTIONS: halt_on_error=1
+        run: |
+          set -o pipefail
+          swift test \
+            --sanitize=address \
+            -Xswiftc -warnings-as-errors \
+            2>&1 | tee "${RUNNER_TEMP}/address-sanitizer.log"
+
+      - name: Run subprocess-isolated hostile-input regressions
+        run: |
+          set -o pipefail
+          swift test \
+            --scratch-path "${RUNNER_TEMP}/address-subprocess-tests" \
+            -Xswiftc -warnings-as-errors \
+            --filter \
+            'UnalignedNumericDecodingTests|DecoderResourceLimitTests|ReferencingEncoderStateTests|UnsafePointerCountValidationTests' \
+            2>&1 | tee -a "${RUNNER_TEMP}/address-sanitizer.log"
+
+      - name: Upload the complete AddressSanitizer log
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: address-sanitizer-xcode-26.6
+          path: ${{ runner.temp }}/address-sanitizer.log
+          if-no-files-found: error
+          retention-days: 14
+
+  undefined-behavior-sanitizer:
+    name: Undefined Behavior Sanitizer (Xcode 26.6)
+    runs-on: macos-26
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          clean: true
+          persist-credentials: false
+
+      - name: Verify the supported toolchain and manifest
+        run: bash Scripts/verify-support-policy.sh
+
+      - name: Run the complete suite under UndefinedBehaviorSanitizer
+        env:
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+        run: |
+          set -o pipefail
+          swift test \
+            --sanitize=undefined \
+            -Xswiftc -warnings-as-errors \
+            2>&1 | tee "${RUNNER_TEMP}/undefined-behavior-sanitizer.log"
+
+      - name: Upload the complete UndefinedBehaviorSanitizer log
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: undefined-behavior-sanitizer-xcode-26.6
+          path: ${{ runner.temp }}/undefined-behavior-sanitizer.log
+          if-no-files-found: error
+          retention-days: 14
+
+  thread-sanitizer:
+    name: Thread Sanitizer (Xcode 26.6)
+    runs-on: macos-26
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          clean: true
+          persist-credentials: false
+
+      - name: Verify the supported toolchain and manifest
+        run: bash Scripts/verify-support-policy.sh
+
+      - name: Run the complete suite under ThreadSanitizer
+        env:
+          TSAN_OPTIONS: halt_on_error=1
+        run: |
+          set -o pipefail
+          swift test \
+            --sanitize=thread \
+            -Xswiftc -warnings-as-errors \
+            2>&1 | tee "${RUNNER_TEMP}/thread-sanitizer.log"
+
+      - name: Run subprocess-isolated hostile-input regressions
+        run: |
+          set -o pipefail
+          swift test \
+            --scratch-path "${RUNNER_TEMP}/thread-subprocess-tests" \
+            -Xswiftc -warnings-as-errors \
+            --filter \
+            'UnalignedNumericDecodingTests|DecoderResourceLimitTests|ReferencingEncoderStateTests|UnsafePointerCountValidationTests' \
+            2>&1 | tee -a "${RUNNER_TEMP}/thread-sanitizer.log"
+
+      - name: Upload the complete ThreadSanitizer log
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: thread-sanitizer-xcode-26.6
+          path: ${{ runner.temp }}/thread-sanitizer.log
+          if-no-files-found: error
+          retention-days: 14
+
   macos:
     name: Compile macOS 26 (arm64)
     runs-on: macos-26

@@ -57,6 +57,10 @@ previously accessed `codec.encoder` or `codec.decoder`.
 Release-mode performance measurements and report comparison are documented in
 [Benchmarks/README.md](Benchmarks/README.md).
 
+The exact local AddressSanitizer, UndefinedBehaviorSanitizer, ThreadSanitizer,
+and subprocess-regression commands are documented in
+[Sanitizer Testing](reference/SanitizerTesting.md).
+
 ## Origin and License
 
 This package derives in part from
