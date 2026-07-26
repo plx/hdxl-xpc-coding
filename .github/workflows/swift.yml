@@ -38,6 +38,9 @@ jobs:
     - name: Run tests
       run: swift test -q
 
+    - name: Verify external public API boundary
+      run: bash Scripts/verify-public-api.sh
+
     - name: Run release benchmark smoke test
       run: |
         swift run -c release XPCCodingBenchmarks self-test
