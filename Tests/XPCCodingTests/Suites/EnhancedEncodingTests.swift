@@ -283,6 +283,94 @@ struct EnhancedEncodingTests {
     }
   }
 
+  @Test
+  func `public wrappers write single-value struct mutations back`() throws {
+    let bytes: [UInt8] = [0, 1, 2, 3, 5, 8, 13, 255]
+
+    for invocation in BinaryWrapperInvocation.allCases {
+      var container = RecordingEnhancedSingleValueContainer()
+
+      try invocation.encode(
+        bytes: bytes,
+        into: &container
+      )
+
+      #expect(
+        container.recordedData == invocation.expectedData(for: bytes),
+        "Incorrect value-semantic result for \(invocation)."
+      )
+      #expect(
+        container.directCallCount == 1,
+        "Expected exactly one enhanced call for \(invocation)."
+      )
+    }
+  }
+
+  @Test
+  func `public wrappers write unkeyed struct mutations back`() throws {
+    let bytes: [UInt8] = [0, 1, 2, 3, 5, 8, 13, 255]
+
+    for invocation in BinaryWrapperInvocation.allCases {
+      var container = RecordingEnhancedUnkeyedContainer()
+
+      try invocation.encode(
+        bytes: bytes,
+        into: &container
+      )
+
+      #expect(
+        container.recordedData == [invocation.expectedData(for: bytes)],
+        "Incorrect value-semantic result for \(invocation)."
+      )
+    }
+  }
+
+  @Test
+  func `public wrappers preserve reference-semantic enhanced dispatch`() throws {
+    let bytes: [UInt8] = [0, 1, 2, 3, 5, 8, 13, 255]
+
+    for invocation in BinaryWrapperInvocation.allCases {
+      var container = ReferenceRecordingEnhancedSingleValueContainer()
+
+      try invocation.encode(
+        bytes: bytes,
+        into: &container
+      )
+
+      #expect(
+        container.recordedData == invocation.expectedData(for: bytes),
+        "Incorrect reference-semantic result for \(invocation)."
+      )
+      #expect(
+        container.directCallCount == 1,
+        "Expected exactly one enhanced call for \(invocation)."
+      )
+    }
+  }
+
+  @Test
+  func `public wrappers validate before enhanced dispatch`() throws {
+    let pointer: UnsafeRawPointer? = nil
+    var singleValueContainer = RecordingEnhancedSingleValueContainer()
+    var unkeyedContainer = RecordingEnhancedUnkeyedContainer()
+
+    _ = try #require(throws: EncodingError.self) {
+      try singleValueContainer.efficientlyEncodeBinaryData(
+        pointer,
+        count: 1
+      )
+    }
+    _ = try #require(throws: EncodingError.self) {
+      try unkeyedContainer.efficientlyEncodeBinaryData(
+        pointer,
+        count: 1
+      )
+    }
+
+    #expect(singleValueContainer.directCallCount == 0)
+    #expect(unkeyedContainer.recordedData.isEmpty)
+  }
+
 }
 
 // MARK: - Binary Payloads
@@ -659,17 +747,133 @@ private struct KeyedElementValue: Decodable, Equatable {
   let elements: [Int]
 }
 
+// MARK: - Binary Wrapper Invocations
+
+private enum BinaryWrapperInvocation: CaseIterable {
+  case rawPointer
+  case mutableRawPointer
+  case rawBuffer
+  case mutableRawBuffer
+  case nilRawPointer
+  case nilMutableRawPointer
+  case emptyRawBuffer
+  case emptyMutableRawBuffer
+
+  func expectedData(for bytes: [UInt8]) -> Data {
+    switch self {
+    case .rawPointer, .mutableRawPointer, .rawBuffer, .mutableRawBuffer:
+      Data(bytes)
+    case .nilRawPointer, .nilMutableRawPointer, .emptyRawBuffer, .emptyMutableRawBuffer:
+      Data()
+    }
+  }
+
+  func encode<Container: SingleValueEncodingContainer>(
+    bytes: [UInt8],
+    into container: inout Container
+  ) throws {
+    switch self {
+    case .rawPointer:
+      try bytes.withUnsafeBytes { buffer in
+        try container.efficientlyEncodeBinaryData(
+          buffer.baseAddress,
+          count: buffer.count
+        )
+      }
+    case .mutableRawPointer:
+      var mutableBytes = bytes
+      try mutableBytes.withUnsafeMutableBytes { buffer in
+        try container.efficientlyEncodeBinaryData(
+          buffer.baseAddress,
+          count: buffer.count
+        )
+      }
+    case .rawBuffer:
+      try bytes.withUnsafeBytes { buffer in
+        try container.efficientlyEncodeBinaryData(buffer)
+      }
+    case .mutableRawBuffer:
+      var mutableBytes = bytes
+      try mutableBytes.withUnsafeMutableBytes { buffer in
+        try container.efficientlyEncodeBinaryData(buffer)
+      }
+    case .nilRawPointer:
+      let pointer: UnsafeRawPointer? = nil
+      try container.efficientlyEncodeBinaryData(pointer, count: 0)
+    case .nilMutableRawPointer:
+      let pointer: UnsafeMutableRawPointer? = nil
+      try container.efficientlyEncodeBinaryData(pointer, count: 0)
+    case .emptyRawBuffer:
+      try container.efficientlyEncodeBinaryData(
+        UnsafeRawBufferPointer(start: nil, count: 0)
+      )
+    case .emptyMutableRawBuffer:
+      try container.efficientlyEncodeBinaryData(
+        UnsafeMutableRawBufferPointer(start: nil, count: 0)
+      )
+    }
+  }
+
+  func encode<Container: UnkeyedEncodingContainer>(
+    bytes: [UInt8],
+    into container: inout Container
+  ) throws {
+    switch self {
+    case .rawPointer:
+      try bytes.withUnsafeBytes { buffer in
+        try container.efficientlyEncodeBinaryData(
+          buffer.baseAddress,
+          count: buffer.count
+        )
+      }
+    case .mutableRawPointer:
+      var mutableBytes = bytes
+      try mutableBytes.withUnsafeMutableBytes { buffer in
+        try container.efficientlyEncodeBinaryData(
+          buffer.baseAddress,
+          count: buffer.count
+        )
+      }
+    case .rawBuffer:
+      try bytes.withUnsafeBytes { buffer in
+        try container.efficientlyEncodeBinaryData(buffer)
+      }
+    case .mutableRawBuffer:
+      var mutableBytes = bytes
+      try mutableBytes.withUnsafeMutableBytes { buffer in
+        try container.efficientlyEncodeBinaryData(buffer)
+      }
+    case .nilRawPointer:
+      let pointer: UnsafeRawPointer? = nil
+      try container.efficientlyEncodeBinaryData(pointer, count: 0)
+    case .nilMutableRawPointer:
+      let pointer: UnsafeMutableRawPointer? = nil
+      try container.efficientlyEncodeBinaryData(pointer, count: 0)
+    case .emptyRawBuffer:
+      try container.efficientlyEncodeBinaryData(
+        UnsafeRawBufferPointer(start: nil, count: 0)
+      )
+    case .emptyMutableRawBuffer:
+      try container.efficientlyEncodeBinaryData(
+        UnsafeMutableRawBufferPointer(start: nil, count: 0)
+      )
+    }
+  }
+}
+
 // MARK: - Recording Enhanced Containers
 
 private struct RecordingEnhancedSingleValueContainer: XPCEnhancedSingleValueEncodingContainer {
   var codingPath: [any CodingKey] = []
   var recordedData = Data()
+  var directCallCount = 0
 
   mutating func directlyEncodeXPCData(
     _ unsafePointer: UnsafeMutableRawPointer?,
     count: Int
   ) throws {
     recordedData = data(from: unsafePointer, count: count)
+    directCallCount += 1
   }
 
   mutating func encodeNil() throws { throw UnexpectedEncodingPathError() }
@@ -736,6 +940,41 @@ private struct RecordingEnhancedUnkeyedContainer: XPCEnhancedUnkeyedEncodingCont
   mutating func superEncoder() -> any Encoder {
     fatalError("Not used by these tests.")
   }
+}
+
+private final class ReferenceRecordingEnhancedSingleValueContainer:
+  XPCEnhancedSingleValueEncodingContainer
+{
+  var codingPath: [any CodingKey] = []
+  var recordedData = Data()
+  var directCallCount = 0
+
+  func directlyEncodeXPCData(
+    _ unsafePointer: UnsafeMutableRawPointer?,
+    count: Int
+  ) throws {
+    recordedData = data(from: unsafePointer, count: count)
+    directCallCount += 1
+  }
+
+  func encodeNil() throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: Bool) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: String) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: Double) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: Float) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: Int) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: Int8) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: Int16) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: Int32) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: Int64) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: Int128) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: UInt) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: UInt8) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: UInt16) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: UInt32) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: UInt64) throws { throw UnexpectedEncodingPathError() }
+  func encode(_ value: UInt128) throws { throw UnexpectedEncodingPathError() }
+  func encode<T: Encodable>(_ value: T) throws { throw UnexpectedEncodingPathError() }
 }
 
 private struct UnexpectedEncodingPathError: Error {}
