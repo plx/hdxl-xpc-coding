@@ -31,7 +31,9 @@ small, reviewable changes:
 - use a shallow, explicitly documented PR stack only when already-selected or
   pre-existing work must be reconciled with an unmerged prerequisite;
 - merge prerequisites before dependent work;
-- close each ordinary remediation leaf through its own focused merged PR;
+- close each ordinary remediation leaf through its own focused merged PR,
+  except for a maintainer-resolved not-planned design outcome recorded under
+  the decision checkpoint rules;
 - complete and validate component epics
   [#53](https://github.com/plx/hdxl-xpc-coding/issues/53) through
   [#58](https://github.com/plx/hdxl-xpc-coding/issues/58);
@@ -274,7 +276,10 @@ If no ready issue exists:
    through implementation, review, CI, and merge unless it reaches a genuine
    blocker and another ready issue can safely progress.
 2. **One ordinary remediation leaf per PR.** Split unrelated fixes unless the
-   selected ticket itself requires an inseparable change.
+   selected ticket itself requires an inseparable change. A design ticket
+   explicitly resolved not planned at a maintainer checkpoint is the narrow
+   administrative exception; record the decision in the issue and durable
+   repository guidance rather than manufacturing a no-op PR.
 3. **Target `main`.** Independent branches start from current remote `main`.
    An inherited or pre-existing dependent branch may temporarily contain an
    unmerged prerequisite's commits while it is frozen, but its GitHub PR still
@@ -316,8 +321,9 @@ implemented:
   per-byte XPC-object amplification;
 - Codable container reuse, coding paths, missing-key behavior, user errors,
   and `userInfo` satisfy the accepted public semantics;
-- wire-format changes use an explicit, versioned,
-  architecture-independent contract with reviewed golden fixtures;
+- XPC representation changes use the explicit same-host, same-build contract
+  with reviewed structural fixtures, without implying versioned,
+  architecture-neutral, persistent, or network compatibility;
 - transport claims are supported by real cross-process XPC request/reply
   evidence, not only in-memory object round trips;
 - concurrency claims compile in an external Swift 6.3 strict-concurrency
@@ -631,8 +637,8 @@ maintainer approval before landing a materially unresolved choice involving:
 - error identity and taxonomy;
 - codec configuration ownership, default construction, or concurrency
   guarantees;
-- canonical numeric mappings, versioned envelopes, or the promised wire
-  compatibility window;
+- numeric mappings, application-versus-library transport ownership, or the
+  supported XPC representation boundary;
 - public API resilience or `@inlinable` policy;
 - licensing, attribution, or upstream Runtime Library Exception treatment;
 - semantic-versioning and release compatibility policy; or
@@ -846,8 +852,9 @@ Mark the goal complete only when all of the following are true:
 
 - the live `program:production-readiness` cohort contains no open issue,
   including later findings and top-level #59;
-- every ordinary remediation leaf closed through its dedicated merged PR with
-  ticket-specific evidence;
+- every ordinary remediation leaf either closed through its dedicated merged
+  PR with ticket-specific evidence or explicitly resolved not planned at a
+  maintainer decision checkpoint with durable issue and repository evidence;
 - every component epic has valid aggregate evidence;
 - no remediation, audit, or intentional stack PR remains open;
 - issue #52 records unconditional `GO` for one exact immutable candidate;

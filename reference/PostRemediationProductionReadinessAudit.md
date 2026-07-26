@@ -154,7 +154,8 @@ It must compile representative public usage for:
 - `userInfo`;
 - enhanced binary-data APIs;
 - supported shared-concurrency use;
-- an arbitrary root value and a transport-ready dictionary envelope.
+- an arbitrary root value embedded in an application-owned, transport-ready
+  XPC dictionary.
 
 No fixture may use `@testable`, `@_spi`, source-relative imports, or internal
 symbols.
@@ -296,37 +297,41 @@ silently reinterpret data.
 
 ### Checked numeric conversions
 
-For every narrow signed and unsigned integer type, manually construct every
-scalar XPC input kind permitted by the accepted wire contract. For a contract
-using `XPC_TYPE_INT64` and `XPC_TYPE_UINT64`, exercise:
+For every narrow signed and unsigned integer type, manually construct the
+scalar XPC input kind permitted by the accepted representation contract. For a
+contract using `XPC_TYPE_INT64` for signed values and `XPC_TYPE_UINT64` for
+unsigned values, exercise:
 
 - the exact minimum and maximum;
 - one representable value inside each boundary;
 - one value immediately outside each boundary when the source XPC type can
   express it;
-- the opposite signedness, including negative-to-unsigned and unsigned values
-  greater than the signed maximum.
+- the opposite XPC signedness as a rejected wrong-kind input, including a
+  negative signed value and an unsigned value greater than the signed maximum.
 
 For `Float16` and `Float`, construct inputs in every scalar kind permitted by
 the accepted contract—such as `XPC_TYPE_DOUBLE` if that mapping is adopted—
 covering exact and inexact finite values, overflow, underflow, signed zero,
 infinities, NaNs, and values outside the finite destination range. Verify the
-canonical contract's accepted conversions and require a documented
+same-build contract's accepted conversions and require a documented
 corruption/range error for every rejected conversion. No integer or floating
 conversion may truncate, wrap, or silently clamp.
 
-### Wire shape
+### XPC object shape
 
 For every Swift primitive and standard-library type supported by the package:
 
 1. encode a representative value;
 2. assert the exact XPC type;
-3. assert byte order and exact bytes where applicable;
-4. compare to the frozen golden fixture;
-5. decode fixtures produced by every release covered by the compatibility
-   policy.
+3. assert exact bytes where the contract requires them, including the active
+   target-native representation where deliberately ABI-coupled;
+4. compare to the reviewed same-build structural fixture; and
+5. construct the fixture's XPC tree directly and decode it without using the
+   candidate encoder.
 
-Fixtures must be reviewed data, not regenerated immediately before comparison.
+Fixtures must be reviewed expectations, not regenerated immediately before
+comparison. Do not introduce a previous-release fixture matrix or infer
+network, persistence, or independently-versioned compatibility.
 
 ## Phase 5: `Data` and unsafe-buffer APIs
 
@@ -440,10 +445,11 @@ service or listener/endpoint fixture that:
 - receives and decodes it in another process or service context;
 - encodes and returns a reply;
 - verifies error propagation and interruption handling;
-- uses the documented dictionary envelope required by XPC transport;
+- uses an application-owned dictionary message as required by XPC transport;
 - covers empty, representative, maximum-size, and malformed payloads;
 - confirms ownership/lifetime behavior after send and reply;
-- verifies selected string configurations and the canonical wire format.
+- verifies selected string configurations and the same-build XPC object
+  representation.
 
 Where iOS or Catalyst cannot run the same service topology, perform the
 strongest supported compile or integration check and document the platform
@@ -638,9 +644,9 @@ Confirm the README includes:
 - Swift 6.3 and platform 26+ policy;
 - a compiling minimal example;
 - codec configuration;
-- XPC dictionary-envelope/transport requirements;
+- application-owned XPC dictionary/transport requirements;
 - concurrency model;
-- wire-compatibility policy;
+- same-host, same-build XPC representation policy and explicit non-goals;
 - unsafe-pointer preconditions;
 - decoder limits;
 - stability and semantic-versioning policy;
@@ -702,7 +708,7 @@ Any one of the following requires a no-go:
   input outside a clearly documented programmer precondition;
 - sanitizer diagnostic;
 - known failing or tolerated test;
-- wire fixture incompatibility within the promised compatibility window;
+- same-candidate structural fixture incompatibility;
 - unsafe API without an enforceable and documented contract;
 - unresolved substantive P0 or P1 remediation finding;
 - unreviewed public API break;
@@ -712,12 +718,15 @@ Any one of the following requires a no-go:
 
 ### Conditional-go examples
 
+The approved same-host, co-built representation boundary is the intended
+production scope, not a condition. Do not downgrade a candidate merely because
+networking, persistence, neutral-byte interchange, and independent version
+skew are unsupported.
+
 A conditional go may be appropriate when:
 
 - a platform supports compilation but not the full service topology, and that
   limitation is precise and documented;
-- wire compatibility is intentionally limited to identical package versions
-  and configuration, with enforcement or a clear envelope;
 - coders are intentionally non-shareable and the compiler/documentation enforce
   per-task use.
 
@@ -740,7 +749,7 @@ A go requires:
   has not yet occurred;
 - public API examples compiling as an external consumer;
 - hostile input producing bounded errors;
-- stable, reviewed wire fixtures;
+- stable, reviewed same-build XPC structural fixtures;
 - real XPC transport success;
 - acceptable and documented performance;
 - reviewed licensing and release metadata;

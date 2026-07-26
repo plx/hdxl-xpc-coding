@@ -41,6 +41,24 @@ The static documentation website and landing page are excluded. The README,
 public API documentation, repository policy, and package-index metadata remain
 in scope because they are part of publishing and operating the package.
 
+## Same-build representation decision
+
+On 2026-07-26, the maintainer defined XPCCoding's compatibility boundary as a
+same-host compilation cohort: applications and XPC services that are designed,
+configured, built, deployed, and updated together. The boundary is analogous
+to package visibility.
+
+The program therefore does not pursue independently versioned peers,
+cross-release decoding, network or persistent serialization, neutral byte
+representations, runtime format metadata, or a library-owned message envelope.
+Applications own the outer XPC dictionary used for transport and any
+application-level versioning they choose.
+
+Issue #24 was closed not planned under this decision. Its dependency edges were
+removed, and #20, #22, #23, #25, #26, #36, #47, and #55 were reconciled to the
+same-build model. The normative repository contract is
+[XPCCoding XPC Object Representation](WireFormat.md).
+
 ## Program shape
 
 At creation, the program contained:
@@ -105,16 +123,17 @@ intentional exceptions: both are direct children of top-level epic #59.
   release-mode benchmarks;
 - [#20](https://github.com/plx/hdxl-xpc-coding/issues/20) — single-object
   ordinary `Data` encoding;
-- [#22](https://github.com/plx/hdxl-xpc-coding/issues/22) — canonical wire
-  contract;
-- [#23](https://github.com/plx/hdxl-xpc-coding/issues/23) —
-  architecture-independent numerics;
-- [#24](https://github.com/plx/hdxl-xpc-coding/issues/24) — versioned
-  dictionary envelope;
+- [#22](https://github.com/plx/hdxl-xpc-coding/issues/22) — same-build XPC
+  object-representation contract;
+- [#23](https://github.com/plx/hdxl-xpc-coding/issues/23) — efficient,
+  checked XPC numeric representations;
+- [#24](https://github.com/plx/hdxl-xpc-coding/issues/24) — closed not
+  planned after the maintainer selected application-owned message dictionaries
+  instead of a library version envelope;
 - [#25](https://github.com/plx/hdxl-xpc-coding/issues/25) — bidirectional
-  golden fixtures;
-- [#26](https://github.com/plx/hdxl-xpc-coding/issues/26) — real
-  cross-process request/reply tests;
+  same-build structural fixtures;
+- [#26](https://github.com/plx/hdxl-xpc-coding/issues/26) — real,
+  same-build cross-process request/reply tests;
 - [#32](https://github.com/plx/hdxl-xpc-coding/issues/32) — removal of
   redundant decoder zero-filling;
 - [#33](https://github.com/plx/hdxl-xpc-coding/issues/33) — removal of the
@@ -289,9 +308,8 @@ the live relationships are authoritative.
 #18 <- #7, #8, #9, #13, #15, #16
 #20 <- #19, #22
 #23 <- #8, #22
-#24 <- #21, #22
-#25 <- #7, #20, #22, #23, #24
-#26 <- #7, #20, #23, #24
+#25 <- #7, #20, #22, #23
+#26 <- #7, #20, #22, #23
 #27 <- #10, #21
 #28 <- #8, #21
 #30 <- #7, #21, #29
@@ -305,7 +323,7 @@ the live relationships are authoritative.
 #44 <- #34
 #45 <- #29, #37, #38, #39, #40, #41, #42, #44, #47
 #46 <- #8, #9, #11, #28, #44
-#47 <- #23, #24, #31, #35
+#47 <- #23, #31, #35
 #49 <- #48
 #50 <- #44, #45, #46
 #51 <- #52, #60
@@ -354,6 +372,6 @@ New findings added to this program should:
 - have exactly one native parent;
 - use native `blocked by` relationships only for real prerequisites.
 
-If remediation changes the public API, wire format, supported production
-envelope, or release order, update the relevant issue, this index, and the final
-audit procedure together.
+If remediation changes the public API, same-build XPC object representation,
+application-owned transport boundary, or release order, update the relevant
+issue, this index, and the final audit procedure together.
