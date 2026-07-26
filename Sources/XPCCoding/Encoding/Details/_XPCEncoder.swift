@@ -27,7 +27,7 @@ internal class _XPCEncoder: Encoder {
 
   /// Backing storage for the coding path.
   @usableFromInline
-  internal var _codingPath: [CodingKey]
+  internal let _codingPath: [CodingKey]
   
   /// Read-only access to the coding path (protocol requirement).
   @inlinable @inline(__always)
@@ -205,25 +205,6 @@ extension _XPCEncoder {
     topLevelContainerState = .completedSingleValue(singleValueXPCObject)
   }
   
-  @inlinable
-  internal func withTransientCodingPathElement<Key, R>(
-    _ codingPathElement: Key,
-    _ closure: ([any CodingKey]) throws -> R
-  ) throws -> R where Key: CodingKey {
-    _codingPath.append(codingPathElement)
-    defer {
-      #if DEBUG
-      assert(!_codingPath.isEmpty)
-      let removed = _codingPath.removeLast()
-      assert(removed.stringValue == codingPathElement.stringValue)
-      assert(removed.intValue == codingPathElement.intValue)
-      #else
-      _codingPath.removeLast()
-      #endif
-    }
-    return try closure(_codingPath)
-  }
-
   /// Shorthand to create a transient encoder and immediately encode a value.
   /// 
   /// - Parameters:
@@ -390,7 +371,8 @@ extension _XPCEncoder {
     do {
       let container = try XPCKeyedEncodingContainer<Key>(
         referencing: self,
-        wrapping: xpcDictionary
+        wrapping: xpcDictionary,
+        codingPath: codingPath
       )
       return KeyedEncodingContainer(container)
     }
@@ -426,7 +408,8 @@ extension _XPCEncoder {
     do {
       return try XPCUnkeyedEncodingContainer(
         referencing: self,
-        wrapping: xpcArray
+        wrapping: xpcArray,
+        codingPath: codingPath
       )
     }
     catch let error {
@@ -454,7 +437,10 @@ extension _XPCEncoder {
       file: file,
       line: line
     )
-    return XPCSingleValueEncodingContainer(referencing: self) { [self] singleValueXPCObject in
+    return XPCSingleValueEncodingContainer(
+      referencing: self,
+      codingPath: codingPath
+    ) { [self] singleValueXPCObject in
       try completeSingleValueEncoding(with: singleValueXPCObject)
     }
   }

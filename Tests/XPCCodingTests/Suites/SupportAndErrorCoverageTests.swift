@@ -428,19 +428,22 @@ struct SupportAndErrorCoverageTests {
     #expect(throws: EncodingError.self) {
       _ = try XPCKeyedEncodingContainer<SupportCoverageKey>(
         referencing: encoder,
-        wrapping: xpc_array_create(nil, 0)
+        wrapping: xpc_array_create(nil, 0),
+        codingPath: encoder.codingPath
       )
     }
     #expect(throws: EncodingError.self) {
       _ = try XPCUnkeyedEncodingContainer(
         referencing: encoder,
-        wrapping: xpc_dictionary_create(nil, nil, 0)
+        wrapping: xpc_dictionary_create(nil, nil, 0),
+        codingPath: encoder.codingPath
       )
     }
 
     var keyed = try XPCKeyedEncodingContainer<SupportCoverageKey>(
       referencing: encoder,
-      wrapping: xpc_dictionary_create(nil, nil, 0)
+      wrapping: xpc_dictionary_create(nil, nil, 0),
+      codingPath: encoder.codingPath
     )
     #expect(keyed.codingPath.isEmpty)
     #expect(throws: EncodingError.self) {
@@ -452,7 +455,8 @@ struct SupportAndErrorCoverageTests {
 
     var unkeyed = try XPCUnkeyedEncodingContainer(
       referencing: _XPCEncoder(stringKeyStrategy: .standard, stringValueStrategy: .throwOnDiscovery),
-      wrapping: xpc_array_create(nil, 0)
+      wrapping: xpc_array_create(nil, 0),
+      codingPath: []
     )
     #expect(unkeyed.codingPath.isEmpty)
     #expect(throws: EncodingError.self) {
@@ -486,7 +490,8 @@ struct SupportAndErrorCoverageTests {
 
       var keyed = try XPCKeyedEncodingContainer<SupportCoverageKey>(
         referencing: encoder,
-        wrapping: xpc_dictionary_create(nil, nil, 0)
+        wrapping: xpc_dictionary_create(nil, nil, 0),
+        codingPath: encoder.codingPath
       )
       #expect(keyed.codingPath.map(\.stringValue) == [probe.key])
       #expect(throws: EncodingError.self) {
@@ -498,7 +503,8 @@ struct SupportAndErrorCoverageTests {
 
       var unkeyed = try XPCUnkeyedEncodingContainer(
         referencing: encoder,
-        wrapping: xpc_array_create(nil, 0)
+        wrapping: xpc_array_create(nil, 0),
+        codingPath: encoder.codingPath
       )
       #expect(unkeyed.codingPath.map(\.stringValue) == [probe.key])
       #expect(throws: EncodingError.self) {
