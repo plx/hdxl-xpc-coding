@@ -84,8 +84,12 @@ internal final class _XPCDecodingState {
       }
 
       do {
+        let stringScanLimit =
+          limits.maximumStringByteCount == .max
+          ? Int.max
+          : limits.maximumStringByteCount + 1
         try consumeStringByteCount(
-          Int(Darwin.strlen(keyCString)),
+          Int(Darwin.strnlen(keyCString, stringScanLimit)),
           codingPath: codingPath
         )
         return true
