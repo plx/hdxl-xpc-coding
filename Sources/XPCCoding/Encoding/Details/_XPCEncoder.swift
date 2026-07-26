@@ -71,13 +71,28 @@ internal class _XPCEncoder: Encoder {
     self._userInfo = userInfo
   }
 
+  /// Installs a top-level object into a parent output destination.
+  ///
+  /// Root encoders retain their value solely in `topLevelContainerState`, so
+  /// their implementation is intentionally a no-op. Referencing encoders
+  /// override only this insertion hook; all container state remains shared.
+  @usableFromInline
+  internal func insertIntoOutputDestination(
+    _ topLevelObject: xpc_object_t
+  ) throws {
+    _ = topLevelObject
+  }
+
   // MARK: - Encoder
   
   @usableFromInline
-  internal func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key : CodingKey {
+  internal final func container<Key>(
+    keyedBy type: Key.Type
+  ) -> KeyedEncodingContainer<Key> where Key : CodingKey {
     switch containerRequestDisposition(containerKind: .keyed) {
     case .proceedWithContainerCreation:
       let dictionaryLikeTopLevelObject = xpc_dictionary_create_empty()
+      infalliblyInstallTopLevelObject(dictionaryLikeTopLevelObject)
       topLevelContainerState = .keyed(dictionaryLikeTopLevelObject)
       return prepareKeyedEncodingContainer(
         keyedBy: type,
@@ -99,10 +114,11 @@ internal class _XPCEncoder: Encoder {
   }
 
   @usableFromInline
-  internal func unkeyedContainer() -> UnkeyedEncodingContainer {
+  internal final func unkeyedContainer() -> UnkeyedEncodingContainer {
     switch containerRequestDisposition(containerKind: .unkeyed) {
     case .proceedWithContainerCreation:
       let arrayLikeTopLevelObject = xpc_array_create_empty()
+      infalliblyInstallTopLevelObject(arrayLikeTopLevelObject)
       topLevelContainerState = .unkeyed(arrayLikeTopLevelObject)
       return prepareUnkeyedEncodingContainer(
         wrapping: arrayLikeTopLevelObject
@@ -122,7 +138,7 @@ internal class _XPCEncoder: Encoder {
   }
 
   @usableFromInline
-  internal func singleValueContainer() -> SingleValueEncodingContainer {
+  internal final func singleValueContainer() -> SingleValueEncodingContainer {
     switch containerRequestDisposition(containerKind: .pendingSingleValue) {
     case .proceedWithContainerCreation:
       topLevelContainerState = .pendingSingleValue
@@ -144,6 +160,50 @@ internal class _XPCEncoder: Encoder {
 // MARK: - Support API
 
 extension _XPCEncoder {
+
+  /// Installs a newly-created keyed or unkeyed top-level object into our output
+  /// destination.
+  ///
+  /// `Encoder` requires container construction to be non-throwing. Destination
+  /// failures therefore indicate an invalid internal referencing-encoder setup.
+  @usableFromInline
+  internal final func infalliblyInstallTopLevelObject(
+    _ topLevelObject: xpc_object_t,
+    file: StaticString = #file,
+    line: UInt = #line
+  ) {
+    do {
+      try insertIntoOutputDestination(topLevelObject)
+    } catch {
+      preconditionFailure(
+        """
+        Encountered unrecoverable internal error installing an encoding container:
+
+        - error: \(String(reflecting: error))
+        """,
+        file: file,
+        line: line
+      )
+    }
+  }
+
+  /// Completes a single-value encoding and installs it exactly once.
+  @usableFromInline
+  internal final func completeSingleValueEncoding(
+    with singleValueXPCObject: xpc_object_t
+  ) throws {
+    guard topLevelContainerKind == .pendingSingleValue else {
+      throw EncodingError.invalidValue(
+        singleValueXPCObject,
+        EncodingError.Context(
+          codingPath: codingPath,
+          debugDescription: "A single-value encoding container cannot encode more than one value."
+        )
+      )
+    }
+    try insertIntoOutputDestination(singleValueXPCObject)
+    topLevelContainerState = .completedSingleValue(singleValueXPCObject)
+  }
   
   @inlinable
   internal func withTransientCodingPathElement<Key, R>(
@@ -391,7 +451,7 @@ extension _XPCEncoder {
       line: line
     )
     return XPCSingleValueEncodingContainer(referencing: self) { [self] singleValueXPCObject in
-      topLevelContainerState = .completedSingleValue(singleValueXPCObject)
+      try completeSingleValueEncoding(with: singleValueXPCObject)
     }
   }
 
