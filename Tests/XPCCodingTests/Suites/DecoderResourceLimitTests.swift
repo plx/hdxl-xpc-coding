@@ -305,6 +305,22 @@ struct DecoderResourceLimitTests {
         from: createXPCDictionary([("abcd", xpcNull())])
       )
     }
+
+    let cumulativeDecoder = XPCDecoder(
+      resourceLimits: resourceLimits(
+        maximumStringByteCount: 4,
+        maximumCumulativeByteCount: 3
+      )
+    )
+    try requireResourceLimit(
+      named: "maximumCumulativeByteCount",
+      codingPath: []
+    ) {
+      _ = try cumulativeDecoder.decode(
+        AllKeysProbe.self,
+        from: createXPCDictionary([("abcd", xpcNull())])
+      )
+    }
   }
 
   @Test

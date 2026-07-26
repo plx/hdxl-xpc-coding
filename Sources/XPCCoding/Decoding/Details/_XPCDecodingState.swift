@@ -84,10 +84,16 @@ internal final class _XPCDecodingState {
       }
 
       do {
+        let remainingCumulativeBytes =
+          limits.maximumCumulativeByteCount - cumulativeByteCount
+        let remainingStringBytes = min(
+          limits.maximumStringByteCount,
+          remainingCumulativeBytes
+        )
         let stringScanLimit =
-          limits.maximumStringByteCount == .max
+          remainingStringBytes == .max
           ? Int.max
-          : limits.maximumStringByteCount + 1
+          : remainingStringBytes + 1
         try consumeStringByteCount(
           Int(Darwin.strnlen(keyCString, stringScanLimit)),
           codingPath: codingPath
