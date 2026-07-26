@@ -49,7 +49,13 @@ let package = Package(
         .enableExperimentalFeature("StrictConcurrency")
       ]
     ),
-
+    .testTarget(
+      name: "XPCCodingPublicAPITests",
+      dependencies: ["XPCCoding"],
+      swiftSettings: [
+        .enableExperimentalFeature("StrictConcurrency")
+      ]
+    ),
   ],
   swiftLanguageModes: [.v6],
 )
