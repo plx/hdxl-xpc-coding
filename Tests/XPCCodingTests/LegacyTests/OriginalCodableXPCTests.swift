@@ -1,3 +1,7 @@
+// Derived from CodableXPC; substantially modified by hdxl-xpc-coding contributors.
+// Licensed under Apache License v2.0 with Runtime Library Exception.
+// See LICENSE and THIRD_PARTY_NOTICES.md for details.
+
 import Testing
 import Foundation
 @testable import XPCCoding
@@ -237,4 +241,3 @@ private struct DecodeFailure : Decodable {
 private struct DecodeFailureNested : Decodable {
   var nestedValue: DecodeFailure
 }
-

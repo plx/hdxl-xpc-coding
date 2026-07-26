@@ -1,3 +1,6 @@
+// Derived from CodableXPC; substantially modified by hdxl-xpc-coding contributors.
+// Licensed under Apache License v2.0 with Runtime Library Exception.
+// See LICENSE and THIRD_PARTY_NOTICES.md for details.
 
 /// A simple referential counter type that encodes as a single Int value.
 final class Counter : Codable, Equatable {
@@ -19,4 +22,3 @@ final class Counter : Codable, Equatable {
     return lhs === rhs || lhs.count == rhs.count
   }
 }
-

@@ -1,3 +1,6 @@
+# Derived from CodableXPC; substantially modified by hdxl-xpc-coding contributors.
+# See LICENSE and THIRD_PARTY_NOTICES.md for details.
+
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
