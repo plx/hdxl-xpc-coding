@@ -13,20 +13,31 @@ let package = Package(
   platforms: [
     .macOS(.v26),
     .iOS(.v26),
-    .macCatalyst(.v26)
+    .macCatalyst(.v26),
   ],
   products: [
     .library(
       name: "XPCCoding",
       targets: ["XPCCoding"]
     ),
+    .executable(
+      name: "XPCCodingBenchmarks",
+      targets: ["XPCCodingBenchmarks"]
+    ),
   ],
-  dependencies: [
-  ],
+  dependencies: [],
   targets: [
     .target(
       name: "XPCCoding",
       dependencies: [],
+      swiftSettings: [
+        .enableExperimentalFeature("StrictConcurrency")
+      ]
+    ),
+    .executableTarget(
+      name: "XPCCodingBenchmarks",
+      dependencies: ["XPCCoding"],
+      path: "Benchmarks/XPCCodingBenchmarks",
       swiftSettings: [
         .enableExperimentalFeature("StrictConcurrency")
       ]
@@ -38,7 +49,7 @@ let package = Package(
         .enableExperimentalFeature("StrictConcurrency")
       ]
     ),
-    
+
   ],
   swiftLanguageModes: [.v6],
 )
