@@ -351,9 +351,7 @@ struct SupportAndErrorCoverageTests {
       try unkeyed.decodeNil()
     }
 
-    #expect("bad%zz".withCString {
-      String(cString: $0, embeddedNullByteRepresentation: .percentEscaped)
-    } == nil)
+    #expect("bad%zz".removingXPCCodingPercentEscapes() == nil)
   }
 
   @Test
@@ -414,9 +412,10 @@ struct SupportAndErrorCoverageTests {
         try unkeyed.decodeNil()
       }
 
-      #expect("bad-\(probe.explanation)-%xz".withCString {
-        String(cString: $0, embeddedNullByteRepresentation: .percentEscaped)
-      } == nil)
+      #expect(
+        "bad-\(probe.explanation)-%xz"
+          .removingXPCCodingPercentEscapes() == nil
+      )
     }
   }
 

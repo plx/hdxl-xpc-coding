@@ -69,8 +69,17 @@ extension xpc_object_t {
         xpc_string_get_string_ptr(self),
         explanation: "`xpc_string_get_string_ptr` returns NULL only for non-string xpc objects, but `self` was just verified to be `XPC_TYPE_STRING`."
       )
-      
-      let string = String(cString: cString)
+
+      guard
+        let string = String(
+          validatingUTF8CString: cString,
+          byteCount: expectedLength
+        )
+      else {
+        throw .unableToDecode(
+          "Unable to decode \(expectedLength) XPC string bytes as UTF-8."
+        )
+      }
       guard stringValueStrategy == .percentEscape else {
         return string
       }

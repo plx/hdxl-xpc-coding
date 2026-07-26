@@ -62,23 +62,20 @@ extension String {
     try addingXPCCodingPercentEscapes().withCString(closure)
   }
 
+  /// Strictly decodes exactly `byteCount` UTF-8 bytes from a C pointer.
   @usableFromInline
   internal init?(
-    cString: UnsafePointer<CChar>, 
-    embeddedNullByteRepresentation: EmbeddedNullByteRepresentation
-    ) {
-    switch embeddedNullByteRepresentation {
-    case .passthrough:
-      self.init(cString: cString)
-    case .percentEscaped:
-      guard
-        let result = String(cString: cString)
-          .removingXPCCodingPercentEscapes()
-      else {
-        return nil
-      }
-      self = result
-    }
+    validatingUTF8CString cString: UnsafePointer<CChar>,
+    byteCount: Int
+  ) {
+    precondition(byteCount >= 0)
+    self.init(
+      bytes: UnsafeRawBufferPointer(
+        start: cString,
+        count: byteCount
+      ),
+      encoding: .utf8
+    )
   }
 
   /// Encodes the two scalars reserved by XPCCoding's XPC-string grammar.

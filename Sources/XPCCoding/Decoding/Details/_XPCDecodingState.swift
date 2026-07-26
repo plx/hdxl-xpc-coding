@@ -65,18 +65,21 @@ internal final class _XPCDecodingState {
     }
   }
 
-  /// Checks every dictionary key before `allKeys` can allocate Swift strings for them.
+  /// Checks and caches every dictionary key before `allKeys` is exposed.
   @usableFromInline
   internal func validateDictionary(
     _ dictionary: xpc_object_t,
+    stringKeyStrategy: XPCDecoder.StringKeyStrategy,
     codingPath: [any CodingKey]
-  ) throws(DecodingError) {
+  ) throws(DecodingError) -> [String] {
     let elementCount = xpc_dictionary_get_count(dictionary)
     try validateContainerElementCount(
       elementCount,
       codingPath: codingPath
     )
 
+    var keyStrings: [String] = []
+    keyStrings.reserveCapacity(elementCount)
     var validationError: DecodingError?
     xpc_dictionary_apply(dictionary) { keyCString, _ in
       guard validationError == nil else {
@@ -94,22 +97,72 @@ internal final class _XPCDecodingState {
           remainingStringBytes == .max
           ? Int.max
           : remainingStringBytes + 1
+        let byteCount = Int(
+          Darwin.strnlen(
+            keyCString,
+            stringScanLimit
+          )
+        )
         try consumeStringByteCount(
-          Int(Darwin.strnlen(keyCString, stringScanLimit)),
+          byteCount,
           codingPath: codingPath
         )
+
+        guard
+          let encodedKey = String(
+            validatingUTF8CString: keyCString,
+            byteCount: byteCount
+          )
+        else {
+          throw DecodingError.dataCorrupted(
+            DecodingError.Context(
+              codingPath: codingPath,
+              debugDescription:
+                "Unable to decode XPC dictionary key as valid UTF-8.",
+              underlyingError: XPCStringExtractionError.unableToDecode(
+                "Unable to decode \(byteCount) XPC dictionary-key bytes as UTF-8."
+              )
+            )
+          )
+        }
+
+        let decodedKey: String
+        switch stringKeyStrategy {
+        case .passthrough:
+          decodedKey = encodedKey
+        case .percentEscape:
+          guard
+            let key = encodedKey.removingXPCCodingPercentEscapes()
+          else {
+            throw DecodingError.dataCorrupted(
+              DecodingError.Context(
+                codingPath: codingPath,
+                debugDescription:
+                  "Unable to remove XPCCoding percent escapes from an XPC dictionary key.",
+                underlyingError:
+                  XPCStringExtractionError.unableToRemovePercentEscapes(
+                    "The XPC dictionary key does not use XPCCoding's percent-escape grammar."
+                  )
+              )
+            )
+          }
+          decodedKey = key
+        }
+
+        keyStrings.append(decodedKey)
         return true
       } catch let error as DecodingError {
         validationError = error
         return false
       } catch {
-        preconditionFailure("String-byte accounting only throws DecodingError.")
+        preconditionFailure("Dictionary-key validation only throws DecodingError.")
       }
     }
 
     if let validationError {
       throw validationError
     }
+    return keyStrings
   }
 
   /// Checks an XPC string or data-backed string before its bytes are copied.
