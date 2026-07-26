@@ -61,6 +61,13 @@ The exact local AddressSanitizer, UndefinedBehaviorSanitizer, ThreadSanitizer,
 and subprocess-regression commands are documented in
 [Sanitizer Testing](reference/SanitizerTesting.md).
 
+## Security
+
+Report suspected vulnerabilities through the private route in
+[SECURITY.md](SECURITY.md), not through a public issue. Repository prevention,
+scanning, and verification controls are documented in
+[Repository Security Controls](reference/RepositorySecurity.md).
+
 ## Origin and License
 
 This package derives in part from
