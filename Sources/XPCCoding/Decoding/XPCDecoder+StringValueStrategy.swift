@@ -19,10 +19,12 @@ extension XPCDecoder {
     /// contain any encoded null bytes.
     case passthrough
 
-    /// Decode percent-encoded null bytes in string values.
+    /// Decode XPCCoding percent escapes in string values.
     ///
     /// Use this when values were encoded with ``XPCEncoder/StringValueStrategy/percentEscape``.
-    /// This is the default strategy.
+    /// Only `%00` (null) and `%25` (literal percent) are accepted; malformed,
+    /// dangling, and unsupported escapes are rejected. This is the default
+    /// strategy.
     case percentEscape
 
     /// Decode strings from binary data using the specified encoding.

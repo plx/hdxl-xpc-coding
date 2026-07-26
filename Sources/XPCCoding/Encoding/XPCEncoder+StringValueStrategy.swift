@@ -21,10 +21,11 @@ extension XPCEncoder {
     /// and receive an error rather than silent truncation.
     case throwOnDiscovery
 
-    /// Apply percent-encoding to null bytes before encoding.
+    /// Apply XPCCoding's reversible percent-escape grammar before encoding.
     ///
-    /// This ensures strings with embedded null bytes round-trip correctly,
-    /// at the cost of some encoding overhead. This is the default strategy.
+    /// Every null scalar is encoded as `%00` and every literal percent scalar
+    /// is encoded as `%25`. This ensures every Swift string has an injective
+    /// XPC string representation. This is the default strategy.
     case percentEscape
 
     /// Encode strings as binary data using the specified encoding.

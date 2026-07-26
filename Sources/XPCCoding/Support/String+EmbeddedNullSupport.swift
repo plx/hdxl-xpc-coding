@@ -9,7 +9,7 @@ extension String {
     /// Ignore the possibility of embedded null bytes.
     case passthrough
 
-    /// Expect to percent-escape (or percent-unescape) to handle null bytes.
+    /// Apply XPCCoding's reversible percent-escape grammar.
     case percentEscaped
   }
 
@@ -47,27 +47,19 @@ extension String {
     embeddedNullByteRepresentation: EmbeddedNullByteRepresentation,
     _ closure: (UnsafePointer<CChar>) throws -> R
   ) rethrows -> R {
-    let nullByteCount = nullByteCount
-    let containsNullBytes = nullByteCount > 0
-    return switch (embeddedNullByteRepresentation, containsNullBytes) {
-    case (.percentEscaped, true):
-      try percentEscapingEmbeddedNullBytes(expectedNullByteCount: nullByteCount).withCString(closure)
-    case (.passthrough, _): fallthrough
-    case (_, false):
+    switch embeddedNullByteRepresentation {
+    case .passthrough:
       try withCString(closure)
+    case .percentEscaped:
+      try addingXPCCodingPercentEscapes().withCString(closure)
     }
   }
 
   @usableFromInline
-  internal func withStringWithEmbeddedNullBytesPercentEncoded<R>(
+  internal func withXPCCodingPercentEscapedCString<R>(
     _ closure: (UnsafePointer<CChar>) throws -> R
   ) rethrows -> R {
-    switch containsNullBytes {
-    case true:
-      try percentEscapingEmbeddedNullBytes(expectedNullByteCount: nullByteCount).withCString(closure)
-    case false:
-      try withCString(closure)
-    }
+    try addingXPCCodingPercentEscapes().withCString(closure)
   }
 
   @usableFromInline
@@ -79,31 +71,77 @@ extension String {
     case .passthrough:
       self.init(cString: cString)
     case .percentEscaped:
-      guard let result = String(cString: cString).removingPercentEncoding else {
+      guard
+        let result = String(cString: cString)
+          .removingXPCCodingPercentEscapes()
+      else {
         return nil
       }
       self = result
     }
   }
-  
+
+  /// Encodes the two scalars reserved by XPCCoding's XPC-string grammar.
+  ///
+  /// This transform is total over `String`: U+0000 becomes `%00`, U+0025
+  /// (`%`) becomes `%25`, and every other Unicode scalar is preserved.
   @usableFromInline
-  internal func percentEscapingEmbeddedNullBytes(expectedNullByteCount: Int) -> Self {
+  internal func addingXPCCodingPercentEscapes() -> Self {
     var result = String()
-    let percentCount = percentCount
-    result.reserveCapacity(count + 2 * expectedNullByteCount + 2 * percentCount)
-    for character in self {
-      switch character {
-      case "\0":
+    result.reserveCapacity(
+      utf8.count + 2 * nullByteCount + 2 * percentCount
+    )
+
+    for scalar in unicodeScalars {
+      switch scalar.value {
+      case 0:
         result.append("%00")
-      case "%":
+      case 37:
         result.append("%25")
       default:
-        result.append(character)
+        result.unicodeScalars.append(scalar)
       }
     }
     return result
   }
 
+  /// Decodes the exact escape sequences emitted by
+  /// ``addingXPCCodingPercentEscapes()`` in one pass.
+  ///
+  /// Literal, dangling, malformed, and unsupported percent sequences are
+  /// rejected. In particular, `%2500` becomes the literal string `%00`; the
+  /// output is not scanned recursively.
+  @usableFromInline
+  internal func removingXPCCodingPercentEscapes() -> Self? {
+    var result = String()
+    result.reserveCapacity(utf8.count)
+    var iterator = unicodeScalars.makeIterator()
+
+    while let scalar = iterator.next() {
+      guard scalar.value == 37 else {
+        result.unicodeScalars.append(scalar)
+        continue
+      }
+
+      guard
+        let firstEscapeScalar = iterator.next(),
+        let secondEscapeScalar = iterator.next()
+      else {
+        return nil
+      }
+
+      switch (firstEscapeScalar.value, secondEscapeScalar.value) {
+      case (48, 48):
+        result.unicodeScalars.append(.nullByte)
+      case (50, 53):
+        result.unicodeScalars.append(UnicodeScalar(37))
+      default:
+        return nil
+      }
+    }
+
+    return result
+  }
 
 }
 

@@ -36,7 +36,7 @@ extension String {
         xpc_string_create(cStringPtr)
       }
     case .percentEscape:
-      return withStringWithEmbeddedNullBytesPercentEncoded { cStringPtr in
+      return withXPCCodingPercentEscapedCString { cStringPtr in
         xpc_string_create(cStringPtr)
       }
     case .useDataRepresentation(let representation):
