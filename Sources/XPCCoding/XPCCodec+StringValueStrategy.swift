@@ -26,7 +26,9 @@ extension XPCCodec {
     /// Encoders will throw an error on discovering embedded null bytes.
     ///
     /// This has zero space overhead on success, at cost of being unable to handle
-    /// any strings with embedded null bytes—use at your own risk.
+    /// any strings with embedded null bytes. Discovery produces
+    /// `EncodingError.invalidValue` at the string's exact value path, with the
+    /// low-level conversion cause retained as `underlyingError`.
     case throwOnDiscovery
     
     /// Apply XPCCoding's reversible percent-escape grammar.

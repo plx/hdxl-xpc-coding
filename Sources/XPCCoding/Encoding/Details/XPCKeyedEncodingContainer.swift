@@ -159,30 +159,17 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   @inlinable
   internal mutating func encode<T : Encodable>(_ value: T, forKey key: Key) throws {
     let codingPath = codingPath(appending: key)
-    do {
-      underlyingXPCDictionary.setValue(
-        try _XPCEncoder.encode(
-          value,
-          at: codingPath,
-          stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: stringValueStrategy,
-          userInfo: encoder.userInfo
-        ),
-        forKey: key,
-        strategy: stringKeyStrategy
-      )
-    } catch let error as EncodingError {
-      throw error
-    } catch let underlyingError {
-      throw EncodingError.invalidValue(
+    underlyingXPCDictionary.setValue(
+      try _XPCEncoder.encode(
         value,
-        EncodingError.Context(
-          codingPath: codingPath,
-          debugDescription: "Unable to encode value: \(value) for key: \(key.stringValue)",
-          underlyingError: underlyingError
-        )
-      )
-    }
+        at: codingPath,
+        stringKeyStrategy: stringKeyStrategy,
+        stringValueStrategy: stringValueStrategy,
+        userInfo: encoder.userInfo
+      ),
+      forKey: key,
+      strategy: stringKeyStrategy
+    )
   }
   
   @inlinable
@@ -309,7 +296,10 @@ extension XPCKeyedEncodingContainer {
     _ value: String,
     forKey key: Key
   ) throws {
-    let xpcObject = try value.makeXPCObjectRepresentation(stringValueStrategy: stringValueStrategy)
+    let xpcObject = try value.makeXPCObjectRepresentation(
+      stringValueStrategy: stringValueStrategy,
+      codingPath: codingPath(appending: key)
+    )
     underlyingXPCDictionary.setValue(
       xpcObject,
       forKey: key,

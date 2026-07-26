@@ -126,6 +126,38 @@ struct PublicAPITests {
   }
 
   @Test
+  func `encoding errors keep their documented public contract`() {
+    let sentinel = PublicUserEncodingError()
+
+    do {
+      _ = try XPCEncoder.standard.encode(
+        [PublicThrowingEncodingLeaf(error: sentinel)]
+      )
+      Issue.record("Expected the user encoding error.")
+    } catch {
+      #expect((error as? PublicUserEncodingError) === sentinel)
+    }
+
+    let value = "embedded\u{0}null"
+    let encoder = XPCEncoder(
+      stringKeyStrategy: .percentEscape,
+      stringValueStrategy: .throwOnDiscovery
+    )
+    do {
+      _ = try encoder.encode(value)
+      Issue.record("Expected EncodingError.invalidValue.")
+    } catch let EncodingError.invalidValue(invalidValue, context) {
+      #expect(invalidValue as? String == value)
+      #expect(context.codingPath.isEmpty)
+      #expect(context.underlyingError != nil)
+    } catch {
+      Issue.record(
+        "Expected EncodingError.invalidValue, received \(String(reflecting: error))."
+      )
+    }
+  }
+
+  @Test
   func `enhanced protocols and helpers are usable across the module boundary`() throws {
     let encoder = XPCEncoder(
       stringKeyStrategy: .percentEscape,
@@ -191,6 +223,17 @@ private struct PublicMessage: Codable, Equatable {
 }
 
 private func requireSendable<T: Sendable>(_: T) {}
+
+private final class PublicUserEncodingError: Error, Sendable {}
+
+private struct PublicThrowingEncodingLeaf: Encodable {
+  let error: PublicUserEncodingError
+
+  func encode(to encoder: any Encoder) throws {
+    _ = encoder
+    throw error
+  }
+}
 
 private enum PublicEnhancedEncodingError: Error {
   case missingSingleValueEnhancement

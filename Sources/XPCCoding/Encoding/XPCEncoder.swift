@@ -75,6 +75,18 @@ public final class XPCEncoder: TopLevelEncoder {
   }
 
   /// Encodes an encodable value into an `xpc_object_t`.
+  ///
+  /// An error deliberately thrown by the value's `Encodable` implementation
+  /// propagates unchanged. A failure originating in XPCCoding is reported as
+  /// an `EncodingError` at the most-specific available coding path. In
+  /// particular, ``StringValueStrategy/throwOnDiscovery`` reports
+  /// `EncodingError.invalidValue`; its internal conversion cause is available
+  /// only through the error context's `underlyingError`.
+  ///
+  /// - Parameter value: The value to encode.
+  /// - Returns: An XPC object representing `value`.
+  /// - Throws: A user error unchanged, or an `EncodingError` for an
+  ///   XPCCoding-originated representation failure.
   @inlinable
   public func encode<T>(
     _ value: T
@@ -99,7 +111,8 @@ public final class XPCEncoder: TopLevelEncoder {
   /// - Parameter closure: A closure that performs encoding operations using the provided encoder.
   /// - Returns: The encoded `xpc_object_t`.
   /// - Throws: ``TransientEncoderError/noEncodingOccurred`` if the closure doesn't encode anything,
-  ///   or any error thrown by the closure.
+  ///   an error thrown by the closure unchanged, or an `EncodingError` for an
+  ///   XPCCoding-originated representation failure.
   @inlinable
   public func withTransientEncoder(_ closure: (any Encoder) throws -> Void) throws -> Output {
     let stringKeyStrategy = stringKeyStrategy
