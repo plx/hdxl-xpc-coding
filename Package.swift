@@ -1,4 +1,4 @@
-// swift-tools-version:6.2
+// swift-tools-version:6.3
 
 // Derived from CodableXPC; substantially modified by hdxl-xpc-coding contributors.
 // Licensed under Apache License v2.0 with Runtime Library Exception.

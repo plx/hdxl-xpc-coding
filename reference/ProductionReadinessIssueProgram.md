@@ -30,13 +30,17 @@ post-audit publication checkpoint.
 
 The program deliberately targets:
 
-- Swift 6.3 only;
+- Xcode 26.6 build 17F113 with Apple Swift 6.3.3 only;
+- Swift tools version 6.3 and Swift language mode 6;
+- arm64 only;
 - macOS 26 or newer;
 - iOS 26 or newer;
 - Mac Catalyst 26 or newer;
 - SwiftPM distribution and Apple XPC transport.
 
 It does not ask maintainers to support older Swift or Apple platform versions.
+The exact maintained envelope is recorded in the
+[support policy](SupportPolicy.md).
 The static documentation website and landing page are excluded. The README,
 public API documentation, repository policy, and package-index metadata remain
 in scope because they are part of publishing and operating the package.
