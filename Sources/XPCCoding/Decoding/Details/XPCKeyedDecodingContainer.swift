@@ -39,6 +39,10 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   @usableFromInline
   internal let underlyingXPCDictionary: xpc_object_t
 
+  /// Strictly-decoded key strings, cached before this container is exposed.
+  @usableFromInline
+  internal let validatedKeyStrings: [String]
+
   /// The recursive decoding depth of this dictionary below the root object.
   @usableFromInline
   internal let depth: Int
@@ -70,45 +74,36 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
     }
 
     let depth = depth ?? decoder.depth
-    try decoder.decodingState.validateDictionary(
+    let validatedKeyStrings = try decoder.decodingState.validateDictionary(
       underlyingXPCDictionary,
+      stringKeyStrategy: decoder.stringKeyStrategy,
       codingPath: codingPath
     )
 
     self.decoder = decoder
     self.underlyingXPCDictionary = underlyingXPCDictionary
+    self.validatedKeyStrings = validatedKeyStrings
     self.codingPath = codingPath
     self.depth = depth
   }
   
   // MARK: - KeyedDecodingContainerProtocol
-  
+
+  /// The strictly-decoded keys representable by this container's `CodingKey`.
+  ///
+  /// `CodingKey` construction is deferred because synthesized `Decodable`
+  /// implementations generally request known keys directly without reading
+  /// `allKeys`.
   @usableFromInline
   internal var allKeys: [Key] {
-    var keys: [Key] = []
-    let embeddedNullByteRepresentation = stringKeyStrategy.embeddedNullByteRepresentation
-    xpc_dictionary_apply(underlyingXPCDictionary) { (keyCString, _) -> Bool in
-      guard
-        let keyString = String(
-          cString: keyCString,
-          embeddedNullByteRepresentation: embeddedNullByteRepresentation
-        ),
-        let key = Key(stringValue: keyString)
-      else {
-        return true
-      }
-      
-      keys.append(key)
-      return true
+    validatedKeyStrings.compactMap {
+      Key(stringValue: $0)
     }
-    return keys
   }
   
   @usableFromInline
   internal func contains(_ key: Key) -> Bool {
-    key.withUTF8CString(stringKeyStrategy: stringKeyStrategy) { keyCString in
-      nil != xpc_dictionary_get_value(underlyingXPCDictionary, keyCString)
-    }
+    possibleXPCObject(for: key) != nil
   }
   
   @inlinable

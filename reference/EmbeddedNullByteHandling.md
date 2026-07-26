@@ -37,7 +37,8 @@ For string *values*, we have the following options during encoding:
 
 For decoding, we have the following options:
 
-- `.passthrough`: expect an xpc string, and directly create a `String` from its c-string representation
+- `.passthrough`: expect an XPC string and strictly decode its exact reported
+  byte length as UTF-8
 - `.percentEscape`: expect an xpc string encoded with XPCCoding's strict
   percent-escape grammar and reverse that transform
 - `.useDataRepresentation(.utf8|.utf16|.utf32)`: expect binary data (in the chosen encoding), and create a string from it
@@ -52,7 +53,7 @@ For string *keys*, we have the following options during encoding:
 
 For decoding, we have the following options:
 
-- `.passthrough`: expect an xpc string, and directly create a `String` from its c-string representation
+- `.passthrough`: strictly decode each complete XPC dictionary key as UTF-8
 - `.percentEscape`: expect an xpc string encoded with XPCCoding's strict
   percent-escape grammar and reverse that transform
 
@@ -87,6 +88,14 @@ Decoding is a single, non-recursive pass that accepts only `%00` and `%25`.
 Dangling, malformed, or unsupported sequences such as `%`, `%0`, `%GG`, and
 `%41` are rejected. Thus `%2500` decodes to the literal text `%00`, not to a
 null scalar.
+
+Both `.passthrough` and `.percentEscape` validate the external UTF-8 bytes
+before interpreting them. Malformed XPC string values and dictionary keys
+throw `DecodingError.dataCorrupted`; they are never repaired with U+FFFD.
+Dictionary keys are validated and cached as decoded strings when the throwing
+keyed container is created, before its nonthrowing `allKeys` property can expose
+them. Construction of the container's concrete `CodingKey` values is deferred
+until `allKeys` is requested.
 
 This representation intentionally corrects the pre-1.0 behavior, which left
 literal percent signs unescaped and then applied general URL percent-decoding.

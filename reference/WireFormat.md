@@ -227,10 +227,12 @@ a neutral Unicode byte protocol for other toolchains or architectures. A
 representation change in a future co-built release updates this document and
 its fixtures rather than adding a compatibility decoder.
 
-Malformed external UTF data is corrupt content. Malformed UTF-8 in XPC strings
-or dictionary keys must also be rejected strictly rather than repaired with
-U+FFFD; implementation completion is tracked by
-[#16](https://github.com/plx/hdxl-xpc-coding/issues/16).
+Malformed external UTF data is corrupt content. XPC string values are decoded
+using their exact reported byte lengths. Dictionary keys are measured,
+strictly decoded, and cached as strings while creating the throwing keyed
+container; construction of concrete `CodingKey` values is deferred until
+`allKeys` is requested. Malformed UTF-8 in either position is rejected rather
+than repaired with U+FFFD.
 
 ### Dictionary-key restrictions
 
@@ -432,7 +434,7 @@ implementation state. A deviation is not a legacy input promise.
 | ordinary generic `Data` | direct specialization produces one XPC data object at every generic boundary | implemented and covered by [#20](https://github.com/plx/hdxl-xpc-coding/issues/20) |
 | enhanced raw binary and element helpers | output shape and pointer/count validation match the contract | [#11](https://github.com/plx/hdxl-xpc-coding/issues/11) and fixture coverage in [#25](https://github.com/plx/hdxl-xpc-coding/issues/25) |
 | percent escaping | corrected bijection is implemented | [#7](https://github.com/plx/hdxl-xpc-coding/issues/7) |
-| strict external XPC string/key UTF-8 | current decoding can repair malformed UTF-8 | [#16](https://github.com/plx/hdxl-xpc-coding/issues/16) |
+| strict external XPC string/key UTF-8 | exact-length validation rejects malformed bytes before values or `allKeys` are exposed | implemented and covered by [#16](https://github.com/plx/hdxl-xpc-coding/issues/16) |
 | decoder budgets and cycles | finite operation-local budgets share counters across child paths; depth accounting bounds cycles without rejecting shared acyclic children | regression coverage and [#9](https://github.com/plx/hdxl-xpc-coding/issues/9) |
 | decoder error taxonomy | several wrong-kind/null/container cases are misclassified | [#18](https://github.com/plx/hdxl-xpc-coding/issues/18) |
 | referencing/super encoders | repeated-container reuse can lose data | [#10](https://github.com/plx/hdxl-xpc-coding/issues/10) |
