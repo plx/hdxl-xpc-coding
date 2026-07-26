@@ -1,3 +1,7 @@
+// Derived from CodableXPC; substantially modified by hdxl-xpc-coding contributors.
+// Licensed under Apache License v2.0 with Runtime Library Exception.
+// See LICENSE and THIRD_PARTY_NOTICES.md for details.
+
 import Foundation
 import XPC
 import Combine
@@ -120,4 +124,3 @@ public enum TransientEncoderError: Error {
   /// The closure provided to ``XPCEncoder/withTransientEncoder(_:)`` did not encode any value.
   case noEncodingOccurred
 }
-
