@@ -94,6 +94,42 @@ extension Double: XPCObjectExtractable {
   
 }
 
+// MARK: - Narrow Floating-Point Conformances
+
+extension Float: XPCObjectExtractable {
+
+  @usableFromInline
+  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DOUBLE }
+
+  @usableFromInline
+  static func _extracting(from object: xpc_object_t) -> Self? {
+    assert(object.hasType(associatedXPCObjectType))
+    let value = xpc_double_get_value(object)
+    if value.isNaN {
+      return Self(value)
+    }
+    return Self(exactly: value)
+  }
+
+}
+
+extension Float16: XPCObjectExtractable {
+
+  @usableFromInline
+  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DOUBLE }
+
+  @usableFromInline
+  static func _extracting(from object: xpc_object_t) -> Self? {
+    assert(object.hasType(associatedXPCObjectType))
+    let value = xpc_double_get_value(object)
+    if value.isNaN {
+      return Self(value)
+    }
+    return Self(exactly: value)
+  }
+
+}
+
 // MARK: - Int64 Conformance
 
 extension Int64: XPCObjectExtractable {
@@ -107,6 +143,47 @@ extension Int64: XPCObjectExtractable {
     return xpc_int64_get_value(object)
   }
   
+}
+
+// MARK: - Narrow Signed Integer Conformances
+
+extension Int32: XPCObjectExtractable {
+
+  @usableFromInline
+  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_INT64 }
+
+  @usableFromInline
+  static func _extracting(from object: xpc_object_t) -> Self? {
+    assert(object.hasType(associatedXPCObjectType))
+    return Self(exactly: xpc_int64_get_value(object))
+  }
+
+}
+
+extension Int16: XPCObjectExtractable {
+
+  @usableFromInline
+  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_INT64 }
+
+  @usableFromInline
+  static func _extracting(from object: xpc_object_t) -> Self? {
+    assert(object.hasType(associatedXPCObjectType))
+    return Self(exactly: xpc_int64_get_value(object))
+  }
+
+}
+
+extension Int8: XPCObjectExtractable {
+
+  @usableFromInline
+  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_INT64 }
+
+  @usableFromInline
+  static func _extracting(from object: xpc_object_t) -> Self? {
+    assert(object.hasType(associatedXPCObjectType))
+    return Self(exactly: xpc_int64_get_value(object))
+  }
+
 }
 
 // MARK: - UInt64 Conformance
@@ -124,6 +201,47 @@ extension UInt64: XPCObjectExtractable {
   
 }
 
+// MARK: - Narrow Unsigned Integer Conformances
+
+extension UInt32: XPCObjectExtractable {
+
+  @usableFromInline
+  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_UINT64 }
+
+  @usableFromInline
+  static func _extracting(from object: xpc_object_t) -> Self? {
+    assert(object.hasType(associatedXPCObjectType))
+    return Self(exactly: xpc_uint64_get_value(object))
+  }
+
+}
+
+extension UInt16: XPCObjectExtractable {
+
+  @usableFromInline
+  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_UINT64 }
+
+  @usableFromInline
+  static func _extracting(from object: xpc_object_t) -> Self? {
+    assert(object.hasType(associatedXPCObjectType))
+    return Self(exactly: xpc_uint64_get_value(object))
+  }
+
+}
+
+extension UInt8: XPCObjectExtractable {
+
+  @usableFromInline
+  static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_UINT64 }
+
+  @usableFromInline
+  static func _extracting(from object: xpc_object_t) -> Self? {
+    assert(object.hasType(associatedXPCObjectType))
+    return Self(exactly: xpc_uint64_get_value(object))
+  }
+
+}
+
 // MARK: - Int Conformance
 
 extension Int: XPCObjectExtractable {
@@ -136,7 +254,7 @@ extension Int: XPCObjectExtractable {
     guard let value = Int64.extracting(from: object) else {
       return nil
     }
-    return Self(value)
+    return Self(exactly: value)
   }
 
 }
@@ -153,7 +271,7 @@ extension UInt: XPCObjectExtractable {
     guard let value = UInt64.extracting(from: object) else {
       return nil
     }
-    return Self(value)
+    return Self(exactly: value)
   }
   
 }
@@ -214,15 +332,6 @@ extension Bool: XPCObjectExtractable {
 
 // MARK: - Synthesized Conformances
 
-extension Int8: XPCObjectExtractable { }
-extension Int16: XPCObjectExtractable { }
-extension Int32: XPCObjectExtractable { }
 extension Int128: XPCObjectExtractable { }
 
-extension UInt8: XPCObjectExtractable { }
-extension UInt16: XPCObjectExtractable { }
-extension UInt32: XPCObjectExtractable { }
 extension UInt128: XPCObjectExtractable { }
-
-extension Float16: XPCObjectExtractable { }
-extension Float: XPCObjectExtractable { }

@@ -8,9 +8,8 @@ import Foundation
 
 /// Protocol for types that can be converted to a binary-data representation.
 ///
-/// - Note: this exists to encode/decode types like `Int16` (etc.) as binary data, rather than as an Int64.
-/// - TBD: if we should actually use this as widely (vs, say, just embedding them in the larger ints, where applicable).
-/// - TODO: setup a dedicated error type, since there's really just one type of error we expect to see (length mismatches)
+/// This is used only for the 128-bit integer types for which XPC has no scalar representation.
+/// Their bytes are the target-native bitwise representation shared by co-built local peers.
 @usableFromInline
 protocol XPCBinaryDataRepresentationConvertible: BitwiseCopyable {
   
@@ -93,15 +92,6 @@ extension XPCBinaryDataRepresentationConvertible {
 
 // MARK: - Synthesized Conformances
 
-extension Int8: XPCBinaryDataRepresentationConvertible { }
-extension Int16: XPCBinaryDataRepresentationConvertible { }
-extension Int32: XPCBinaryDataRepresentationConvertible { }
 extension Int128: XPCBinaryDataRepresentationConvertible { }
 
-extension UInt8: XPCBinaryDataRepresentationConvertible { }
-extension UInt16: XPCBinaryDataRepresentationConvertible { }
-extension UInt32: XPCBinaryDataRepresentationConvertible { }
 extension UInt128: XPCBinaryDataRepresentationConvertible { }
-
-extension Float16: XPCBinaryDataRepresentationConvertible { }
-extension Float: XPCBinaryDataRepresentationConvertible { }

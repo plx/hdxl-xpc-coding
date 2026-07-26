@@ -427,8 +427,8 @@ implementation state. A deviation is not a legacy input promise.
 | Area | Current state | Tracking |
 | --- | --- | --- |
 | null, Boolean, `Int`, `Int64`, `UInt`, `UInt64`, `Double` | representation already matches | contract fixtures in [#25](https://github.com/plx/hdxl-xpc-coding/issues/25) |
-| narrow integers, `Float16`, and `Float` | currently allocate native XPC data instead of XPC scalars | [#23](https://github.com/plx/hdxl-xpc-coding/issues/23) |
-| `Int128`/`UInt128` | native 16-byte data representation matches the intended shape; checked semantics need consolidation | [#23](https://github.com/plx/hdxl-xpc-coding/issues/23) |
+| narrow integers, `Float16`, and `Float` | canonical XPC scalar kinds and checked narrowing match the contract | implemented and covered by [#23](https://github.com/plx/hdxl-xpc-coding/issues/23) |
+| `Int128`/`UInt128` | exact native 16-byte data representation and alignment-safe checked extraction match the contract | implemented and covered by [#23](https://github.com/plx/hdxl-xpc-coding/issues/23) |
 | ordinary generic `Data` | direct specialization produces one XPC data object at every generic boundary | implemented and covered by [#20](https://github.com/plx/hdxl-xpc-coding/issues/20) |
 | enhanced raw binary and element helpers | output shape and pointer/count validation match the contract | [#11](https://github.com/plx/hdxl-xpc-coding/issues/11) and fixture coverage in [#25](https://github.com/plx/hdxl-xpc-coding/issues/25) |
 | percent escaping | corrected bijection is implemented | [#7](https://github.com/plx/hdxl-xpc-coding/issues/7) |

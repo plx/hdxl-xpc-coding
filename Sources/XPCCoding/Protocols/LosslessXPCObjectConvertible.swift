@@ -42,6 +42,24 @@ extension Double: LosslessXPCObjectConvertible {
   
 }
 
+extension Float: LosslessXPCObjectConvertible {
+
+  @inlinable
+  internal var xpcObjectRepresentation: xpc_object_t {
+    xpc_double_create(Double(self))
+  }
+
+}
+
+extension Float16: LosslessXPCObjectConvertible {
+
+  @inlinable
+  internal var xpcObjectRepresentation: xpc_object_t {
+    xpc_double_create(Double(self))
+  }
+
+}
+
 extension Int64: LosslessXPCObjectConvertible {
   
   @inlinable
@@ -51,6 +69,33 @@ extension Int64: LosslessXPCObjectConvertible {
   
 }
 
+extension Int32: LosslessXPCObjectConvertible {
+
+  @inlinable
+  internal var xpcObjectRepresentation: xpc_object_t {
+    xpc_int64_create(Int64(self))
+  }
+
+}
+
+extension Int16: LosslessXPCObjectConvertible {
+
+  @inlinable
+  internal var xpcObjectRepresentation: xpc_object_t {
+    xpc_int64_create(Int64(self))
+  }
+
+}
+
+extension Int8: LosslessXPCObjectConvertible {
+
+  @inlinable
+  internal var xpcObjectRepresentation: xpc_object_t {
+    xpc_int64_create(Int64(self))
+  }
+
+}
+
 extension UInt64: LosslessXPCObjectConvertible {
   
   @inlinable
@@ -58,6 +103,33 @@ extension UInt64: LosslessXPCObjectConvertible {
     xpc_uint64_create(self)
   }
   
+}
+
+extension UInt32: LosslessXPCObjectConvertible {
+
+  @inlinable
+  internal var xpcObjectRepresentation: xpc_object_t {
+    xpc_uint64_create(UInt64(self))
+  }
+
+}
+
+extension UInt16: LosslessXPCObjectConvertible {
+
+  @inlinable
+  internal var xpcObjectRepresentation: xpc_object_t {
+    xpc_uint64_create(UInt64(self))
+  }
+
+}
+
+extension UInt8: LosslessXPCObjectConvertible {
+
+  @inlinable
+  internal var xpcObjectRepresentation: xpc_object_t {
+    xpc_uint64_create(UInt64(self))
+  }
+
 }
 
 extension Int: LosslessXPCObjectConvertible {
@@ -103,15 +175,6 @@ extension Bool: LosslessXPCObjectConvertible {
 
 // MARK: - Synthesized Conformances
 
-extension Int8: LosslessXPCObjectConvertible { }
-extension Int16: LosslessXPCObjectConvertible { }
-extension Int32: LosslessXPCObjectConvertible { }
 extension Int128: LosslessXPCObjectConvertible { }
 
-extension UInt8: LosslessXPCObjectConvertible { }
-extension UInt16: LosslessXPCObjectConvertible { }
-extension UInt32: LosslessXPCObjectConvertible { }
 extension UInt128: LosslessXPCObjectConvertible { }
-
-extension Float16: LosslessXPCObjectConvertible { }
-extension Float: LosslessXPCObjectConvertible { }
