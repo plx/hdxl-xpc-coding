@@ -57,7 +57,9 @@ published semantic tag.
 
 The production envelope is intentionally narrow:
 
-- Swift **6.3 only**;
+- Xcode **26.6** build **17F113** with Apple Swift **6.3.3 only**;
+- Swift tools version **6.3** and Swift language mode **6**;
+- arm64 only;
 - macOS **26 or newer**;
 - iOS **26 or newer**;
 - Mac Catalyst **26 or newer**;
@@ -66,7 +68,9 @@ The production envelope is intentionally narrow:
 
 Do not expand the toolchain or platform matrix during this goal. Passing with a
 newer Swift version does not establish Swift 6.3 support, and this program does
-not promise support for earlier or later Swift versions.
+not promise support for earlier or later Swift versions. Use the repository's
+[support policy](SupportPolicy.md) and machine-readable verification command as
+the authoritative toolchain definition.
 
 The static documentation website and landing page are out of scope. The
 following remain in scope because they are part of the package or its release
@@ -146,8 +150,8 @@ Before selecting the first remediation issue:
    ```
 
 4. Require repository identity `plx/hdxl-xpc-coding`, default branch `main`,
-   appropriate write access, and the exact Swift 6.3 toolchain for release
-   evidence.
+   appropriate write access, and the exact Xcode 26.6 / Apple Swift 6.3.3
+   toolchain on arm64 for release evidence.
 5. Reconcile live GitHub state with the committed
    [issue-program index](ProductionReadinessIssueProgram.md):
 

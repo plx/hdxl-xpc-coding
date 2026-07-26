@@ -5,6 +5,18 @@ A Swift encoder/decoder pair producing xpc objects as output.
 This is a heavily refactored fork of
 [CodableXPC](https://github.com/daniel-grumberg/CodableXPC).
 
+## Support
+
+XPCCoding supports exactly Xcode 26.6 (build 17F113) with Apple Swift 6.3.3
+and Swift 6 language mode on arm64. Its deployment targets are macOS 26 or
+newer, iOS 26 or newer, and Mac Catalyst 26 or newer.
+
+Earlier toolchains and platform releases are unsupported. Later compiler
+versions are unverified until the policy changes deliberately; successfully
+building with one does not expand the support claim. See the
+[support policy](reference/SupportPolicy.md) for the exact contributor,
+verification, and compatibility rules.
+
 Aside from renaming, reorganization, and purely-stylistic changes, this package:
 
 - allows arbitrary values to be the "root value" of an archive

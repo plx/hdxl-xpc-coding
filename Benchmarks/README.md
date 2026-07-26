@@ -4,6 +4,9 @@
 `XPCCoding` normally, so every measured path is available to package clients;
 the harness has no `@testable` access.
 
+Run release evidence with the repository's
+[supported Xcode and Swift toolchain](../reference/SupportPolicy.md).
+
 The suite measures primitive and nested model encoding/decoding, moderate
 nesting, large arrays and dictionaries, all string key/value strategies,
 percent- and null-heavy strings, and `Data` at 0 B, 1 KiB, 64 KiB, and 1 MiB.

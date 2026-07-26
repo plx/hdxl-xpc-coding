@@ -32,8 +32,10 @@ known issues count against release.
 
 Unless the maintainer separately changes policy, audit against:
 
-- Swift **6.3** as the exact supported language/toolchain version, without
-  implying support for earlier or later Swift versions;
+- Xcode **26.6** build **17F113** with Apple Swift **6.3.3** as the exact
+  supported toolchain, without implying support for earlier or later versions;
+- Swift tools version **6.3** and Swift language mode **6**;
+- arm64 only;
 - macOS **26+**;
 - iOS **26+**;
 - Mac Catalyst **26+**;
@@ -42,7 +44,8 @@ Unless the maintainer separately changes policy, audit against:
 
 Do not expand the deployment or toolchain matrix during this audit. Verify that
 the manifest, CI, README, and package behavior consistently describe this
-intentional support envelope.
+intentional support envelope. The normative details and verification command
+are in the [support policy](SupportPolicy.md).
 
 ## Auditor independence
 
@@ -119,8 +122,10 @@ repository.
 
 Verify:
 
+- Xcode 26.6 build 17F113 reports Apple Swift 6.3.3;
 - `// swift-tools-version` expresses Swift 6.3;
 - the language mode is Swift 6;
+- the build host and compile destinations are arm64;
 - platforms remain macOS 26, iOS 26, and Catalyst 26;
 - there are no accidental dependencies or unsafe SwiftPM flags;
 - the package name, product name, and module name match documentation.
@@ -133,9 +138,9 @@ swift package describe
 swift package show-dependencies
 ```
 
-Compile all declared platforms using the pinned Swift 6.3/Xcode toolchain.
-Record the complete `swiftc` or `xcodebuild` invocation and destination. A
-successful host-macOS build alone is insufficient.
+Compile all declared platforms for arm64 using the pinned Swift 6.3/Xcode
+toolchain. Record the complete `swiftc` or `xcodebuild` invocation and
+destination. A successful host-macOS build alone is insufficient.
 
 ### Black-box consumer
 
@@ -605,11 +610,11 @@ A test suite that remains green after one of those mutations is insufficient.
 
 Verify the repository has required checks for:
 
-- Swift 6.3 debug build/test;
-- Swift 6.3 release build/test;
-- macOS 26 build/test;
-- iOS 26 compile;
-- Catalyst 26 compile;
+- Swift 6.3 arm64 debug build/test;
+- Swift 6.3 arm64 release build/test;
+- arm64 macOS 26 build/test;
+- arm64 iOS 26 compile;
+- arm64 Catalyst 26 compile;
 - strict formatting;
 - strict linting;
 - API documentation generation/checking;
