@@ -1,11 +1,16 @@
 import XPC
 
-/// A facade that simplifies obtaining mutually-compatible ``XPCEncoder`` and ``XPCDecoder`` instances.
+/// An immutable facade for mutually compatible XPC encoding and decoding.
 ///
-/// `XPCCodec` ensures that its encoder and decoder share the same configuration, guaranteeing
-/// that values encoded with the codec's encoder can be successfully decoded by its decoder.
-/// This is particularly important when dealing with strategies for handling embedded null bytes
-/// in strings, where encoder/decoder configuration must match for successful round-tripping.
+/// `XPCCodec` stores only its ``configuration``. Each direct operation derives
+/// its behavior from that immutable value, so copying a codec does not share
+/// mutable encoder or decoder state.
+///
+/// Use ``makeEncoder()`` or ``makeDecoder()`` when an operation needs a
+/// separately configurable facade. Every factory call returns a fresh instance
+/// with settings compatible with the codec. Mutating that instance affects only
+/// the instance; after reconfiguration, it is not necessarily compatible with
+/// the codec or with another factory result.
 ///
 /// ## Usage
 ///
@@ -20,13 +25,7 @@ import XPC
 /// ```
 public struct XPCCodec {
 
-  /// The encoder used for encoding `Codable` values to `xpc_object_t`.
-  public let encoder: XPCEncoder
-
-  /// The decoder used for decoding `xpc_object_t` to `Codable` values.
-  public let decoder: XPCDecoder
-
-  /// The configuration controlling how the codec handles string encoding.
+  /// The sole persistent source of the codec's encoding and decoding behavior.
   public let configuration: Configuration
 
   /// The strategy for handling embedded null bytes in string keys.
@@ -34,28 +33,29 @@ public struct XPCCodec {
 
   /// The strategy for handling embedded null bytes in string values.
   public var stringValueStrategy: StringValueStrategy { configuration.stringValueStrategy }
-  
-  /// Internal field-initialization constructor.
-  @usableFromInline
-  internal init(
-    encoder: XPCEncoder,
-    decoder: XPCDecoder,
-    configuration: Configuration
-  ) {
-    self.encoder = encoder
-    self.decoder = decoder
-    self.configuration = configuration
-  }
 
   /// Creates a new codec with the specified configuration.
   ///
   /// - Parameter configuration: The configuration specifying how to handle string keys and values.
   public init(configuration: Configuration) {
-    self.init(
-      encoder: XPCEncoder(configuration: configuration),
-      decoder: XPCDecoder(configuration: configuration),
-      configuration: configuration
-    )
+    self.configuration = configuration
+  }
+
+  /// Creates a fresh encoder with settings compatible with this codec.
+  ///
+  /// The returned facade is independent of the codec and of every other
+  /// factory result. Mutating it does not affect subsequent codec operations.
+  public func makeEncoder() -> XPCEncoder {
+    XPCEncoder(configuration: configuration)
+  }
+
+  /// Creates a fresh decoder with settings compatible with this codec.
+  ///
+  /// The returned facade uses ``XPCDecoder/ResourceLimits/standard`` and is
+  /// independent of the codec and of every other factory result. Mutating it
+  /// does not affect subsequent codec operations.
+  public func makeDecoder() -> XPCDecoder {
+    XPCDecoder(configuration: configuration)
   }
 
 }
@@ -69,7 +69,12 @@ extension XPCCodec {
   /// - Throws: An error if the value cannot be encoded.
   @inlinable
   public func encode<T>(_ value: T) throws -> xpc_object_t where T: Encodable {
-    try encoder.encode(value)
+    let configuration = configuration
+    return try _XPCEncoder.encode(
+      value,
+      stringKeyStrategy: configuration.stringKeyStrategy.encodingStrategy,
+      stringValueStrategy: configuration.stringValueStrategy.encodingStrategy
+    )
   }
 
   /// Decodes a value of the specified type from an `xpc_object_t`.
@@ -84,9 +89,13 @@ extension XPCCodec {
     _ valueType: T.Type,
     from object: xpc_object_t
   ) throws -> T where T: Decodable {
-    try decoder.decode(
+    let configuration = configuration
+    return try _XPCDecoder.decode(
       valueType,
-      from: object
+      from: object,
+      stringKeyStrategy: configuration.stringKeyStrategy.decodingStrategy,
+      stringValueStrategy: configuration.stringValueStrategy.decodingStrategy,
+      resourceLimits: .standard
     )
   }
 

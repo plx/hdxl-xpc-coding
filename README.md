@@ -18,6 +18,20 @@ Aside from renaming, reorganization, and purely-stylistic changes, this package:
   wrapping them in a transient `Data`
 - has an extensive unit-test suite validating its behavior
 
+## Codec Ownership
+
+`XPCCodec` is an immutable configuration value. Its direct `encode` and
+`decode` operations always use the codec's declared configuration and do not
+retain mutable `XPCEncoder` or `XPCDecoder` instances.
+
+Call `makeEncoder()` or `makeDecoder()` when an operation needs a separately
+configurable facade. Each call returns a fresh instance. Reconfiguring that
+instance cannot affect the codec or a later factory result, and the
+reconfigured instance is not guaranteed to remain compatible with them.
+
+See the [migration guide](reference/MigrationGuide.md) when updating code that
+previously accessed `codec.encoder` or `codec.decoder`.
+
 Release-mode performance measurements and report comparison are documented in
 [Benchmarks/README.md](Benchmarks/README.md).
 

@@ -11,32 +11,36 @@ struct FacadeAndStateCoverageTests {
   func `manual facade descriptions and accessors expose configuration`() throws {
     // These are intentionally explicit because the facade types are public API:
     // their descriptions and configuration accessors should report the same
-    // strategies that are used to build their paired encoder and decoder.
+    // strategies that are used to build fresh encoder and decoder facades.
     let configuration = XPCCodec.Configuration(
       stringKeyStrategy: .percentEscape,
       stringValueStrategy: .percentEscape
     )
     let codec = XPCCodec(configuration: configuration)
+    let encoder = codec.makeEncoder()
+    let decoder = codec.makeDecoder()
 
     #expect(codec.stringKeyStrategy == configuration.stringKeyStrategy)
     #expect(codec.stringValueStrategy == configuration.stringValueStrategy)
-    #expect(codec.encoder.description.contains("string-keys"))
-    #expect(codec.encoder.debugDescription.contains("XPCEncoder"))
-    #expect(codec.decoder.description.contains("string-keys"))
-    #expect(codec.decoder.debugDescription.contains("XPCDecoder"))
+    #expect(encoder.description.contains("string-keys"))
+    #expect(encoder.debugDescription.contains("XPCEncoder"))
+    #expect(decoder.description.contains("string-keys"))
+    #expect(decoder.debugDescription.contains("XPCDecoder"))
   }
 
   @Test
   func `generated facade descriptions and accessors expose configuration`() throws {
     for configuration in XPCCodec.Configuration.allCases {
       let codec = XPCCodec(configuration: configuration)
+      let encoder = codec.makeEncoder()
+      let decoder = codec.makeDecoder()
 
       #expect(codec.stringKeyStrategy == configuration.stringKeyStrategy)
       #expect(codec.stringValueStrategy == configuration.stringValueStrategy)
-      #expect(codec.encoder.description.contains("\(configuration.stringKeyStrategy.encodingStrategy)"))
-      #expect(codec.encoder.debugDescription.contains("\(configuration.stringValueStrategy.encodingStrategy)"))
-      #expect(codec.decoder.description.contains("\(configuration.stringKeyStrategy.decodingStrategy)"))
-      #expect(codec.decoder.debugDescription.contains("\(configuration.stringValueStrategy.decodingStrategy)"))
+      #expect(encoder.description.contains("\(configuration.stringKeyStrategy.encodingStrategy)"))
+      #expect(encoder.debugDescription.contains("\(configuration.stringValueStrategy.encodingStrategy)"))
+      #expect(decoder.description.contains("\(configuration.stringKeyStrategy.decodingStrategy)"))
+      #expect(decoder.debugDescription.contains("\(configuration.stringValueStrategy.decodingStrategy)"))
     }
   }
 

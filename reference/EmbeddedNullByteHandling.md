@@ -104,9 +104,17 @@ deployed together on one host; it does not serialize strategy metadata or
 support independently versioned peers. See
 [XPCCoding XPC Object Representation](WireFormat.md).
 
-To simplify obtaining such compatible pairs, the library provides an `XPCCodec` type, which streamlines the process of creating compatible pairs:
+To simplify compatible operations, the library provides an `XPCCodec` type:
 
-- it has its own `Configuration` type, which contains its own `StringValueStrategy` and its own `StringKeyStrategy`
-- it ensures its encoder and decoder instances are compatible with one another (and configured as-per the codec's configuration)
+- its immutable `Configuration` is the sole persistent source of string-key
+  and string-value behavior;
+- its direct `encode` and `decode` operations always derive their behavior from
+  that configuration; and
+- `makeEncoder()` and `makeDecoder()` return fresh, initially compatible
+  facades when a caller needs independent customization.
+
+Mutating a factory result affects only that result. Once independently
+reconfigured, that result is not guaranteed to remain compatible with the
+codec or with another factory result.
 
 Additionally, the default configurations for the codec and the individual top-level encoder and decoder types are all mutually compatible—you should only need to worry about compatibility if you're adjusting the configurations, but you'll be ok as long as you're using the codec-level API.

@@ -349,9 +349,10 @@ belongs to the co-built application protocol, not XPCCoding.
 
 Encoder and decoder key/value strategies must match out of band. `XPCCodec`
 exists to construct a compatible pair. No strategy identifier is serialized.
-The codec's configuration must be the authoritative source of operation
-behavior; completion of that ownership model is tracked by
-[#21](https://github.com/plx/hdxl-xpc-coding/issues/21).
+The codec's immutable configuration is the authoritative source of its direct
+operation behavior. Its coder factories return fresh, initially compatible
+facades; independently reconfiguring one of those facades does not affect the
+codec and can make that facade incompatible with other coders.
 
 `Encoder.userInfo` and `Decoder.userInfo` affect application `Codable`
 behavior but are never serialized as XPCCoding metadata. Public exposure and
