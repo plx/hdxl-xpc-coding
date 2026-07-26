@@ -108,10 +108,8 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   
   @inlinable
   internal func decodeNil(forKey key: Key) throws -> Bool {
-    try withTransientCodingKey(key) { codingPath in
-      guard let value = possibleXPCObject(for: key) else {
-        return false
-      }
+    let value = try requiredXPCObject(for: key)
+    return try withTransientCodingKey(key) { codingPath in
       try decoder.prepareToVisitChild(
         at: codingPath,
         depth: depth + 1
