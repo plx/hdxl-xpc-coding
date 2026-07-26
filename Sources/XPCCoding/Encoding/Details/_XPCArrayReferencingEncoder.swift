@@ -24,6 +24,7 @@ internal final class _XPCArrayReferencingEncoder: _XPCEncoder {
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy,
     codingPath: [any CodingKey],
+    userInfo: [CodingUserInfoKey: Any],
     index: Int,
     array: xpc_object_t
   ) {
@@ -32,7 +33,8 @@ internal final class _XPCArrayReferencingEncoder: _XPCEncoder {
     super.init(
       stringKeyStrategy: stringKeyStrategy,
       stringValueStrategy: stringValueStrategy,
-      codingPath: codingPath
+      codingPath: codingPath,
+      userInfo: userInfo
     )
   }
 

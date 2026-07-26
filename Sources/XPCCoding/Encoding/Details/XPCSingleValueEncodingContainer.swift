@@ -149,7 +149,8 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
       value,
       at: codingPath,
       stringKeyStrategy: stringKeyStrategy,
-      stringValueStrategy: stringValueStrategy
+      stringValueStrategy: stringValueStrategy,
+      userInfo: encoder.userInfo
     )
     try insertionClosure(xpcObject)
   }

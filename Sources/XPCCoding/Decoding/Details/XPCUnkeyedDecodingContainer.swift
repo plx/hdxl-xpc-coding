@@ -247,6 +247,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     let stringKeyStrategy = stringKeyStrategy
     let stringValueStrategy = stringValueStrategy
     let decodingState = decoder.decodingState
+    let userInfo = decoder.userInfo
     let childDepth = depth + 1
     
     return try handleNextDecodingKeyValue { xpcValue, codingPath in
@@ -255,6 +256,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         stringValueStrategy: stringValueStrategy,
         decoding: xpcValue,
         at: codingPath,
+        userInfo: userInfo,
         decodingState: decodingState,
         depth: childDepth
       )

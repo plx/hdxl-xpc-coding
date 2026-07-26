@@ -165,7 +165,8 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
           value,
           at: codingPath,
           stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: stringValueStrategy
+          stringValueStrategy: stringValueStrategy,
+          userInfo: encoder.userInfo
         ),
         forKey: key,
         strategy: stringKeyStrategy
@@ -255,6 +256,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
       stringKeyStrategy: stringKeyStrategy,
       stringValueStrategy: stringValueStrategy,
       codingPath: codingPath(appending: XPCCodingKey.superKey),
+      userInfo: encoder.userInfo,
       codingKey: XPCCodingKey.superKey,
       dictionary: underlyingXPCDictionary
     )
@@ -266,6 +268,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
       stringKeyStrategy: stringKeyStrategy,
       stringValueStrategy: stringValueStrategy,
       codingPath: codingPath(appending: key),
+      userInfo: encoder.userInfo,
       codingKey: key,
       dictionary: underlyingXPCDictionary
     )

@@ -169,7 +169,8 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
           value,
           at: codingPath,
           stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: stringValueStrategy
+          stringValueStrategy: stringValueStrategy,
+          userInfo: encoder.userInfo
         )
         xpc_array_append_value(underlyingXPCArray, xpcObject)
       } catch let underlyingError {
@@ -247,6 +248,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
           stringKeyStrategy: stringKeyStrategy,
           stringValueStrategy: stringValueStrategy,
           codingPath: codingPath,
+          userInfo: encoder.userInfo,
           index: count - 1,
           array: underlyingXPCArray
         )
