@@ -7,6 +7,10 @@ extension XPCCodec {
 
   /// Configuration options for an ``XPCCodec``.
   ///
+  /// An `XPCCodec` stores this value as its only persistent behavioral state.
+  /// Direct codec operations snapshot it, and each codec factory derives a
+  /// fresh facade from it.
+  ///
   /// Controls how the encoder and decoder handle strings that may contain embedded null bytes.
   /// Since XPC only supports C-style null-terminated strings, Swift strings containing null bytes
   /// require special handling to avoid truncation during encoding.

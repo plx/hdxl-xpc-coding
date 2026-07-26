@@ -82,29 +82,13 @@ public final class XPCDecoder: TopLevelDecoder {
     _ type: T.Type,
     from input: Input
   ) throws -> T where T: Decodable {
-    let decodingState = _XPCDecodingState(limits: resourceLimits)
-    try decodingState.prepareToVisit(
-      atDepth: 0,
-      codingPath: []
-    )
-
-    let decoder = _XPCDecoder(
-      stringKeyStrategy: stringKeyStrategy,
-      stringValueStrategy: stringValueStrategy,
-      decoding: input,
-      decodingState: decodingState,
-      depth: 0
-    )
-
-    if let data = try decoder.decodeVisitedDataIfRequested(
+    try _XPCDecoder.decode(
       type,
       from: input,
-      at: []
-    ) {
-      return data
-    }
-
-    return try T(from: decoder)
+      stringKeyStrategy: stringKeyStrategy,
+      stringValueStrategy: stringValueStrategy,
+      resourceLimits: resourceLimits
+    )
   }
 
 }

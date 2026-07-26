@@ -102,6 +102,40 @@ internal final class _XPCDecoder: Decoder {
 
 extension _XPCDecoder {
 
+  /// Decodes one top-level value from a complete operation snapshot.
+  @inlinable
+  internal static func decode<T: Decodable>(
+    _ valueType: T.Type,
+    from input: xpc_object_t,
+    stringKeyStrategy: StringKeyStrategy,
+    stringValueStrategy: StringValueStrategy,
+    resourceLimits: XPCDecoder.ResourceLimits
+  ) throws -> T {
+    let decodingState = _XPCDecodingState(limits: resourceLimits)
+    try decodingState.prepareToVisit(
+      atDepth: 0,
+      codingPath: []
+    )
+
+    let decoder = _XPCDecoder(
+      stringKeyStrategy: stringKeyStrategy,
+      stringValueStrategy: stringValueStrategy,
+      decoding: input,
+      decodingState: decodingState,
+      depth: 0
+    )
+
+    if let data = try decoder.decodeVisitedDataIfRequested(
+      valueType,
+      from: input,
+      at: []
+    ) {
+      return data
+    }
+
+    return try T(from: decoder)
+  }
+
   /// Decodes `Data` through XPCCoding's one-object representation when the
   /// requested generic type is exactly `Data`.
   ///
