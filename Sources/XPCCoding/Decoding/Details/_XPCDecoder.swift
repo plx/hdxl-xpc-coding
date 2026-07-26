@@ -29,7 +29,7 @@ internal final class _XPCDecoder: Decoder {
   
   /// The current coding path.
   @usableFromInline
-  internal var codingPath: [CodingKey]
+  internal let codingPath: [CodingKey]
 
   /// The shared resource accounting for this top-level decode operation.
   @usableFromInline
@@ -337,25 +337,4 @@ extension _XPCDecoder {
     )
   }
 
-  @inlinable
-  internal func withTransientCodingPathElement<Key, R>(
-    _ codingPathElement: Key,
-    _ closure: ([any CodingKey]) throws -> R
-  ) throws -> R where Key: CodingKey {
-    codingPath.append(codingPathElement)
-    defer {
-#if DEBUG
-      assert(!codingPath.isEmpty)
-      let popped = codingPath.removeLast()
-      // `CodingKey` isn't `Equatable`, so we instead compare its concrete representations:
-      assert(popped.stringValue == codingPathElement.stringValue)
-      assert(popped.intValue == codingPathElement.intValue)
-#else
-      codingPath.removeLast()
-#endif
-    }
-    let codingPath = codingPath
-    return try closure(codingPath)
-  }
-  
 }
