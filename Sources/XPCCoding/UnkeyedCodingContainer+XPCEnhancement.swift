@@ -36,6 +36,12 @@ extension UnkeyedEncodingContainer {
     )
     switch self as? XPCEnhancedUnkeyedEncodingContainer {
     case .some(var container):
+      defer {
+        guard let updatedContainer = container as? Self else {
+          preconditionFailure("Enhanced container unexpectedly changed dynamic type.")
+        }
+        self = updatedContainer
+      }
       try container.directlyEncodeXPCData(
         unsafeRawPointer,
         count: count
@@ -78,6 +84,12 @@ extension UnkeyedEncodingContainer {
     )
     switch self as? XPCEnhancedUnkeyedEncodingContainer {
     case .some(var container):
+      defer {
+        guard let updatedContainer = container as? Self else {
+          preconditionFailure("Enhanced container unexpectedly changed dynamic type.")
+        }
+        self = updatedContainer
+      }
       try container.directlyEncodeXPCData(
         unsafeMutableRawPointer,
         count: count
@@ -106,6 +118,12 @@ extension UnkeyedEncodingContainer {
   ) throws {
     switch self as? XPCEnhancedUnkeyedEncodingContainer {
     case .some(var container):
+      defer {
+        guard let updatedContainer = container as? Self else {
+          preconditionFailure("Enhanced container unexpectedly changed dynamic type.")
+        }
+        self = updatedContainer
+      }
       try container.directlyEncodeXPCData(unsafeRawBufferPointer)
     case .none:
       guard
@@ -131,6 +149,12 @@ extension UnkeyedEncodingContainer {
   ) throws {
     switch self as? XPCEnhancedUnkeyedEncodingContainer {
     case .some(var container):
+      defer {
+        guard let updatedContainer = container as? Self else {
+          preconditionFailure("Enhanced container unexpectedly changed dynamic type.")
+        }
+        self = updatedContainer
+      }
       try container.directlyEncodeXPCData(unsafeMutableRawBufferPointer)
     case .none:
       guard
