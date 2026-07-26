@@ -3,7 +3,7 @@
 **Program created:** 2026-07-25\
 **Source review revision:** `813c52e`\
 **Top-level epic:** [#59](https://github.com/plx/hdxl-xpc-coding/issues/59)\
-**Initial disposition:** No-go for production release
+**Initial disposition:** `NO-GO` for production release
 
 ## Purpose
 
@@ -19,6 +19,12 @@ created and should be updated when the hierarchy or intended ordering changes
 materially. After remediation, use the
 [Post-Remediation Production-Readiness Audit](PostRemediationProductionReadinessAudit.md)
 to make a new evidence-based go/no-go decision.
+
+For end-to-end execution, follow the
+[Production-Readiness Remediation Goal](ProductionReadinessRemediationGoal.md).
+It defines live work selection, per-ticket PR discipline, continuity across
+compaction, component-gate handling, the immutable audit candidate, and the
+post-audit publication checkpoint.
 
 ## Fixed scope and support policy
 
@@ -326,7 +332,7 @@ dependency edge.
 10. Close a component epic only when all native children are closed and its
     combined validation passes.
 11. Run #52 against an immutable candidate after all six component epics close.
-12. Proceed to #51 only after the audit records a go decision; create the
+12. Proceed to #51 only after the audit records a `GO` decision; create the
     immutable semantic tag and GitHub Release there before submitting them to
     Swift Package Index.
 

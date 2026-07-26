@@ -17,11 +17,13 @@ green GitHub check mark. It is an independent attempt to falsify the package's
 correctness, safety, performance, compatibility, and release claims.
 
 The output must be a dated audit report tied to an immutable commit or release
-candidate. The conclusion must be one of:
+candidate. The report must use exactly one of these machine-significant verdict
+tokens:
 
-- **Go:** suitable for the documented production envelope;
-- **Conditional go:** suitable only with explicitly documented restrictions;
-- **No-go:** unsuitable for production use.
+- **`GO`:** suitable for the documented production envelope;
+- **`CONDITIONAL GO`:** suitable only with explicitly documented
+  restrictions;
+- **`NO-GO`:** unsuitable for production use.
 
 Silence, missing evidence, skipped checks, tolerated crashes, or unexplained
 known issues count against release.
@@ -689,7 +691,7 @@ submission occur only after a go decision, through post-audit publication
 ticket #51. They are not prerequisites for this audit and must not be performed
 speculatively to make this phase pass.
 
-## Go/no-go rubric
+## `GO`/`NO-GO` rubric
 
 ### Automatic no-go conditions
 
@@ -755,7 +757,7 @@ A go requires:
 - Swift/Xcode/OS/hardware
 
 ## Decision
-- Go / Conditional go / No-go
+- GO / CONDITIONAL GO / NO-GO
 - supported production envelope
 - conditions or blockers
 
