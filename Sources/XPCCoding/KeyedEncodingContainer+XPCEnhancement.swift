@@ -263,36 +263,11 @@ internal struct UnsafeRawPointerShim: Encodable {
   
   @inlinable
   internal func encode(to encoder: any Encoder) throws {
-    try validateUnsafePointerCount(
-      unsafeRawPointer,
-      count: count,
-      codingPath: encoder.codingPath
-    )
     var container = encoder.singleValueContainer()
-    switch container as? XPCEnhancedSingleValueEncodingContainer {
-    case .some(var container):
-      try container.directlyEncodeXPCData(
-        unsafeRawPointer,
-        count: count
-      )
-    case .none:
-      guard count > .zero else {
-        try container.encode(Data())
-        return
-      }
-      switch unsafeRawPointer {
-      case .some(let unsafeRawPointer):
-        try container.encode(
-          Data(
-            bytesNoCopy: UnsafeMutableRawPointer(mutating: unsafeRawPointer),
-            count: count,
-            deallocator: .none
-          )
-        )
-      case .none:
-        try container.encode(Data())
-      }
-    }
+    try container.efficientlyEncodeBinaryData(
+      unsafeRawPointer,
+      count: count
+    )
   }
   
 }
@@ -333,36 +308,11 @@ internal struct UnsafeMutableRawPointerShim: Encodable {
   
   @inlinable
   internal func encode(to encoder: any Encoder) throws {
-    try validateUnsafePointerCount(
-      unsafeMutableRawPointer,
-      count: count,
-      codingPath: encoder.codingPath
-    )
     var container = encoder.singleValueContainer()
-    switch container as? XPCEnhancedSingleValueEncodingContainer {
-    case .some(var container):
-      try container.directlyEncodeXPCData(
-        unsafeMutableRawPointer,
-        count: count
-      )
-    case .none:
-      guard count > .zero else {
-        try container.encode(Data())
-        return
-      }
-      switch unsafeMutableRawPointer {
-      case .some(let unsafeMutableRawPointer):
-        try container.encode(
-          Data(
-            bytesNoCopy: unsafeMutableRawPointer,
-            count: count,
-            deallocator: .none
-          )
-        )
-      case .none:
-        try container.encode(Data())
-      }
-    }
+    try container.efficientlyEncodeBinaryData(
+      unsafeMutableRawPointer,
+      count: count
+    )
   }
   
 }
@@ -400,23 +350,7 @@ internal struct UnsafeRawBufferPointerShim: Encodable {
   @inlinable
   internal func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
-    switch container as? XPCEnhancedSingleValueEncodingContainer {
-    case .some(var container):
-      try container.directlyEncodeXPCData(unsafeRawBufferPointer)
-    case .none:
-      switch unsafeRawBufferPointer.baseAddress {
-      case .some(let baseAddress):
-        try container.encode(
-          Data(
-            bytesNoCopy: UnsafeMutableRawPointer(mutating: baseAddress),
-            count: unsafeRawBufferPointer.count,
-            deallocator: .none
-          )
-        )
-      case .none:
-        try container.encode(Data())
-      }
-    }
+    try container.efficientlyEncodeBinaryData(unsafeRawBufferPointer)
   }
   
 }
@@ -454,23 +388,7 @@ internal struct UnsafeMutableRawBufferPointerShim: Encodable {
   @inlinable
   internal func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
-    switch container as? XPCEnhancedSingleValueEncodingContainer {
-    case .some(var container):
-      try container.directlyEncodeXPCData(unsafeMutableRawBufferPointer)
-    case .none:
-      switch unsafeMutableRawBufferPointer.baseAddress {
-      case .some(let baseAddress):
-        try container.encode(
-          Data(
-            bytesNoCopy: baseAddress,
-            count: unsafeMutableRawBufferPointer.count,
-            deallocator: .none
-          )
-        )
-      case .none:
-        try container.encode(Data())
-      }
-    }
+    try container.efficientlyEncodeBinaryData(unsafeMutableRawBufferPointer)
   }
   
 }
