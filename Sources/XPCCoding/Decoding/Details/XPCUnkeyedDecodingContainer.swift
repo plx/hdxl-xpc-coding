@@ -26,7 +26,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
   /// The path of coding keys taken to get to this point in decoding (necessary to store @ creation for proper reporting).
   @usableFromInline
-  internal var codingPath: [any CodingKey]
+  internal let codingPath: [any CodingKey]
 
   /// The index of the next element to decode.
   @usableFromInline
@@ -287,7 +287,9 @@ extension XPCUnkeyedDecodingContainer {
   /// Execute a closure with the current coding key added to the coding path.
   @usableFromInline
   internal func withCurrentCodingKey<R>(_ closure: ([any CodingKey]) throws -> R) throws -> R {
-    try decoder.withTransientCodingPathElement(currentCodingKey, closure)
+    var codingPath = codingPath
+    codingPath.append(currentCodingKey)
+    return try closure(codingPath)
   }
   
   /// Decode the next value in the container, with proper coding-path management.
@@ -304,7 +306,7 @@ extension XPCUnkeyedDecodingContainer {
     
     let foundValue = xpc_array_get_value(underlyingXPCArray, currentIndex)
     
-    let interpretedValue = try decoder.withTransientCodingPathElement(currentCodingKey) { codingPath in
+    let interpretedValue = try withCurrentCodingKey { codingPath in
       try decoder.prepareToVisitChild(
         at: codingPath,
         depth: depth + 1
