@@ -16,6 +16,8 @@ protocol XPCBinaryDataRepresentationConvertible: BitwiseCopyable {
   func withUnsafeXPCBinaryDataRepresentationRawBufferPointer<R>(_ closure: (UnsafeRawBufferPointer) throws -> R) rethrows -> R
   
   /// Constructs a value from a raw buffer pointer pointing-to our binary-data representation.
+  ///
+  /// - Note: the buffer's base address is *not* required to satisfy `Self`'s alignment.
   init?(unsafeXPCBinaryDataRepresentationRawBufferPointer unsafeRawBufferPointer: UnsafeRawBufferPointer)
 }
 
@@ -35,6 +37,10 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
     }
   }
   
+  /// Constructs a value from a raw buffer pointer pointing-to our binary-data representation.
+  ///
+  /// - Note: the size check *must* stay ahead of the load; we never read from a buffer of the wrong size.
+  /// - Note: we use `loadUnaligned(as:)` b/c XPC doesn't promise that e.g. `xpc_data_get_bytes_ptr` satisfies `Self`'s alignment.
   @inlinable
   internal init?(unsafeXPCBinaryDataRepresentationRawBufferPointer unsafeRawBufferPointer: UnsafeRawBufferPointer) {
     guard
@@ -43,7 +49,7 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
     else {
       return nil
     }
-    self = baseAddress.load(as: Self.self)
+    self = baseAddress.loadUnaligned(as: Self.self)
   }
 
   @inlinable
