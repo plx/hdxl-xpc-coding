@@ -28,6 +28,11 @@ let package = Package(
   dependencies: [],
   targets: [
     .target(
+      name: "SanitizerNegativeControlSupport",
+      path: "Tests/SanitizerNegativeControlSupport",
+      publicHeadersPath: "include"
+    ),
+    .target(
       name: "XPCCoding",
       dependencies: [],
       swiftSettings: [
@@ -44,7 +49,10 @@ let package = Package(
     ),
     .testTarget(
       name: "XPCCodingTests",
-      dependencies: ["XPCCoding"],
+      dependencies: [
+        "SanitizerNegativeControlSupport",
+        "XPCCoding",
+      ],
       swiftSettings: [
         .enableExperimentalFeature("StrictConcurrency")
       ]

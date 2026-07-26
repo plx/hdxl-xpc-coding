@@ -87,6 +87,7 @@ jobs:
       - name: Run the complete suite under AddressSanitizer
         env:
           ASAN_OPTIONS: halt_on_error=1
+          XPCCODING_SANITIZER_NEGATIVE_CONTROL: address
         run: |
           set -o pipefail
           swift test \
@@ -131,6 +132,7 @@ jobs:
       - name: Run the complete suite under UndefinedBehaviorSanitizer
         env:
           UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+          XPCCODING_SANITIZER_NEGATIVE_CONTROL: undefined
         run: |
           set -o pipefail
           swift test \
@@ -165,6 +167,7 @@ jobs:
       - name: Run the complete suite under ThreadSanitizer
         env:
           TSAN_OPTIONS: halt_on_error=1
+          XPCCODING_SANITIZER_NEGATIVE_CONTROL: thread
         run: |
           set -o pipefail
           swift test \
