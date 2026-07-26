@@ -68,7 +68,7 @@ struct SupportAndErrorCoverageTests {
     let keyObject = "key\0value".makeXPCObjectRepresentation(stringKeyStrategy: .percentEscape)
     #expect(try keyObject._extractStringValue(stringValueStrategy: .percentEscape) == "key\0value")
 
-    let percentEscaped = "100%\0done".percentEscapingEmbeddedNullBytes(expectedNullByteCount: 1)
+    let percentEscaped = "100%\0done".addingXPCCodingPercentEscapes()
     #expect(percentEscaped == "100%25%00done")
 
     let dictionary = xpc_dictionary_create(nil, nil, 0)
@@ -109,9 +109,7 @@ struct SupportAndErrorCoverageTests {
       let escapedKey = key.withUTF8CString(stringKeyStrategy: XPCEncoder.StringKeyStrategy.percentEscape) {
         String(cString: $0)
       }
-      let expectedEscapedKey = probe.key.containsNullBytes
-        ? probe.key.percentEscapingEmbeddedNullBytes(expectedNullByteCount: probe.key.nullByteCount)
-        : probe.key
+      let expectedEscapedKey = probe.key.addingXPCCodingPercentEscapes()
       #expect(escapedKey == expectedEscapedKey)
       #expect(key.isLosslesslyRepresentableAsXPCStringObject == !probe.key.containsNullBytes)
       #expect(xpcCodingKey.stringValue == probe.key)

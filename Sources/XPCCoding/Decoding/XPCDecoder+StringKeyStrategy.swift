@@ -14,10 +14,12 @@ extension XPCDecoder {
     /// and are known not to contain any encoded null bytes.
     case passthrough
 
-    /// Decode percent-encoded null bytes in string keys.
+    /// Decode XPCCoding percent escapes in string keys.
     ///
     /// Use this when keys were encoded with ``XPCEncoder.stringKeyStrategy.percentEscape``.
-    /// This is the default strategy.
+    /// Only `%00` (null) and `%25` (literal percent) are accepted; malformed,
+    /// dangling, and unsupported escapes are rejected. This is the default
+    /// strategy.
     case percentEscape
   }
 

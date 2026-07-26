@@ -98,7 +98,7 @@ extension xpc_object_t {
       guard stringValueStrategy == .percentEscape else {
         return string
       }
-      guard let withoutEscapes = string.removingPercentEncoding else {
+      guard let withoutEscapes = string.removingXPCCodingPercentEscapes() else {
         throw .unableToRemovePercentEscapes(string)
       }
       return withoutEscapes

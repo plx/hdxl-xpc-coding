@@ -31,13 +31,15 @@ For string *values*, we have the following options during encoding:
 
 - `.assumeAbsent`: naively assume there are no null bytes, and directly create "xpc strings" from the `String`'s c-string representation
 - `.throwOnDiscovery`: throw an error if we discover any null bytes, and otherwise behave as `.assumeAbsent`
-- `.percentEscape`: apply percent-escaping to prevent XPC from seeing null bytes, representing data as an "xpc string"
+- `.percentEscape`: encode null and literal-percent scalars with XPCCoding's
+  strict percent-escape grammar, representing data as an "xpc string"
 - `.useDataRepresentation(.utf8|.utf16|.utf32)`: represent strings as "xpc data"  (in the chosen encoding), not as an xpc string
 
 For decoding, we have the following options:
 
 - `.passthrough`: expect an xpc string, and directly create a `String` from its c-string representation
-- `.percentEscape`: like `.passthrough`, except it post-processes the result to remove any percent-escapes that may have been applied when encoding
+- `.percentEscape`: expect an xpc string encoded with XPCCoding's strict
+  percent-escape grammar and reverse that transform
 - `.useDataRepresentation(.utf8|.utf16|.utf32)`: expect binary data (in the chosen encoding), and create a string from it
 
 ### String Key Strategies
@@ -45,12 +47,14 @@ For decoding, we have the following options:
 For string *keys*, we have the following options during encoding:
 
 - `.assumeAbsent`: naively assume there are no null bytes, and directly create "xpc strings" from the `String`'s c-string representation
-- `.percentEscape`: apply percent-escaping to prevent XPC from seeing null bytes, representing data as an "xpc string"
+- `.percentEscape`: encode null and literal-percent scalars with XPCCoding's
+  strict percent-escape grammar, representing data as an "xpc string"
 
 For decoding, we have the following options:
 
 - `.passthrough`: expect an xpc string, and directly create a `String` from its c-string representation
-- `.percentEscape`: like `.passthrough`, except it post-processes the result to remove any percent-escapes that may have been applied when encoding
+- `.percentEscape`: expect an xpc string encoded with XPCCoding's strict
+  percent-escape grammar and reverse that transform
 
 #### Why No `.useDataRepresentation(_)`
 
@@ -69,6 +73,26 @@ As such, providing a `.throwsOnDiscovery` strategy for keys would be making prom
 - we *cannot* throw on discovering keys with null bytes when creating nested containers (or super encoders, etc.)
 
 That's why there's no `.throwOnDiscovery` strategy for keys.
+
+### Percent-Escape Grammar and Pre-1.0 Compatibility
+
+The `.percentEscape` transform is shared by string keys and string values. It
+scans Unicode scalars and always encodes the two reserved scalars:
+
+- U+0000 is encoded as `%00`;
+- U+0025 (`%`) is encoded as `%25`; and
+- every other scalar is preserved.
+
+Decoding is a single, non-recursive pass that accepts only `%00` and `%25`.
+Dangling, malformed, or unsupported sequences such as `%`, `%0`, `%GG`, and
+`%41` are rejected. Thus `%2500` decodes to the literal text `%00`, not to a
+null scalar.
+
+This representation intentionally corrects the pre-1.0 behavior, which left
+literal percent signs unescaped and then applied general URL percent-decoding.
+That earlier behavior was not injective: it could corrupt values and collapse
+distinct dictionary keys. No compatibility promise is made for payloads
+created by that defective pre-release representation.
 
 ## Compatibility, Codecs, and Defaults
 

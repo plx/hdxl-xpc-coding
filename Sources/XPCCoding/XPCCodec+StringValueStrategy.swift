@@ -29,10 +29,10 @@ extension XPCCodec {
     /// any strings with embedded null bytes—use at your own risk.
     case throwOnDiscovery
     
-    /// Apply percent-escaping to prevent XPC from seeing null bytes.
+    /// Apply XPCCoding's reversible percent-escape grammar.
     ///
-    /// This is less-efficient than the "modified utf-8" approach, but has
-    /// the benefit that even the escaped values will also be valid UTF-8.
+    /// Null scalars become `%00` and literal percent scalars become `%25`,
+    /// producing an injective XPC string representation that remains UTF-8.
     ///
     /// This configuration is the default for keys and values.
     case percentEscape

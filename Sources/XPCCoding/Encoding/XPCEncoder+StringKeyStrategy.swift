@@ -15,10 +15,11 @@ extension XPCEncoder {
     /// keys won't contain null bytes.
     case assumeAbsent
 
-    /// Apply percent-encoding to null bytes before encoding.
+    /// Apply XPCCoding's reversible percent-escape grammar before encoding.
     ///
-    /// This ensures strings with embedded null bytes round-trip correctly,
-    /// at the cost of some encoding overhead. This is the default strategy.
+    /// Every null scalar is encoded as `%00` and every literal percent scalar
+    /// is encoded as `%25`. This ensures every Swift string is represented
+    /// injectively as an XPC dictionary key. This is the default strategy.
     case percentEscape
   }
 
@@ -99,4 +100,3 @@ extension XPCCodec.StringKeyStrategy {
   }
   
 }
-
