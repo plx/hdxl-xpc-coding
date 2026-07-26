@@ -4,7 +4,7 @@ set -euo pipefail
 
 readonly expected_xcode_version="26.6"
 readonly expected_xcode_build="17F113"
-readonly expected_swift_version="6.3.3"
+readonly expected_swift_version="0.0"
 readonly expected_tools_version="6.3.0"
 readonly expected_architecture="arm64"
 
