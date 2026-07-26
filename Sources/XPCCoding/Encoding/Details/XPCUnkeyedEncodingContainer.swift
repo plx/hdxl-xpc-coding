@@ -321,6 +321,11 @@ extension XPCUnkeyedEncodingContainer: XPCEnhancedUnkeyedEncodingContainer {
     _ unsafePointer: UnsafeRawPointer?,
     count: Int
   ) throws {
+    try validateUnsafePointerCount(
+      unsafePointer,
+      count: count,
+      codingPath: codingPath
+    )
     try appendNextXPCValue(
       xpc_data_create(
         unsafePointer,
@@ -334,6 +339,11 @@ extension XPCUnkeyedEncodingContainer: XPCEnhancedUnkeyedEncodingContainer {
     _ unsafePointer: UnsafeMutableRawPointer?,
     count: Int
   ) throws {
+    try validateUnsafePointerCount(
+      unsafePointer,
+      count: count,
+      codingPath: codingPath
+    )
     try appendNextXPCValue(
       xpc_data_create(
         unsafePointer.map { UnsafeRawPointer($0) },
@@ -344,21 +354,17 @@ extension XPCUnkeyedEncodingContainer: XPCEnhancedUnkeyedEncodingContainer {
   
   @inlinable
   internal mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeRawBufferPointer) throws {
-    try appendNextXPCValue(
-      xpc_data_create(
-        unsafeBufferPointer.baseAddress,
-        unsafeBufferPointer.count
-      )
+    try directlyEncodeXPCData(
+      unsafeBufferPointer.baseAddress,
+      count: unsafeBufferPointer.count
     )
   }
   
   @inlinable
   internal mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeMutableRawBufferPointer) throws {
-    try appendNextXPCValue(
-      xpc_data_create(
-        unsafeBufferPointer.baseAddress.map { UnsafeRawPointer($0) },
-        unsafeBufferPointer.count
-      )
+    try directlyEncodeXPCData(
+      unsafeBufferPointer.baseAddress,
+      count: unsafeBufferPointer.count
     )
   }
  

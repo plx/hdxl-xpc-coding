@@ -26,15 +26,28 @@ extension KeyedEncodingContainer {
   /// path and directly creates an `xpc_data_t` object from the raw bytes.
   ///
   /// - Parameters:
-  ///   - unsafeRawPointer: A pointer to the raw bytes to encode, or `nil` for empty data.
-  ///   - count: The number of bytes to encode.
+  ///   - unsafeRawPointer: A pointer to the raw bytes to encode. May be nil only when `count` is
+  ///     zero.
+  ///   - count: The nonnegative number of bytes to encode.
   ///   - key: The key to associate the data with.
+  /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
+  ///   pointer.
+  /// - Important: For a positive count, the caller must keep at least `count` initialized,
+  ///   readable bytes alive for the duration of this call. Their extent, initialization, and
+  ///   lifetime cannot be checked dynamically.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawPointer: UnsafeRawPointer?,
     count: Int,
     forKey key: Key
   ) throws {
+    var pointerCodingPath: [any CodingKey] = codingPath
+    pointerCodingPath.append(key)
+    try validateUnsafePointerCount(
+      unsafeRawPointer,
+      count: count,
+      codingPath: pointerCodingPath
+    )
     try encode(
       UnsafeRawPointerShim(
         unsafeRawPointer: unsafeRawPointer,
@@ -50,15 +63,28 @@ extension KeyedEncodingContainer {
   /// path and directly creates an `xpc_data_t` object from the raw bytes.
   ///
   /// - Parameters:
-  ///   - unsafeMutableRawPointer: A pointer to the raw bytes to encode, or `nil` for empty data.
-  ///   - count: The number of bytes to encode.
+  ///   - unsafeMutableRawPointer: A pointer to the raw bytes to encode. May be nil only when
+  ///     `count` is zero.
+  ///   - count: The nonnegative number of bytes to encode.
   ///   - key: The key to associate the data with.
+  /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
+  ///   pointer.
+  /// - Important: For a positive count, the caller must keep at least `count` initialized,
+  ///   readable bytes alive for the duration of this call. Their extent, initialization, and
+  ///   lifetime cannot be checked dynamically.
   @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawPointer: UnsafeMutableRawPointer?,
     count: Int,
     forKey key: Key
   ) throws {
+    var pointerCodingPath: [any CodingKey] = codingPath
+    pointerCodingPath.append(key)
+    try validateUnsafePointerCount(
+      unsafeMutableRawPointer,
+      count: count,
+      codingPath: pointerCodingPath
+    )
     try encode(
       UnsafeMutableRawPointerShim(
         unsafeMutableRawPointer: unsafeMutableRawPointer,
@@ -111,15 +137,27 @@ extension KeyedEncodingContainer {
   /// Efficiently encodes a buffer of elements as a nested unkeyed container for the given key.
   ///
   /// - Parameters:
-  ///   - unsafePointer: A pointer to the elements to encode, or `nil` for an empty array.
-  ///   - count: The number of elements to encode.
+  ///   - unsafePointer: A pointer to the elements to encode. May be nil only when `count` is zero.
+  ///   - count: The nonnegative number of elements to encode.
   ///   - key: The key to associate the array with.
+  /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
+  ///   pointer.
+  /// - Important: For a positive count, the caller must keep at least `count` initialized,
+  ///   readable `T` values alive for the duration of this call. Their extent, initialization, and
+  ///   lifetime cannot be checked dynamically.
   @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafePointer: UnsafePointer<T>?,
     count: Int,
     forKey key: Key
   ) throws {
+    var pointerCodingPath: [any CodingKey] = codingPath
+    pointerCodingPath.append(key)
+    try validateUnsafePointerCount(
+      unsafePointer,
+      count: count,
+      codingPath: pointerCodingPath
+    )
     var container = nestedUnkeyedContainer(forKey: key)
     try container.efficientlyEncodeElements(
       unsafePointer,
@@ -130,15 +168,28 @@ extension KeyedEncodingContainer {
   /// Efficiently encodes a buffer of elements as a nested unkeyed container for the given key.
   ///
   /// - Parameters:
-  ///   - unsafeMutablePointer: A pointer to the elements to encode, or `nil` for an empty array.
-  ///   - count: The number of elements to encode.
+  ///   - unsafeMutablePointer: A pointer to the elements to encode. May be nil only when `count` is
+  ///     zero.
+  ///   - count: The nonnegative number of elements to encode.
   ///   - key: The key to associate the array with.
+  /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
+  ///   pointer.
+  /// - Important: For a positive count, the caller must keep at least `count` initialized,
+  ///   readable `T` values alive for the duration of this call. Their extent, initialization, and
+  ///   lifetime cannot be checked dynamically.
   @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeMutablePointer: UnsafeMutablePointer<T>?,
     count: Int,
     forKey key: Key
   ) throws {
+    var pointerCodingPath: [any CodingKey] = codingPath
+    pointerCodingPath.append(key)
+    try validateUnsafePointerCount(
+      unsafeMutablePointer,
+      count: count,
+      codingPath: pointerCodingPath
+    )
     var container = nestedUnkeyedContainer(forKey: key)
     try container.efficientlyEncodeElements(
       unsafeMutablePointer,
@@ -212,6 +263,11 @@ internal struct UnsafeRawPointerShim: Encodable {
   
   @inlinable
   internal func encode(to encoder: any Encoder) throws {
+    try validateUnsafePointerCount(
+      unsafeRawPointer,
+      count: count,
+      codingPath: encoder.codingPath
+    )
     var container = encoder.singleValueContainer()
     switch container as? XPCEnhancedSingleValueEncodingContainer {
     case .some(var container):
@@ -220,6 +276,10 @@ internal struct UnsafeRawPointerShim: Encodable {
         count: count
       )
     case .none:
+      guard count > .zero else {
+        try container.encode(Data())
+        return
+      }
       switch unsafeRawPointer {
       case .some(let unsafeRawPointer):
         try container.encode(
@@ -273,6 +333,11 @@ internal struct UnsafeMutableRawPointerShim: Encodable {
   
   @inlinable
   internal func encode(to encoder: any Encoder) throws {
+    try validateUnsafePointerCount(
+      unsafeMutableRawPointer,
+      count: count,
+      codingPath: encoder.codingPath
+    )
     var container = encoder.singleValueContainer()
     switch container as? XPCEnhancedSingleValueEncodingContainer {
     case .some(var container):
@@ -281,6 +346,10 @@ internal struct UnsafeMutableRawPointerShim: Encodable {
         count: count
       )
     case .none:
+      guard count > .zero else {
+        try container.encode(Data())
+        return
+      }
       switch unsafeMutableRawPointer {
       case .some(let unsafeMutableRawPointer):
         try container.encode(
@@ -405,4 +474,3 @@ internal struct UnsafeMutableRawBufferPointerShim: Encodable {
   }
   
 }
-

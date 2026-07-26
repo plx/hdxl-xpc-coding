@@ -9,7 +9,14 @@ public protocol XPCEnhancedUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
   /// Encodes the data pointed-to by `unsafePointer` as xpc data (bypassing any intermediate `Data` values).
   ///
-  /// - Note: the encoded data will copied after this call—we're just avoiding creating the `Data` value wrapping it.
+  /// A zero `count` encodes empty data and permits a nil or non-nil pointer. A positive `count`
+  /// requires a non-nil pointer. For a positive count, the caller must keep at least `count`
+  /// initialized, readable bytes alive for the duration of this call; their extent, initialization,
+  /// and lifetime cannot be checked dynamically.
+  ///
+  /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
+  ///   pointer.
+  /// - Note: The bytes are copied before this method returns.
   mutating func directlyEncodeXPCData(
     _ unsafePointer: UnsafeRawPointer?,
     count: Int
@@ -17,7 +24,14 @@ public protocol XPCEnhancedUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
   /// Encodes the data pointed-to by `unsafePointer` as xpc data (bypassing any intermediate `Data` values).
   ///
-  /// - Note: the encoded data will copied after this call—we're just avoiding creating the `Data` value wrapping it.
+  /// A zero `count` encodes empty data and permits a nil or non-nil pointer. A positive `count`
+  /// requires a non-nil pointer. For a positive count, the caller must keep at least `count`
+  /// initialized, readable bytes alive for the duration of this call; their extent, initialization,
+  /// and lifetime cannot be checked dynamically.
+  ///
+  /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
+  ///   pointer.
+  /// - Note: The bytes are copied before this method returns.
   mutating func directlyEncodeXPCData(
     _ unsafePointer: UnsafeMutableRawPointer?,
     count: Int
@@ -46,8 +60,13 @@ extension XPCEnhancedUnkeyedEncodingContainer {
     _ unsafePointer: UnsafeRawPointer?,
     count: Int
   ) throws {
+    try validateUnsafePointerCount(
+      unsafePointer,
+      count: count,
+      codingPath: codingPath
+    )
     try directlyEncodeXPCData(
-      unsafePointer.map { UnsafeMutableRawPointer(mutating:  $0) },
+      unsafePointer.map { UnsafeMutableRawPointer(mutating: $0) },
       count: count
     )
   }

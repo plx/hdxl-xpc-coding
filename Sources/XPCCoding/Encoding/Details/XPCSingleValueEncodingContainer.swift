@@ -175,6 +175,11 @@ extension XPCSingleValueEncodingContainer: XPCEnhancedSingleValueEncodingContain
     _ unsafePointer: UnsafeRawPointer?,
     count: Int
   ) throws {
+    try validateUnsafePointerCount(
+      unsafePointer,
+      count: count,
+      codingPath: codingPath
+    )
     let xpcObject = xpc_data_create(
       unsafePointer,
       count
@@ -187,6 +192,11 @@ extension XPCSingleValueEncodingContainer: XPCEnhancedSingleValueEncodingContain
     _ unsafePointer: UnsafeMutableRawPointer?,
     count: Int
   ) throws {
+    try validateUnsafePointerCount(
+      unsafePointer,
+      count: count,
+      codingPath: codingPath
+    )
     let xpcObject = xpc_data_create(
       unsafePointer.map { UnsafeRawPointer($0) },
       count
@@ -204,11 +214,10 @@ extension XPCSingleValueEncodingContainer: XPCEnhancedSingleValueEncodingContain
   
   @inlinable
   internal mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeMutableRawBufferPointer) throws {
-    let xpcObject = xpc_data_create(
-      unsafeBufferPointer.baseAddress.map { UnsafeRawPointer($0) },
-      unsafeBufferPointer.count
+    try directlyEncodeXPCData(
+      unsafeBufferPointer.baseAddress,
+      count: unsafeBufferPointer.count
     )
-    try insertionClosure(xpcObject)
   }
   
 }
