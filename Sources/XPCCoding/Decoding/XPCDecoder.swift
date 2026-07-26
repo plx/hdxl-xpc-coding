@@ -21,6 +21,24 @@ import Combine
 /// let decoder = XPCDecoder()
 /// let value = try decoder.decode(MyType.self, from: xpcObject)
 /// ```
+///
+/// ## Decoding failures
+///
+/// XPCCoding reports its own representation failures through the standard
+/// `DecodingError` taxonomy at the most-specific available coding path:
+///
+/// - an absent keyed value is `DecodingError.keyNotFound`;
+/// - explicit XPC null requested as a nonoptional value is
+///   `DecodingError.valueNotFound`;
+/// - the wrong XPC object kind is `DecodingError.typeMismatch`; and
+/// - a correct-kind representation with invalid length, range, content, text
+///   encoding, percent-escape grammar, or exhausted resource limits is
+///   `DecodingError.dataCorrupted`.
+///
+/// Low-level malformed-content causes may be retained as the error context's
+/// `underlyingError`, but XPCCoding's internal errors are never thrown from
+/// this facade. Errors thrown directly by a type's `Decodable` implementation
+/// propagate unchanged.
 public final class XPCDecoder: TopLevelDecoder {
   public typealias Input = xpc_object_t
 
@@ -90,7 +108,9 @@ public final class XPCDecoder: TopLevelDecoder {
   ///   - type: The type of the value to decode.
   ///   - input: The XPC object to decode from.
   /// - Returns: A value of the requested type.
-  /// - Throws: An error if decoding failed.
+  /// - Throws: XPCCoding-originated representation failures use the standard
+  ///   `DecodingError` taxonomy documented on ``XPCDecoder``. Errors thrown
+  ///   directly by `T` propagate unchanged.
   @inlinable
   public func decode<T>(
     _ type: T.Type,

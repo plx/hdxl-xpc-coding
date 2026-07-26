@@ -49,10 +49,11 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   /// Initialize a new unkeyed container.
   /// - Parameters:
   ///   - decoder: The decoder to use for decoding.
-  ///   - wrapping: The XPC object to wrap.
+  ///   - xpcObject: The XPC object to wrap.
   ///   - codingPath: The coding path to use for decoding.
   ///   - depth: The recursive decoding depth of this container.
-  /// - Throws: `DecodingError.dataCorrupted` if the XPC object is not an array.
+  /// - Throws: `DecodingError.valueNotFound` for XPC null, or
+  ///   `DecodingError.typeMismatch` if the XPC object is not an array.
   @usableFromInline
   internal init(
     referencing decoder: _XPCDecoder,
@@ -60,11 +61,26 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     codingPath: [any CodingKey],
     depth: Int? = nil
   ) throws {
-    guard xpcObject.isArray else {
-      throw DecodingError.dataCorrupted(
+    let xpcObjectType = xpc_get_type(xpcObject)
+    guard xpcObjectType == XPC_TYPE_ARRAY else {
+      if xpcObjectType == XPC_TYPE_NULL {
+        throw DecodingError.valueNotFound(
+          [Any].self,
+          DecodingError.Context(
+            codingPath: codingPath,
+            debugDescription: "Expected an XPC array, but found XPC null."
+          )
+        )
+      }
+      throw DecodingError.typeMismatch(
+        [Any].self,
         DecodingError.Context(
           codingPath: codingPath,
-          debugDescription: "Did not find xpc array in unkeyed container."
+          debugDescription:
+            """
+            Expected an XPC array for an unkeyed decoding container, but found \
+            \(xpcObjectType.typeDescription).
+            """
         )
       )
     }

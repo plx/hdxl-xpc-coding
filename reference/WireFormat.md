@@ -436,7 +436,7 @@ implementation state. A deviation is not a legacy input promise.
 | percent escaping | corrected bijection is implemented | [#7](https://github.com/plx/hdxl-xpc-coding/issues/7) |
 | strict external XPC string/key UTF-8 | exact-length validation rejects malformed bytes before values or `allKeys` are exposed | implemented and covered by [#16](https://github.com/plx/hdxl-xpc-coding/issues/16) |
 | decoder budgets and cycles | finite operation-local budgets share counters across child paths; depth accounting bounds cycles without rejecting shared acyclic children | regression coverage and [#9](https://github.com/plx/hdxl-xpc-coding/issues/9) |
-| decoder error taxonomy | several wrong-kind/null/container cases are misclassified | [#18](https://github.com/plx/hdxl-xpc-coding/issues/18) |
+| decoder error taxonomy | absent keys, explicit nulls, wrong kinds, and malformed correct-kind content use the documented standard `DecodingError` cases at exact paths | implemented and covered by [#18](https://github.com/plx/hdxl-xpc-coding/issues/18) |
 | referencing/super encoders | repeated-container reuse can lose data | [#10](https://github.com/plx/hdxl-xpc-coding/issues/10) |
 | codec configuration ownership | mutable stored coder references can diverge | [#21](https://github.com/plx/hdxl-xpc-coding/issues/21) |
 | independent structural fixtures | absent | [#25](https://github.com/plx/hdxl-xpc-coding/issues/25) |

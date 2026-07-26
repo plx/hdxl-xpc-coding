@@ -158,6 +158,115 @@ struct PublicAPITests {
   }
 
   @Test
+  func `decoding errors keep their documented public taxonomy`() throws {
+    let encoder = XPCEncoder.standard
+    let decoder = XPCDecoder.standard
+    let absentInt: Int? = nil
+
+    do {
+      _ = try decoder.decode(
+        Int.self,
+        from: encoder.encode(absentInt)
+      )
+      Issue.record("Expected DecodingError.valueNotFound.")
+    } catch let DecodingError.valueNotFound(type, context) {
+      #expect(ObjectIdentifier(type) == ObjectIdentifier(Int.self))
+      #expect(context.codingPath.isEmpty)
+    } catch {
+      Issue.record(
+        "Expected valueNotFound, received \(String(reflecting: error))."
+      )
+    }
+
+    do {
+      _ = try decoder.decode(
+        String.self,
+        from: encoder.encode(17)
+      )
+      Issue.record("Expected DecodingError.typeMismatch.")
+    } catch let DecodingError.typeMismatch(type, context) {
+      #expect(ObjectIdentifier(type) == ObjectIdentifier(String.self))
+      #expect(context.codingPath.isEmpty)
+    } catch {
+      Issue.record(
+        "Expected typeMismatch, received \(String(reflecting: error))."
+      )
+    }
+
+    do {
+      _ = try decoder.decode(
+        PublicKeyedContainerProbe.self,
+        from: encoder.encode([17])
+      )
+      Issue.record("Expected a keyed-container typeMismatch.")
+    } catch let DecodingError.typeMismatch(type, context) {
+      #expect(
+        ObjectIdentifier(type)
+          == ObjectIdentifier([String: Any].self)
+      )
+      #expect(context.codingPath.isEmpty)
+    } catch {
+      Issue.record(
+        "Expected keyed typeMismatch, received \(String(reflecting: error))."
+      )
+    }
+
+    do {
+      _ = try decoder.decode(
+        PublicUnkeyedContainerProbe.self,
+        from: encoder.encode(["value": 17])
+      )
+      Issue.record("Expected an unkeyed-container typeMismatch.")
+    } catch let DecodingError.typeMismatch(type, context) {
+      #expect(ObjectIdentifier(type) == ObjectIdentifier([Any].self))
+      #expect(context.codingPath.isEmpty)
+    } catch {
+      Issue.record(
+        "Expected unkeyed typeMismatch, received \(String(reflecting: error))."
+      )
+    }
+
+    do {
+      _ = try decoder.decode(
+        PublicMissingValueProbe.self,
+        from: encoder.encode([String: Int]())
+      )
+      Issue.record("Expected DecodingError.keyNotFound.")
+    } catch let DecodingError.keyNotFound(key, context) {
+      #expect(key.stringValue == "value")
+      #expect(context.codingPath.isEmpty)
+    } catch {
+      Issue.record(
+        "Expected keyNotFound, received \(String(reflecting: error))."
+      )
+    }
+
+    let limits = XPCDecoder.ResourceLimits(
+      maximumNestingDepth: 128,
+      maximumContainerElementCount: 65_536,
+      maximumTotalNodeCount: 262_144,
+      maximumStringByteCount: 0,
+      maximumDataByteCount: 32 * 1_024 * 1_024,
+      maximumCumulativeByteCount: 64 * 1_024 * 1_024
+    )
+    do {
+      _ = try XPCDecoder(
+        resourceLimits: limits
+      ).decode(
+        String.self,
+        from: encoder.encode("x")
+      )
+      Issue.record("Expected DecodingError.dataCorrupted.")
+    } catch let DecodingError.dataCorrupted(context) {
+      #expect(context.codingPath.isEmpty)
+    } catch {
+      Issue.record(
+        "Expected dataCorrupted, received \(String(reflecting: error))."
+      )
+    }
+  }
+
+  @Test
   func `enhanced protocols and helpers are usable across the module boundary`() throws {
     let encoder = XPCEncoder(
       stringKeyStrategy: .percentEscape,
@@ -233,6 +342,30 @@ private struct PublicThrowingEncodingLeaf: Encodable {
     _ = encoder
     throw error
   }
+}
+
+private enum PublicDecodingKey: String, CodingKey {
+  case value
+}
+
+private struct PublicKeyedContainerProbe: Decodable {
+
+  init(from decoder: any Decoder) throws {
+    _ = try decoder.container(keyedBy: PublicDecodingKey.self)
+  }
+
+}
+
+private struct PublicUnkeyedContainerProbe: Decodable {
+
+  init(from decoder: any Decoder) throws {
+    _ = try decoder.unkeyedContainer()
+  }
+
+}
+
+private struct PublicMissingValueProbe: Decodable {
+  let value: Int
 }
 
 private enum PublicEnhancedEncodingError: Error {

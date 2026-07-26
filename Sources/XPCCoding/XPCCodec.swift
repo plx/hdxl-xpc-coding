@@ -99,7 +99,10 @@ extension XPCCodec {
   ///   - valueType: The type of the value to decode.
   ///   - object: The `xpc_object_t` to decode.
   /// - Returns: A value of the specified type.
-  /// - Throws: An error if the value cannot be decoded.
+  /// - Throws: XPCCoding-originated representation failures use
+  ///   ``XPCDecoder``'s documented absent-key, explicit-null, wrong-kind, and
+  ///   malformed-content taxonomy. Errors thrown directly by `T` propagate
+  ///   unchanged.
   @inlinable
   public func decode<T>(
     _ valueType: T.Type,

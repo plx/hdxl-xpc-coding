@@ -153,7 +153,17 @@ extension _XPCDecoder {
     guard valueType is Data.Type else {
       return nil
     }
-    guard object.hasType(XPC_TYPE_DATA) else {
+    let xpcObjectType = xpc_get_type(object)
+    guard xpcObjectType == XPC_TYPE_DATA else {
+      if xpcObjectType == XPC_TYPE_NULL {
+        throw DecodingError.valueNotFound(
+          Data.self,
+          DecodingError.Context(
+            codingPath: codingPath,
+            debugDescription: "Expected a nonoptional Data value, but found XPC null."
+          )
+        )
+      }
       throw DecodingError.typeMismatch(
         Data.self,
         DecodingError.Context(
@@ -161,8 +171,8 @@ extension _XPCDecoder {
           debugDescription:
             """
             Expected Data to use XPCCoding's XPC_TYPE_DATA representation, but found \
-            \(object.typeDescription). Historical unkeyed byte-array representations are not \
-            supported.
+            \(xpcObjectType.typeDescription). Historical unkeyed byte-array representations are \
+            not supported.
             """
         )
       )
