@@ -24,34 +24,6 @@ internal enum XPCStringExtractionError: Error {
 
 extension xpc_object_t {
 
-  /// Generic entrypoint for attempting to extract a value from an `xpc_object_t`.
-  /// 
-  /// - Parameters:
-  ///   - type: The type of value to attempt to extract.
-  ///   - stringValueStrategy: The strategy to use when extracting a string value.
-  /// - Returns: The extracted value, if successful.
-  /// - Note: This method does not throw.
-  /// - Note: this method detects when `T` is `String` and uses the `stringValueStrategy` to extract the string.
-  /// 
-  @usableFromInline
-  internal func attemptDirectExtraction<T: Decodable>(
-    _ type: T.Type,
-    stringValueStrategy: XPCDecoder.StringValueStrategy
-  ) -> T? {
-    if type is String.Type {
-      return try? _extractStringValue(stringValueStrategy: stringValueStrategy) as? T
-    }
-    guard
-      let extractableType = type as? XPCObjectExtractable.Type,
-      hasType(extractableType.associatedXPCObjectType),
-      let _extractedValue = extractableType.extracting(from: self),
-      let extractedValue = _extractedValue as? T
-    else {
-      return nil
-    }
-    return extractedValue
-  }
-
   /// Entry point for string-value extraction. 
   @usableFromInline
   internal func extractStringValue(

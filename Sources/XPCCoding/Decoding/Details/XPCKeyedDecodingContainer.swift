@@ -34,6 +34,10 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   /// The underlying XPC dictionary from which we're decoding.
   @usableFromInline
   internal let underlyingXPCDictionary: xpc_object_t
+
+  /// The recursive decoding depth of this dictionary below the root object.
+  @usableFromInline
+  internal let depth: Int
   
   // MARK: - Initialization
   
@@ -43,12 +47,14 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   ///   - decoder: The decoder to reference.
   ///   - underlyingXPCDictionary: The underlying XPC dictionary to wrap.
   ///   - codingPath: The path of coding keys taken to get to this point in decoding.
+  ///   - depth: The recursive decoding depth of this container.
   /// - Throws: `DecodingError.dataCorrupted` if the underlying XPC object is not a dictionary.
   @usableFromInline
   internal init(
     referencing decoder: _XPCDecoder,
     wrapping underlyingXPCDictionary: xpc_object_t,
-    codingPath: [any CodingKey]
+    codingPath: [any CodingKey],
+    depth: Int? = nil
   ) throws {
     guard underlyingXPCDictionary.isDictionary else {
       throw DecodingError.dataCorrupted(
@@ -58,9 +64,17 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
         )
       )
     }
+
+    let depth = depth ?? decoder.depth
+    try decoder.decodingState.validateDictionary(
+      underlyingXPCDictionary,
+      codingPath: codingPath
+    )
+
     self.decoder = decoder
     self.underlyingXPCDictionary = underlyingXPCDictionary
     self.codingPath = codingPath
+    self.depth = depth
   }
   
   // MARK: - KeyedDecodingContainerProtocol
@@ -96,11 +110,14 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   @inlinable
   internal func decodeNil(forKey key: Key) throws -> Bool {
     try withTransientCodingKey(key) { codingPath in
-      underlyingXPCDictionary.decodeNil(
+      guard let value = possibleXPCObject(for: key) else {
+        return false
+      }
+      try decoder.prepareToVisitChild(
         at: codingPath,
-        forKey: key,
-        strategy: stringKeyStrategy
+        depth: depth + 1
       )
+      return value.isNull
     }
   }
   
@@ -188,18 +205,11 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   internal func decode<T: Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
     try withTransientCodingKey(key) { codingPath in
       let xpcObject = try requiredXPCObject(for: key)
-
-      if let directExtraction = xpcObject.attemptDirectExtraction(type, stringValueStrategy: stringValueStrategy) {
-        return directExtraction
-      }
-      
-      return try T(
-        from: _XPCDecoder(
-          stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: stringValueStrategy,
-          decoding: xpcObject,
-          at: codingPath
-        )
+      return try decoder.decodeChildValue(
+        type,
+        from: xpcObject,
+        at: codingPath,
+        depth: depth + 1
       )
     }
   }
@@ -211,11 +221,17 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   ) throws -> KeyedDecodingContainer<NestedKey> {
     try withTransientCodingKey(key) { codingPath in
       let xpcObject = try requiredXPCObject(for: key)
+      let childDepth = depth + 1
+      try decoder.prepareToVisitChild(
+        at: codingPath,
+        depth: childDepth
+      )
       
       let container = try XPCKeyedDecodingContainer<NestedKey>(
         referencing: decoder,
         wrapping: xpcObject,
-        codingPath: codingPath
+        codingPath: codingPath,
+        depth: childDepth
       )
       
       return KeyedDecodingContainer<NestedKey>(container)
@@ -225,10 +241,17 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   @inlinable
   internal func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
     try withTransientCodingKey(key) { codingPath in
-      try XPCUnkeyedDecodingContainer(
+      let xpcObject = try requiredXPCObject(for: key)
+      let childDepth = depth + 1
+      try decoder.prepareToVisitChild(
+        at: codingPath,
+        depth: childDepth
+      )
+      return try XPCUnkeyedDecodingContainer(
         referencing: decoder,
-        wrapping: try requiredXPCObject(for: key),
-        codingPath: codingPath
+        wrapping: xpcObject,
+        codingPath: codingPath,
+        depth: childDepth
       )
     }
   }
@@ -236,11 +259,19 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   @inlinable
   internal func superDecoder() throws -> Decoder {
     try withTransientCodingKey(XPCCodingKey.superKey) { codingPath in
-      _XPCDecoder(
+      let xpcObject = try requiredXPCObject(for: XPCCodingKey.superKey)
+      let childDepth = depth + 1
+      try decoder.prepareToVisitChild(
+        at: codingPath,
+        depth: childDepth
+      )
+      return _XPCDecoder(
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: stringValueStrategy,
-        decoding: try requiredXPCObject(for: XPCCodingKey.superKey),
-        at: codingPath
+        decoding: xpcObject,
+        at: codingPath,
+        decodingState: decoder.decodingState,
+        depth: childDepth
       )
     }
   }
@@ -248,11 +279,19 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   @inlinable
   internal func superDecoder(forKey key: Key) throws -> Decoder {
     try withTransientCodingKey(key) { codingPath in
-      _XPCDecoder(
+      let xpcObject = try requiredXPCObject(for: key)
+      let childDepth = depth + 1
+      try decoder.prepareToVisitChild(
+        at: codingPath,
+        depth: childDepth
+      )
+      return _XPCDecoder(
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: stringValueStrategy,
-        decoding: try requiredXPCObject(for: key),
-        at: codingPath
+        decoding: xpcObject,
+        at: codingPath,
+        decodingState: decoder.decodingState,
+        depth: childDepth
       )
     }
   }
@@ -262,12 +301,18 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
 
 extension XPCKeyedDecodingContainer {
 
+  /// Locates the XPC object for `key`, returning `nil` when absent.
+  @usableFromInline
+  internal func possibleXPCObject(for key: CodingKey) -> xpc_object_t? {
+    key.withUTF8CString(stringKeyStrategy: stringKeyStrategy) { keyCString in
+      xpc_dictionary_get_value(underlyingXPCDictionary, keyCString)
+    }
+  }
+
   /// Locates the XPC object for the given `key`; throws an error when not found.
   @usableFromInline
   internal func requiredXPCObject(for key: CodingKey) throws -> xpc_object_t {
-    let possibleValue = key.withUTF8CString(stringKeyStrategy: stringKeyStrategy) { keyCString in
-      xpc_dictionary_get_value(underlyingXPCDictionary, keyCString)
-    }
+    let possibleValue = possibleXPCObject(for: key)
     guard let value = possibleValue else {
       throw DecodingError.keyNotFound(
         key,
@@ -328,11 +373,11 @@ extension XPCKeyedDecodingContainer {
     forKey key: Key
   ) throws -> Value where Value: XPCObjectExtractable {
     try withTransientCodingKey(key) { codingPath in
-      try underlyingXPCDictionary.extractValue(
-        ofType: valueType,
+      try decoder.extractChildValue(
+        valueType,
+        from: try requiredXPCObject(for: key),
         at: codingPath,
-        forKey: key,
-        stringKeyStrategy: stringKeyStrategy
+        depth: depth + 1
       )
     }
   }
@@ -343,11 +388,10 @@ extension XPCKeyedDecodingContainer {
     forKey key: Key
   ) throws -> String {
     try withTransientCodingKey(key) { codingPath in
-      try underlyingXPCDictionary.extractString(
+      try decoder.extractChildString(
+        from: try requiredXPCObject(for: key),
         at: codingPath,
-        forKey: key,
-        stringKeyStrategy: stringKeyStrategy,
-        stringValueStrategy: stringValueStrategy
+        depth: depth + 1
       )
     }
   }

@@ -36,6 +36,10 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   @usableFromInline
   internal let decoder: _XPCDecoder  
 
+  /// The recursive decoding depth of this array below the root object.
+  @usableFromInline
+  internal let depth: Int
+
   // MARK: - Initialization
 
   /// Initialize a new unkeyed container.
@@ -43,12 +47,14 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   ///   - decoder: The decoder to use for decoding.
   ///   - wrapping: The XPC object to wrap.
   ///   - codingPath: The coding path to use for decoding.
+  ///   - depth: The recursive decoding depth of this container.
   /// - Throws: `DecodingError.dataCorrupted` if the XPC object is not an array.
   @usableFromInline
   internal init(
     referencing decoder: _XPCDecoder,
     wrapping xpcObject: xpc_object_t,
-    codingPath: [any CodingKey]
+    codingPath: [any CodingKey],
+    depth: Int? = nil
   ) throws {
     guard xpcObject.isArray else {
       throw DecodingError.dataCorrupted(
@@ -58,11 +64,17 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         )
       )
     }
+
+    try decoder.decodingState.validateContainerElementCount(
+      xpc_array_get_count(xpcObject),
+      codingPath: codingPath
+    )
     
     self.underlyingXPCArray = xpcObject
     self.decoder = decoder
     self.codingPath = codingPath
     self.currentIndex = 0
+    self.depth = depth ?? decoder.depth
   }
 
   // MARK: - UnkeyedDecodingContainer
@@ -83,8 +95,12 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       )
     }
     
-    return try withCurrentCodingKey { _ in
+    return try withCurrentCodingKey { codingPath in
       let foundValue = xpc_array_get_value(underlyingXPCArray, currentIndex)
+      try decoder.prepareToVisitChild(
+        at: codingPath,
+        depth: depth + 1
+      )
       
       if foundValue.decodeNil(at: codingPath) {
         self.currentIndex += 1
@@ -177,21 +193,14 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   
   @inlinable
   internal mutating func decode<T: Decodable>(_ type: T.Type) throws -> T {
-    let stringKeyStrategy = stringKeyStrategy
-    let stringValueStrategy = stringValueStrategy
-
+    let decoder = decoder
+    let childDepth = depth + 1
     return try handleNextDecodingKeyValue { xpcValue, codingPath in
-      if let directExtraction = xpcValue.attemptDirectExtraction(type, stringValueStrategy: stringValueStrategy) {
-        return directExtraction
-      }
-      
-      return try T(
-        from: _XPCDecoder(
-          stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: stringValueStrategy,
-          decoding: xpcValue,
-          at: codingPath
-        )
+      try decoder.decodeVisitedValue(
+        type,
+        from: xpcValue,
+        at: codingPath,
+        depth: childDepth
       )
     }
   }
@@ -201,12 +210,14 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     keyedBy type: NestedKey.Type
   ) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
     let decoder = decoder
+    let childDepth = depth + 1
     return try handleNextDecodingKeyValue { xpcValue, codingPath in
       KeyedDecodingContainer(
         try XPCKeyedDecodingContainer<NestedKey>(
           referencing: decoder,
           wrapping: xpcValue,
-          codingPath: codingPath
+          codingPath: codingPath,
+          depth: childDepth
         )
       )
     }
@@ -215,12 +226,14 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   @inlinable
   internal mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
     let decoder = decoder
+    let childDepth = depth + 1
     
     return try handleNextDecodingKeyValue { xpcValue, codingPath in
       try XPCUnkeyedDecodingContainer(
         referencing: decoder,
         wrapping: xpcValue,
-        codingPath: codingPath
+        codingPath: codingPath,
+        depth: childDepth
       )
     }
   }
@@ -229,13 +242,17 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   internal mutating func superDecoder() throws -> Decoder {
     let stringKeyStrategy = stringKeyStrategy
     let stringValueStrategy = stringValueStrategy
+    let decodingState = decoder.decodingState
+    let childDepth = depth + 1
     
     return try handleNextDecodingKeyValue { xpcValue, codingPath in
       _XPCDecoder(
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: stringValueStrategy,
         decoding: xpcValue,
-        at: codingPath
+        at: codingPath,
+        decodingState: decodingState,
+        depth: childDepth
       )
     }
   }
@@ -284,7 +301,11 @@ extension XPCUnkeyedDecodingContainer {
     let foundValue = xpc_array_get_value(underlyingXPCArray, currentIndex)
     
     let interpretedValue = try decoder.withTransientCodingPathElement(currentCodingKey) { codingPath in
-      try closure(foundValue, codingPath)
+      try decoder.prepareToVisitChild(
+        at: codingPath,
+        depth: depth + 1
+      )
+      return try closure(foundValue, codingPath)
     }
     
     currentIndex += 1
@@ -296,9 +317,11 @@ extension XPCUnkeyedDecodingContainer {
   internal mutating func decodeNextValue<Value>(
     as valueType: Value.Type
   ) throws -> Value where Value: XPCObjectExtractable {
-    try handleNextDecodingKeyValue { xpcValue, codingPath in
-      try xpcValue.extractValue(
-        ofType: valueType,
+    let decoder = decoder
+    return try handleNextDecodingKeyValue { xpcValue, codingPath in
+      try decoder.extractVisitedValue(
+        valueType,
+        from: xpcValue,
         at: codingPath
       )
     }
@@ -307,11 +330,10 @@ extension XPCUnkeyedDecodingContainer {
   /// Special-case logic for decoding string values.
   @usableFromInline
   internal mutating func decodeNextStringValue() throws -> String {
-    let stringValueStrategy = stringValueStrategy
-
+    let decoder = decoder
     return try handleNextDecodingKeyValue { xpcValue, codingPath in
-      try xpcValue.extractStringValue(
-        stringValueStrategy: stringValueStrategy,
+      try decoder.extractVisitedString(
+        from: xpcValue,
         at: codingPath
       )
     }
