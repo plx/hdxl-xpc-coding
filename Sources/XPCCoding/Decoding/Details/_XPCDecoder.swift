@@ -56,29 +56,6 @@ internal final class _XPCDecoder: Decoder {
     self.depth = depth
   }
 
-  /// Compatibility initializer for direct internal test construction.
-  ///
-  /// Public decoding always supplies an operation-local state whose root node
-  /// has already been consumed.
-  @usableFromInline
-  internal convenience init(
-    stringKeyStrategy: StringKeyStrategy,
-    stringValueStrategy: StringValueStrategy,
-    decoding message: xpc_object_t,
-    at codingPath: [CodingKey] = [],
-    userInfo: [CodingUserInfoKey : Any] = [:]
-  ) {
-    self.init(
-      stringKeyStrategy: stringKeyStrategy,
-      stringValueStrategy: stringValueStrategy,
-      decoding: message,
-      at: codingPath,
-      userInfo: userInfo,
-      decodingState: _XPCDecodingState(limits: .standard),
-      depth: codingPath.count
-    )
-  }
-  
   // MARK: - Decoder
 
   @usableFromInline
