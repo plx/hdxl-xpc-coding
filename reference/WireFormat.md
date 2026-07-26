@@ -95,6 +95,11 @@ XPCCoding revision. The decoder does not accept accidental historical shapes.
 | `String` | strategy-dependent; see [Strings](#strings) | the XPC kind and content required by the matching decoder strategy |
 | `Data` | one `XPC_TYPE_DATA`, including zero-length data | `XPC_TYPE_DATA`; bytes are copied exactly |
 
+When `Data` is requested, any non-`XPC_TYPE_DATA` input is a
+`DecodingError.typeMismatch`. In particular, XPCCoding does not accept the
+accidental historical representation consisting of an unkeyed array of
+individually encoded bytes.
+
 The `Int` and `UInt` width for the maintained Apple 26 targets is the target's
 Swift ABI width. Encoding must still perform an exact conversion to the
 corresponding 64-bit XPC scalar and must never truncate.
@@ -423,7 +428,7 @@ implementation state. A deviation is not a legacy input promise.
 | null, Boolean, `Int`, `Int64`, `UInt`, `UInt64`, `Double` | representation already matches | contract fixtures in [#25](https://github.com/plx/hdxl-xpc-coding/issues/25) |
 | narrow integers, `Float16`, and `Float` | currently allocate native XPC data instead of XPC scalars | [#23](https://github.com/plx/hdxl-xpc-coding/issues/23) |
 | `Int128`/`UInt128` | native 16-byte data representation matches the intended shape; checked semantics need consolidation | [#23](https://github.com/plx/hdxl-xpc-coding/issues/23) |
-| ordinary generic `Data` | currently expands into an XPC array of per-byte objects | [#20](https://github.com/plx/hdxl-xpc-coding/issues/20) |
+| ordinary generic `Data` | direct specialization produces one XPC data object at every generic boundary | implemented and covered by [#20](https://github.com/plx/hdxl-xpc-coding/issues/20) |
 | enhanced raw binary and element helpers | output shape and pointer/count validation match the contract | [#11](https://github.com/plx/hdxl-xpc-coding/issues/11) and fixture coverage in [#25](https://github.com/plx/hdxl-xpc-coding/issues/25) |
 | percent escaping | corrected bijection is implemented | [#7](https://github.com/plx/hdxl-xpc-coding/issues/7) |
 | strict external XPC string/key UTF-8 | current decoding can repair malformed UTF-8 | [#16](https://github.com/plx/hdxl-xpc-coding/issues/16) |
