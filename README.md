@@ -18,6 +18,9 @@ Aside from renaming, reorganization, and purely-stylistic changes, this package:
   wrapping them in a transient `Data`
 - has an extensive unit-test suite validating its behavior
 
+Release-mode performance measurements and report comparison are documented in
+[Benchmarks/README.md](Benchmarks/README.md).
+
 ## Origin and License
 
 This package derives in part from

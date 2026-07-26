@@ -18,6 +18,9 @@ mod format './commands/format.just'
 # checking for todos
 mod todos './commands/todos.just'
 
+# release-mode performance measurements
+import './commands/benchmark.just'
+
 [private]
 default:
   @just --list --unsorted

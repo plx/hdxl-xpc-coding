@@ -37,3 +37,16 @@ jobs:
 
     - name: Run tests
       run: swift test -q
+
+    - name: Run release benchmark smoke test
+      run: |
+        swift run -c release XPCCodingBenchmarks self-test
+        swift run -c release --skip-build XPCCodingBenchmarks run \
+          --smoke \
+          --output .build/benchmarks/ci-smoke.json
+
+    - name: Upload benchmark smoke report
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark-smoke-${{ matrix.os }}-xcode-${{ matrix.xcode }}
+        path: .build/benchmarks/ci-smoke.json
