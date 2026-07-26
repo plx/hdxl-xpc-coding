@@ -61,6 +61,7 @@ struct ReferencingEncoderStateTests {
       stringKeyStrategy: .standard,
       stringValueStrategy: .standard,
       codingPath: [ReferencingEncoderPathKey.payload],
+      userInfo: [:],
       index: 0,
       array: xpc_array_create_empty()
     )
@@ -361,6 +362,7 @@ private func makeReferencingEncoder(
       stringKeyStrategy: .standard,
       stringValueStrategy: .standard,
       codingPath: [ReferencingEncoderPathKey.payload],
+      userInfo: [:],
       index: 0,
       array: parent
     )
@@ -369,6 +371,7 @@ private func makeReferencingEncoder(
       stringKeyStrategy: .standard,
       stringValueStrategy: .standard,
       codingPath: [ReferencingEncoderPathKey.payload],
+      userInfo: [:],
       codingKey: ReferencingEncoderPathKey.payload,
       dictionary: xpc_dictionary_create_empty()
     )

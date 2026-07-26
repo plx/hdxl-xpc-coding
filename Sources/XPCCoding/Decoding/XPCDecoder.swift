@@ -96,6 +96,9 @@ public final class XPCDecoder: TopLevelDecoder {
     _ type: T.Type,
     from input: Input
   ) throws -> T where T: Decodable {
+    let stringKeyStrategy = stringKeyStrategy
+    let stringValueStrategy = stringValueStrategy
+    let resourceLimits = resourceLimits
     let userInfo = userInfo
     return try _XPCDecoder.decode(
       type,

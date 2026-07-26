@@ -310,6 +310,7 @@ struct SupportAndErrorCoverageTests {
       stringKeyStrategy: .percentEscape,
       stringValueStrategy: .percentEscape,
       decoding: root,
+      userInfo: [:],
       decodingState: decodingState,
       depth: 0
     )
@@ -369,6 +370,7 @@ struct SupportAndErrorCoverageTests {
         stringValueStrategy: .percentEscape,
         decoding: root,
         at: [codingPathKey],
+        userInfo: [:],
         decodingState: decodingState,
         depth: 0
       )
@@ -470,6 +472,7 @@ struct SupportAndErrorCoverageTests {
       stringKeyStrategy: .standard,
       stringValueStrategy: .standard,
       codingPath: [],
+      userInfo: [:],
       index: 0,
       array: xpc_array_create(nil, 0)
     )
@@ -518,6 +521,7 @@ struct SupportAndErrorCoverageTests {
         stringKeyStrategy: .percentEscape,
         stringValueStrategy: .percentEscape,
         codingPath: [SupportCoverageKey.value],
+        userInfo: [:],
         index: Int(abs(probe.value % 4)),
         array: xpc_array_create(nil, 0)
       )

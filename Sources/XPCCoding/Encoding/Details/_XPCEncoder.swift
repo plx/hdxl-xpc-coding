@@ -221,7 +221,7 @@ extension _XPCEncoder {
     at codingPath: [any CodingKey] = [],
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy,
-    userInfo: [CodingUserInfoKey: Any] = [:]
+    userInfo: [CodingUserInfoKey: Any]
   ) throws -> xpc_object_t {
     if let data = value as? Data {
       return data.xpcObjectRepresentation

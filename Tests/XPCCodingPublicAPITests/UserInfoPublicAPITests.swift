@@ -6,7 +6,7 @@ import XPCCoding
 struct UserInfoPublicAPITests {
 
   @Test
-  func `facade user info reaches every recursive coder shape`() throws {
+  func `encoder user info reaches every recursive coder shape`() throws {
     let marker = "same-operation-marker"
     let transientRecorder = PublicUserInfoRecorder()
     let encoder = XPCEncoder()
@@ -27,7 +27,7 @@ struct UserInfoPublicAPITests {
 
     let encodingRecorder = PublicUserInfoRecorder()
     encoder.userInfo[PublicUserInfoKeys.reference] = encodingRecorder
-    let object = try encoder.encode(
+    _ = try encoder.encode(
       PublicUserInfoShapePayload(
         marker: marker,
         recorder: encodingRecorder
@@ -36,6 +36,20 @@ struct UserInfoPublicAPITests {
     try encodingRecorder.requireEvents(
       PublicUserInfoShapePayload.encodingEvents
     )
+  }
+
+  @Test
+  func `decoder user info reaches every recursive coder shape`() throws {
+    let marker = "same-operation-marker"
+    let fixtureRecorder = PublicUserInfoRecorder()
+    let object = try XPCEncoder().encode(
+      PublicUserInfoShapePayload(
+        marker: marker,
+        recorder: fixtureRecorder,
+        enforceEncodingEvents: false
+      )
+    )
+    #expect(fixtureRecorder.events.isEmpty)
 
     let decodingRecorder = PublicUserInfoRecorder()
     let decoder = XPCDecoder()
@@ -126,6 +140,7 @@ private struct PublicUserInfoShapePayload: Codable {
 
   let marker: String
   let recorder: PublicUserInfoRecorder
+  let enforceEncodingEvents: Bool
 
   private enum CodingKeys: String, CodingKey {
     case keyedChild
@@ -201,12 +216,19 @@ private struct PublicUserInfoShapePayload: Codable {
       forKey: .unkeyedSuper
     )
 
-    try recorder.requireEvents(Self.encodingEvents)
+    if enforceEncodingEvents {
+      try recorder.requireEvents(Self.encodingEvents)
+    }
   }
 
-  init(marker: String, recorder: PublicUserInfoRecorder) {
+  init(
+    marker: String,
+    recorder: PublicUserInfoRecorder,
+    enforceEncodingEvents: Bool = true
+  ) {
     self.marker = marker
     self.recorder = recorder
+    self.enforceEncodingEvents = enforceEncodingEvents
   }
 
   init(from decoder: any Decoder) throws {
@@ -280,6 +302,7 @@ private struct PublicUserInfoShapePayload: Codable {
 
     self.marker = marker
     self.recorder = recorder
+    self.enforceEncodingEvents = true
   }
 
   private func leaf(placement: String) -> PublicUserInfoLeaf {

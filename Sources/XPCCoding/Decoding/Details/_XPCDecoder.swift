@@ -48,7 +48,7 @@ internal final class _XPCDecoder: Decoder {
     stringValueStrategy: StringValueStrategy,
     decoding message: xpc_object_t,
     at codingPath: [CodingKey] = [],
-    userInfo: [CodingUserInfoKey : Any] = [:],
+    userInfo: [CodingUserInfoKey : Any],
     decodingState: _XPCDecodingState,
     depth: Int
   ) {
@@ -110,7 +110,7 @@ extension _XPCDecoder {
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy,
     resourceLimits: XPCDecoder.ResourceLimits,
-    userInfo: [CodingUserInfoKey: Any] = [:]
+    userInfo: [CodingUserInfoKey: Any]
   ) throws -> T {
     let decodingState = _XPCDecodingState(limits: resourceLimits)
     try decodingState.prepareToVisit(
@@ -313,6 +313,7 @@ extension _XPCDecoder {
         stringValueStrategy: stringValueStrategy,
         decoding: object,
         at: codingPath,
+        userInfo: userInfo,
         decodingState: decodingState,
         depth: depth
       )

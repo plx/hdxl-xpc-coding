@@ -18,6 +18,10 @@ import XPC
 /// mutable, non-`Sendable` reference types; keep each factory result confined to
 /// one task.
 ///
+/// Direct codec operations use empty `Encoder.userInfo` and `Decoder.userInfo`
+/// dictionaries. Configure ``XPCEncoder/userInfo`` or ``XPCDecoder/userInfo``
+/// on a fresh factory result when an operation needs contextual values.
+///
 /// ## Usage
 ///
 /// ```swift
@@ -50,7 +54,8 @@ public struct XPCCodec: Sendable {
   /// Creates a fresh encoder with settings compatible with this codec.
   ///
   /// The returned facade is independent of the codec and of every other
-  /// factory result. Mutating it does not affect subsequent codec operations.
+  /// factory result. Its ``XPCEncoder/userInfo`` starts empty. Mutating it does
+  /// not affect subsequent codec operations.
   public func makeEncoder() -> XPCEncoder {
     XPCEncoder(configuration: configuration)
   }
@@ -59,7 +64,8 @@ public struct XPCCodec: Sendable {
   ///
   /// The returned facade uses ``XPCDecoder/ResourceLimits/standard`` and is
   /// independent of the codec and of every other factory result. Mutating it
-  /// does not affect subsequent codec operations.
+  /// does not affect subsequent codec operations. Its
+  /// ``XPCDecoder/userInfo`` starts empty.
   public func makeDecoder() -> XPCDecoder {
     XPCDecoder(configuration: configuration)
   }
@@ -79,7 +85,8 @@ extension XPCCodec {
     return try _XPCEncoder.encode(
       value,
       stringKeyStrategy: configuration.stringKeyStrategy.encodingStrategy,
-      stringValueStrategy: configuration.stringValueStrategy.encodingStrategy
+      stringValueStrategy: configuration.stringValueStrategy.encodingStrategy,
+      userInfo: [:]
     )
   }
 
@@ -101,7 +108,8 @@ extension XPCCodec {
       from: object,
       stringKeyStrategy: configuration.stringKeyStrategy.decodingStrategy,
       stringValueStrategy: configuration.stringValueStrategy.decodingStrategy,
-      resourceLimits: .standard
+      resourceLimits: .standard,
+      userInfo: [:]
     )
   }
 

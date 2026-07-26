@@ -22,6 +22,7 @@ internal final class _XPCDictionaryReferencingEncoder: _XPCEncoder {
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy,
     codingPath: [CodingKey],
+    userInfo: [CodingUserInfoKey: Any],
     codingKey: CodingKey,
     dictionary: xpc_object_t
   ) {
@@ -30,7 +31,8 @@ internal final class _XPCDictionaryReferencingEncoder: _XPCEncoder {
     super.init(
       stringKeyStrategy: stringKeyStrategy,
       stringValueStrategy: stringValueStrategy,
-      codingPath: codingPath
+      codingPath: codingPath,
+      userInfo: userInfo
     )
   }
 

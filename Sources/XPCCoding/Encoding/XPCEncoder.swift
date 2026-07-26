@@ -79,6 +79,8 @@ public final class XPCEncoder: TopLevelEncoder {
   public func encode<T>(
     _ value: T
   ) throws -> Output where T: Encodable {
+    let stringKeyStrategy = stringKeyStrategy
+    let stringValueStrategy = stringValueStrategy
     let userInfo = userInfo
     return try _XPCEncoder.encode(
       value,
@@ -100,6 +102,8 @@ public final class XPCEncoder: TopLevelEncoder {
   ///   or any error thrown by the closure.
   @inlinable
   public func withTransientEncoder(_ closure: (any Encoder) throws -> Void) throws -> Output {
+    let stringKeyStrategy = stringKeyStrategy
+    let stringValueStrategy = stringValueStrategy
     let userInfo = userInfo
     let encoder = _XPCEncoder(
       stringKeyStrategy: stringKeyStrategy,

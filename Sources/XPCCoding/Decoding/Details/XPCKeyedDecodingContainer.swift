@@ -267,6 +267,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
         stringValueStrategy: stringValueStrategy,
         decoding: xpcObject,
         at: codingPath,
+        userInfo: decoder.userInfo,
         decodingState: decoder.decodingState,
         depth: childDepth
       )
@@ -287,6 +288,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
         stringValueStrategy: stringValueStrategy,
         decoding: xpcObject,
         at: codingPath,
+        userInfo: decoder.userInfo,
         decodingState: decoder.decodingState,
         depth: childDepth
       )

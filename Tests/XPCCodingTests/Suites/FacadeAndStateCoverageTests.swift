@@ -92,7 +92,8 @@ struct FacadeAndStateCoverageTests {
       try _XPCEncoder.encode(
         NoOpEncodable(id: 1),
         stringKeyStrategy: .standard,
-        stringValueStrategy: .standard
+        stringValueStrategy: .standard,
+        userInfo: [:]
       )
     }
   }
@@ -104,7 +105,8 @@ struct FacadeAndStateCoverageTests {
         try _XPCEncoder.encode(
           value,
           stringKeyStrategy: .standard,
-          stringValueStrategy: .standard
+          stringValueStrategy: .standard,
+          userInfo: [:]
         )
       }
     }
