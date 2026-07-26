@@ -47,6 +47,10 @@ extension XPCObjectExtractable where Self: XPCBinaryDataRepresentationConvertibl
   @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DATA }
   
+  /// Extracts a value from the *exact* bytes of an xpc data object.
+  ///
+  /// - Note: the length check comes first, so we never read from an xpc data object of the wrong length.
+  /// - Note: `xpc_data_get_bytes_ptr` makes no alignment promise, so the extraction must be alignment-agnostic.
   @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
@@ -55,7 +59,7 @@ extension XPCObjectExtractable where Self: XPCBinaryDataRepresentationConvertibl
     guard MemoryLayout<Self>.size == length else {
       return nil
     }
-    
+
     let unsafeBaseAddress = infalliblyUnwrap(
       xpc_data_get_bytes_ptr(object),
       explanation: "`xpc_data_get_bytes_ptr` returns NULL only for non-data xpc objects, but `object`'s type was already checked above."
