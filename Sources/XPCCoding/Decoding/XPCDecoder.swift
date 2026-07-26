@@ -22,6 +22,13 @@ public final class XPCDecoder: TopLevelDecoder {
   /// The strategy for handling encoded null bytes in string values.
   public var stringValueStrategy: StringValueStrategy
 
+  /// Finite resource limits applied independently to each call to ``decode(_:from:)``.
+  ///
+  /// The value is snapshotted when decoding begins. Mutating this property
+  /// therefore affects subsequent operations, never an operation already in
+  /// progress.
+  public var resourceLimits: ResourceLimits
+
   /// A decoder with the standard (default) configuration.
   public static var standard: Self {
     Self()
@@ -32,21 +39,30 @@ public final class XPCDecoder: TopLevelDecoder {
   /// - Parameters:
   ///   - stringKeyStrategy: The strategy for handling null bytes in string keys. Defaults to ``StringKeyStrategy/standard``.
   ///   - stringValueStrategy: The strategy for handling null bytes in string values. Defaults to ``StringValueStrategy/standard``.
+  ///   - resourceLimits: The finite limits for each decode operation. Defaults to ``ResourceLimits/standard``.
   public init(
     stringKeyStrategy: StringKeyStrategy = .standard,
-    stringValueStrategy: StringValueStrategy = .standard
+    stringValueStrategy: StringValueStrategy = .standard,
+    resourceLimits: ResourceLimits = .standard
   ) {
     self.stringKeyStrategy = stringKeyStrategy
     self.stringValueStrategy = stringValueStrategy
+    self.resourceLimits = resourceLimits
   }
 
   /// Creates a new decoder from an ``XPCCodec/Configuration``.
   ///
-  /// - Parameter configuration: The codec configuration to derive decoder settings from.
-  public convenience init(configuration: XPCCodec.Configuration) {
+  /// - Parameters:
+  ///   - configuration: The codec configuration to derive string settings from.
+  ///   - resourceLimits: The finite limits for each decode operation.
+  public convenience init(
+    configuration: XPCCodec.Configuration,
+    resourceLimits: ResourceLimits = .standard
+  ) {
     self.init(
       stringKeyStrategy: configuration.stringKeyStrategy.decodingStrategy,
-      stringValueStrategy: configuration.stringValueStrategy.decodingStrategy
+      stringValueStrategy: configuration.stringValueStrategy.decodingStrategy,
+      resourceLimits: resourceLimits
     )
   }
 
@@ -61,11 +77,19 @@ public final class XPCDecoder: TopLevelDecoder {
   public func decode<T>(
     _ type: T.Type,
     from input: Input
-  ) throws -> T where T : Decodable {
+  ) throws -> T where T: Decodable {
+    let decodingState = _XPCDecodingState(limits: resourceLimits)
+    try decodingState.prepareToVisit(
+      atDepth: 0,
+      codingPath: []
+    )
+
     let decoder = _XPCDecoder(
       stringKeyStrategy: stringKeyStrategy,
       stringValueStrategy: stringValueStrategy,
-      decoding: input
+      decoding: input,
+      decodingState: decodingState,
+      depth: 0
     )
 
     return try T(from: decoder)
@@ -77,7 +101,10 @@ public final class XPCDecoder: TopLevelDecoder {
 
 extension XPCDecoder: CustomStringConvertible {
   public var description: String {
-    "(string-keys: \(stringKeyStrategy), string-values: \(stringValueStrategy))"
+    """
+    (string-keys: \(stringKeyStrategy), string-values: \(stringValueStrategy), \
+    resource-limits: \(resourceLimits))
+    """
   }
 }
 
@@ -86,7 +113,13 @@ extension XPCDecoder: CustomStringConvertible {
 extension XPCDecoder: CustomDebugStringConvertible {
 
   public var debugDescription: String {
-    "XPCDecoder(stringKeyStrategy: \(stringKeyStrategy), stringValueStrategy: \(stringValueStrategy))"
+    """
+    XPCDecoder(
+      stringKeyStrategy: \(stringKeyStrategy),
+      stringValueStrategy: \(stringValueStrategy),
+      resourceLimits: \(resourceLimits.debugDescription)
+    )
+    """
   }
 
 }

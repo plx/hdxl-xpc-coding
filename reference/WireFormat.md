@@ -358,13 +358,41 @@ recursive propagation are tracked separately by
 XPC input can cross a privilege or trust boundary even when every peer is on
 one machine. Same-build scope does not weaken malformed-input handling.
 
-The decoder must apply finite, operation-local limits for nesting, container
-elements, visited nodes, individual string/data bytes, and cumulative bytes.
-It must reject cycles or bound them before stack exhaustion. Checks occur
-before recursion, enumeration, copying, or allocation. Exact standard limit
-values and public configuration will be added by
-[#9](https://github.com/plx/hdxl-xpc-coding/issues/9); changing those values
-does not create a payload-format version.
+`XPCDecoder.ResourceLimits.standard` applies these finite ceilings independently
+to every top-level decode:
+
+| Resource | Standard maximum |
+| --- | ---: |
+| recursive decoding transitions below the root | 128 |
+| elements in one XPC array or dictionary | 65,536 |
+| total XPC-object visits, including the root | 262,144 |
+| encoded bytes in one XPC string, data-backed string, or dictionary key | 8 MiB |
+| bytes in one XPC data value decoded as data or a data-backed primitive | 32 MiB |
+| cumulative decoded string, data, and dictionary-key bytes | 64 MiB |
+
+These values leave generous room for application-owned local IPC messages while
+placing finite ceilings below process-exhaustion territory. Applications with a
+deliberately different local message-size policy can construct custom limits
+and pass them to `XPCDecoder`. Every field is nonnegative, and the total-node
+maximum is at least one because the root consumes one visit.
+
+One shared state object performs constant-time accounting as decoding touches
+the graph. There is no graph prewalk, object-identity set, envelope, or
+per-payload version field. The decoder snapshots the configured limits at the
+start of each operation; child decoders share that snapshot and separate
+top-level operations do not share counters.
+
+Checks occur before recursive decoding, container enumeration, or string/data
+copying and allocation. Dictionary keys are byte-checked when a keyed container
+is requested, before `allKeys` can allocate Swift strings. A recursive generic
+single-value decode counts as another nesting transition even when it
+reinterprets the same XPC object.
+
+Node and byte budgets measure work, not unique object identities. Repeated
+traversal consumes them again, so shared acyclic children remain valid while
+self-cycles and multi-object cycles are bounded by the nesting ceiling. A
+decoder's limits are local behavior: they need not match the encoder or peer,
+are not serialized, and changing them does not create a payload-format version.
 
 Errors follow this taxonomy at every root and container position:
 
@@ -399,7 +427,7 @@ implementation state. A deviation is not a legacy input promise.
 | enhanced raw binary and element helpers | output shape and pointer/count validation match the contract | [#11](https://github.com/plx/hdxl-xpc-coding/issues/11) and fixture coverage in [#25](https://github.com/plx/hdxl-xpc-coding/issues/25) |
 | percent escaping | corrected bijection is implemented | [#7](https://github.com/plx/hdxl-xpc-coding/issues/7) |
 | strict external XPC string/key UTF-8 | current decoding can repair malformed UTF-8 | [#16](https://github.com/plx/hdxl-xpc-coding/issues/16) |
-| decoder budgets and cycles | finite shared budgets are not implemented | [#9](https://github.com/plx/hdxl-xpc-coding/issues/9) |
+| decoder budgets and cycles | finite operation-local budgets share counters across child paths; depth accounting bounds cycles without rejecting shared acyclic children | regression coverage and [#9](https://github.com/plx/hdxl-xpc-coding/issues/9) |
 | decoder error taxonomy | several wrong-kind/null/container cases are misclassified | [#18](https://github.com/plx/hdxl-xpc-coding/issues/18) |
 | referencing/super encoders | repeated-container reuse can lose data | [#10](https://github.com/plx/hdxl-xpc-coding/issues/10) |
 | codec configuration ownership | mutable stored coder references can diverge | [#21](https://github.com/plx/hdxl-xpc-coding/issues/21) |

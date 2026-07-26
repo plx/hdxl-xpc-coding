@@ -302,10 +302,15 @@ struct SupportAndErrorCoverageTests {
     // Codable paths usually fail earlier through dictionary extraction helpers,
     // so the container initializers and required-object lookup need explicit
     // coverage.
+    let root = xpc_dictionary_create(nil, nil, 0)
+    let decodingState = _XPCDecodingState(limits: .standard)
+    try decodingState.prepareToVisit(atDepth: 0, codingPath: [])
     let decoder = _XPCDecoder(
       stringKeyStrategy: .percentEscape,
       stringValueStrategy: .percentEscape,
-      decoding: xpc_dictionary_create(nil, nil, 0)
+      decoding: root,
+      decodingState: decodingState,
+      depth: 0
     )
 
     #expect(throws: DecodingError.self) {
@@ -354,11 +359,19 @@ struct SupportAndErrorCoverageTests {
   func `generated decoding containers report structural errors`() throws {
     for probe in generatedSupportProbes(count: 32) {
       let codingPathKey = SupportCoverageKey(stringValue: probe.key)!
+      let root = xpc_dictionary_create(nil, nil, 0)
+      let decodingState = _XPCDecodingState(limits: .standard)
+      try decodingState.prepareToVisit(
+        atDepth: 0,
+        codingPath: [codingPathKey]
+      )
       let decoder = _XPCDecoder(
         stringKeyStrategy: .percentEscape,
         stringValueStrategy: .percentEscape,
-        decoding: xpc_dictionary_create(nil, nil, 0),
-        at: [codingPathKey]
+        decoding: root,
+        at: [codingPathKey],
+        decodingState: decodingState,
+        depth: 0
       )
 
       #expect(throws: DecodingError.self) {

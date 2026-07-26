@@ -25,6 +25,14 @@ internal final class _XPCDecoder: Decoder {
   /// The current coding path.
   @usableFromInline
   internal var codingPath: [CodingKey]
+
+  /// The shared resource accounting for this top-level decode operation.
+  @usableFromInline
+  internal let decodingState: _XPCDecodingState
+
+  /// The recursive decoding depth of `underlyingMessage` below the root object.
+  @usableFromInline
+  internal let depth: Int
     
   @usableFromInline
   internal var userInfo: [CodingUserInfoKey : Any] = [:]
@@ -35,15 +43,19 @@ internal final class _XPCDecoder: Decoder {
     stringValueStrategy: StringValueStrategy,
     decoding message: xpc_object_t,
     at codingPath: [CodingKey] = [],
-    userInfo: [CodingUserInfoKey : Any] = [:]
+    userInfo: [CodingUserInfoKey : Any] = [:],
+    decodingState: _XPCDecodingState,
+    depth: Int
   ) {
     self.stringKeyStrategy = stringKeyStrategy
     self.stringValueStrategy = stringValueStrategy
     self.underlyingMessage = message
     self.codingPath = codingPath
     self.userInfo = userInfo
+    self.decodingState = decodingState
+    self.depth = depth
   }
-  
+
   // MARK: - Decoder
 
   @usableFromInline
@@ -53,7 +65,8 @@ internal final class _XPCDecoder: Decoder {
     let container = try XPCKeyedDecodingContainer<Key>(
       referencing: self,
       wrapping: underlyingMessage,
-      codingPath: codingPath
+      codingPath: codingPath,
+      depth: depth
     )
     return KeyedDecodingContainer(container)
   }
@@ -63,7 +76,8 @@ internal final class _XPCDecoder: Decoder {
     try XPCUnkeyedDecodingContainer(
       referencing: self,
       wrapping: underlyingMessage,
-      codingPath: codingPath
+      codingPath: codingPath,
+      depth: depth
     )
   }
   
@@ -72,7 +86,8 @@ internal final class _XPCDecoder: Decoder {
     XPCSingleValueDecodingContainer(
       referencing: self,
       wrapping: underlyingMessage,
-      codingPath: codingPath
+      codingPath: codingPath,
+      depth: depth
     )
   }
   
@@ -81,6 +96,159 @@ internal final class _XPCDecoder: Decoder {
 // MARK: - Support API
 
 extension _XPCDecoder {
+
+  /// Validates and consumes a child-object traversal.
+  @usableFromInline
+  internal func prepareToVisitChild(
+    at codingPath: [any CodingKey],
+    depth: Int
+  ) throws {
+    try decodingState.prepareToVisit(
+      atDepth: depth,
+      codingPath: codingPath
+    )
+  }
+
+  /// Extracts an already-visited primitive, applying any data-byte limits first.
+  @usableFromInline
+  internal func extractVisitedValue<Value>(
+    _ valueType: Value.Type,
+    from object: xpc_object_t,
+    at codingPath: [any CodingKey]
+  ) throws -> Value where Value: XPCObjectExtractable {
+    if
+      valueType.associatedXPCObjectType == XPC_TYPE_DATA,
+      object.hasType(XPC_TYPE_DATA)
+    {
+      try decodingState.validateDataValue(
+        object,
+        codingPath: codingPath
+      )
+    }
+    return try object.extractValue(
+      ofType: valueType,
+      at: codingPath
+    )
+  }
+
+  /// Visits and extracts one child primitive.
+  @usableFromInline
+  internal func extractChildValue<Value>(
+    _ valueType: Value.Type,
+    from object: xpc_object_t,
+    at codingPath: [any CodingKey],
+    depth: Int
+  ) throws -> Value where Value: XPCObjectExtractable {
+    try prepareToVisitChild(
+      at: codingPath,
+      depth: depth
+    )
+    return try extractVisitedValue(
+      valueType,
+      from: object,
+      at: codingPath
+    )
+  }
+
+  /// Extracts an already-visited string after checking its encoded byte count.
+  @usableFromInline
+  internal func extractVisitedString(
+    from object: xpc_object_t,
+    at codingPath: [any CodingKey]
+  ) throws -> String {
+    try decodingState.validateStringValue(
+      object,
+      strategy: stringValueStrategy,
+      codingPath: codingPath
+    )
+    return try object.extractStringValue(
+      stringValueStrategy: stringValueStrategy,
+      at: codingPath
+    )
+  }
+
+  /// Visits and extracts one child string.
+  @usableFromInline
+  internal func extractChildString(
+    from object: xpc_object_t,
+    at codingPath: [any CodingKey],
+    depth: Int
+  ) throws -> String {
+    try prepareToVisitChild(
+      at: codingPath,
+      depth: depth
+    )
+    return try extractVisitedString(
+      from: object,
+      at: codingPath
+    )
+  }
+
+  /// Decodes an already-visited generic value without duplicating node accounting.
+  @usableFromInline
+  internal func decodeVisitedValue<T: Decodable>(
+    _ valueType: T.Type,
+    from object: xpc_object_t,
+    at codingPath: [any CodingKey],
+    depth: Int
+  ) throws -> T {
+    if valueType is String.Type {
+      let string = try extractVisitedString(
+        from: object,
+        at: codingPath
+      )
+      guard let value = string as? T else {
+        preconditionFailure("A String metatype must accept a String value.")
+      }
+      return value
+    }
+
+    if
+      let extractableType = valueType as? XPCObjectExtractable.Type,
+      object.hasType(extractableType.associatedXPCObjectType)
+    {
+      if extractableType.associatedXPCObjectType == XPC_TYPE_DATA {
+        try decodingState.validateDataValue(
+          object,
+          codingPath: codingPath
+        )
+      }
+      if let extractedValue = extractableType.extracting(from: object) as? T {
+        return extractedValue
+      }
+    }
+
+    return try T(
+      from: _XPCDecoder(
+        stringKeyStrategy: stringKeyStrategy,
+        stringValueStrategy: stringValueStrategy,
+        decoding: object,
+        at: codingPath,
+        decodingState: decodingState,
+        depth: depth
+      )
+    )
+  }
+
+  /// Visits and decodes one child generic value.
+  @usableFromInline
+  internal func decodeChildValue<T: Decodable>(
+    _ valueType: T.Type,
+    from object: xpc_object_t,
+    at codingPath: [any CodingKey],
+    depth: Int
+  ) throws -> T {
+    try prepareToVisitChild(
+      at: codingPath,
+      depth: depth
+    )
+    return try decodeVisitedValue(
+      valueType,
+      from: object,
+      at: codingPath,
+      depth: depth
+    )
+  }
 
   @inlinable
   internal func withTransientCodingPathElement<Key, R>(
@@ -104,4 +272,3 @@ extension _XPCDecoder {
   }
   
 }
-
