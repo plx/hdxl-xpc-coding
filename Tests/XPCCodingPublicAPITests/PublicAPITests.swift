@@ -36,6 +36,34 @@ struct PublicAPITests {
   }
 
   @Test
+  func `immutable codec is shareable from a plain import`() async throws {
+    let codec = XPCCodec(
+      configuration: .init(
+        stringKeyStrategy: .percentEscape,
+        stringValueStrategy: .percentEscape
+      )
+    )
+    requireSendable(codec)
+
+    try await withThrowingTaskGroup(of: Bool.self) { group in
+      for identifier in 0..<64 {
+        group.addTask {
+          let message = PublicMessage(
+            identifier: identifier,
+            metadata: ["route\u{0}%": "same-host\u{0}%\(identifier)"]
+          )
+          let object = try codec.encode(message)
+          return try codec.decode(PublicMessage.self, from: object) == message
+        }
+      }
+
+      for try await succeeded in group {
+        #expect(succeeded)
+      }
+    }
+  }
+
+  @Test
   func `explicit public strategies configure compatible facades`() throws {
     let encoder = XPCEncoder(
       stringKeyStrategy: .percentEscape,
@@ -161,6 +189,8 @@ private struct PublicMessage: Codable, Equatable {
   let identifier: Int
   let metadata: [String: String]
 }
+
+private func requireSendable<T: Sendable>(_: T) {}
 
 private enum PublicEnhancedEncodingError: Error {
   case missingSingleValueEnhancement

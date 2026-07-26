@@ -10,12 +10,16 @@ import Combine
 
 /// The entrypoint for *encoding* `Encodable` values into XPC objects.
 ///
-/// `XPCEncoder` conforms to `TopLevelEncoder`, which provides a standarized API 
+/// `XPCEncoder` conforms to `TopLevelEncoder`, which provides a standardized API
 /// for encoding top-level values into encoder's native output format (XPC objects, here).
-/// 
-/// This class is *not* an `Encoder` itself—it's a facade that handles provisinion 
-/// the actual underlying `Encoder`-conformaing object. 
-/// 
+///
+/// This class is *not* an `Encoder` itself—it's a facade that provisions the
+/// actual underlying `Encoder`-conforming object.
+///
+/// `XPCEncoder` is mutable and does not conform to `Sendable`. Keep each
+/// instance confined to one task. Share an immutable ``XPCCodec`` when
+/// concurrent operations need the same configuration.
+///
 /// ## Usage
 ///
 /// ```swift
@@ -64,7 +68,7 @@ public final class XPCEncoder: TopLevelEncoder {
   @inlinable
   public func encode<T>(
     _ value: T
-  ) throws -> Output where T : Encodable {
+  ) throws -> Output where T: Encodable {
     try _XPCEncoder.encode(
       value,
       stringKeyStrategy: stringKeyStrategy,

@@ -36,10 +36,20 @@ Aside from renaming, reorganization, and purely-stylistic changes, this package:
 `decode` operations always use the codec's declared configuration and do not
 retain mutable `XPCEncoder` or `XPCDecoder` instances.
 
+The codec conforms to `Sendable` through compiler-checked stored state and can
+be shared across tasks. Each operation snapshots its configuration and creates
+fresh operation-local implementation state. This adds no synchronization or
+format-versioning overhead.
+
 Call `makeEncoder()` or `makeDecoder()` when an operation needs a separately
 configurable facade. Each call returns a fresh instance. Reconfiguring that
 instance cannot affect the codec or a later factory result, and the
 reconfigured instance is not guaranteed to remain compatible with them.
+`XPCEncoder` and `XPCDecoder` are mutable, deliberately non-`Sendable`
+reference types; keep each instance confined to one task.
+
+Sharing a codec does not make an `xpc_object_t` Swift `Sendable`. Concurrent
+round trips should keep each XPC object within the task that produced it.
 
 See the [migration guide](reference/MigrationGuide.md) when updating code that
 previously accessed `codec.encoder` or `codec.decoder`.
