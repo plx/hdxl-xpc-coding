@@ -6,11 +6,17 @@ import XPC
 /// its behavior from that immutable value, so copying a codec does not share
 /// mutable encoder or decoder state.
 ///
+/// A codec is `Sendable` and can be shared across tasks. Every direct operation
+/// snapshots the configuration and creates fresh operation-local
+/// implementation state.
+///
 /// Use ``makeEncoder()`` or ``makeDecoder()`` when an operation needs a
 /// separately configurable facade. Every factory call returns a fresh instance
 /// with settings compatible with the codec. Mutating that instance affects only
 /// the instance; after reconfiguration, it is not necessarily compatible with
-/// the codec or with another factory result.
+/// the codec or with another factory result. `XPCEncoder` and `XPCDecoder` are
+/// mutable, non-`Sendable` reference types; keep each factory result confined to
+/// one task.
 ///
 /// ## Usage
 ///
@@ -23,7 +29,7 @@ import XPC
 /// let encoded = try codec.encode(myValue)
 /// let decoded = try codec.decode(MyType.self, from: encoded)
 /// ```
-public struct XPCCodec {
+public struct XPCCodec: Sendable {
 
   /// The sole persistent source of the codec's encoding and decoding behavior.
   public let configuration: Configuration

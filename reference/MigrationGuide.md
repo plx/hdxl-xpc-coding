@@ -5,6 +5,20 @@ package's first supported release. XPCCoding's same-host XPC object
 representation is not a persistent archive format or an independently
 versioned-peer protocol.
 
+## Unreleased: immutable codecs can be shared across tasks
+
+`XPCCodec` now conforms to `Sendable` through its compiler-checked immutable
+configuration. One explicitly configured codec can be captured by Swift
+concurrency tasks and used for parallel encoding and decoding. Every direct
+operation snapshots the configuration and creates fresh operation-local
+implementation state, so sharing adds no locks or other synchronization.
+
+The mutable `XPCEncoder` and `XPCDecoder` facade classes remain non-`Sendable`.
+Keep each instance within one task, or create a fresh facade for another task.
+Sharing an `XPCCodec` does not make the `xpc_object_t` produced by an operation
+Swift `Sendable`; keep that object within the producing task during concurrent
+round trips.
+
 ## Unreleased: `XPCCodec` owns configuration, not coders
 
 `XPCCodec` previously exposed stored `encoder` and `decoder` reference

@@ -11,6 +11,10 @@ import Combine
 /// `XPCDecoder` conforms to `TopLevelDecoder` and provides a direct API for decoding
 /// `xpc_object_t` values into a `Decodable` Swift type.
 ///
+/// `XPCDecoder` is mutable and does not conform to `Sendable`. Keep each
+/// instance confined to one task. Share an immutable ``XPCCodec`` when
+/// concurrent operations need the same configuration.
+///
 /// ## Usage
 ///
 /// ```swift
