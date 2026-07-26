@@ -101,5 +101,11 @@ expect_typecheck_failure \
   "internal encoder module boundary" \
   "cannot find '_XPCEncoder' in scope"
 
+expect_typecheck_failure \
+  "${consumer_directory}/CompileFailProbes/MutableFacadesAreNotSendable.swift" \
+  "mutable facade task confinement" \
+  "type 'XPCEncoder' does not conform to the 'Sendable' protocol" \
+  "type 'XPCDecoder' does not conform to the 'Sendable' protocol"
+
 printf '%s\n' \
-  "Verified plain-import tests, external consumer execution, expected issue #30 failures, and internal API rejection."
+  "Verified plain-import tests, external consumer execution, expected issue #30 failures, mutable facade task confinement, and internal API rejection."

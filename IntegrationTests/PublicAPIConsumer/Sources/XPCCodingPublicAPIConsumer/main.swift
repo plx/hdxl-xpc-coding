@@ -4,7 +4,7 @@ import XPCCoding
 @main
 struct XPCCodingPublicAPIConsumer {
 
-  static func main() throws {
+  static func main() async throws {
     let message = ConsumerMessage(
       identifier: 29,
       metadata: ["route\u{0}%": "same-host\u{0}%"]
@@ -38,8 +38,33 @@ struct XPCCodingPublicAPIConsumer {
       configuration: configuration,
       message: message
     )
+    try await exerciseSharedCodec(configuration: configuration)
     try exerciseTransientEncoder(configuration: configuration)
     try exerciseEnhancedAPI(configuration: configuration)
+  }
+
+  private static func exerciseSharedCodec(
+    configuration: XPCCodec.Configuration
+  ) async throws {
+    let codec = XPCCodec(configuration: configuration)
+    requireSendable(codec)
+
+    try await withThrowingTaskGroup(of: Bool.self) { group in
+      for identifier in 0..<64 {
+        group.addTask {
+          let message = ConsumerMessage(
+            identifier: identifier,
+            metadata: ["route\u{0}%": "same-host\u{0}%\(identifier)"]
+          )
+          let object = try codec.encode(message)
+          return try codec.decode(ConsumerMessage.self, from: object) == message
+        }
+      }
+
+      for try await succeeded in group where !succeeded {
+        throw ConsumerFailure.roundTripMismatch
+      }
+    }
   }
 
   private static func exerciseExplicitFacades(
@@ -141,6 +166,8 @@ private struct ConsumerMessage: Codable, Equatable {
   let identifier: Int
   let metadata: [String: String]
 }
+
+private func requireSendable<T: Sendable>(_: T) {}
 
 private struct ConsumerSingleValueBinaryPayload: Encodable {
   let bytes: [UInt8]
