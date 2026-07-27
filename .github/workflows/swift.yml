@@ -141,6 +141,29 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  api-stability:
+    name: Source API stability (Xcode 26.6)
+    runs-on: macos-26
+    # The digester builds twice from a cold cache (pinned baseline checkout plus
+    # the working tree), so this gets the same budget as the multi-build jobs.
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          clean: true
+          persist-credentials: false
+          # The pinned API baseline revision has to be resolvable from the
+          # object database, which the default shallow fetch does not provide.
+          fetch-depth: 0
+
+      - name: Verify the supported toolchain and manifest
+        run: bash Scripts/verify-support-policy.sh
+
+      - name: Diff the public API against the pinned hardened baseline
+        run: bash Scripts/verify-api-stability.sh
+
   fuzzing-smoke:
     name: Deterministic fuzzing smoke (Xcode 26.6)
     runs-on: macos-26
