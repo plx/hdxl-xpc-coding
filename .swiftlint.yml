@@ -1,20 +1,35 @@
+# SwiftLint 0.65.0 is required. See reference/SwiftLint.md.
+
 disabled_rules:
+  # swift-format is the sole owner of whitespace and layout.
+  - colon
+  - comma
+  - function_name_whitespace
+  - leading_whitespace
   - line_length # handled by swift-format
+  - opening_brace # handled by swift-format
+  - statement_position # handled by swift-format
+  - switch_case_on_newline # handled by swift-format
   - trailing_comma # handled by swift-format
   - trailing_newline # handled by swift-format
   - trailing_whitespace # handled by swift-format
-  - opening_brace # handled by swift-format
   - vertical_whitespace # handled by swift-format
-  - statement_position # handled by swift-format
+
+  # Project policy: these rules either reject intentional API/test shapes or
+  # impose size preferences that are reviewed structurally instead.
+  - file_length # files should be short, but a universal line cap is not useful
+  - for_where # nested control flow is sometimes clearer at the use site
+  - function_body_length # complexity is gated separately below
+  - function_parameter_count # Codable and fixture signatures can be inherently wide
+  - implicit_optional_initialization # explicit `= nil` is clearer at state boundaries
+  - large_tuple # tuple width is reviewed at the declaration
+  - todo # TODO/FIXME policy is exposed through the dedicated blocking recipe
   - type_body_length # disagree
   - unneeded_synthesized_initializer # dubious when you need inlinability
-  - todo # disagree this even deserves a warning (under normal use)
-  - implicit_optional_initialization # dislike Swift's default behavior
-  - large_tuple
-  - for_where
-  - function_body_length # too sensitive for some macros and not worth re-configuring here
-  - function_parameter_count # too sensitive for some macro code, not worth doing on a file-by-file basis
-  - file_length # files should be short, but don't like this limit and not going to do granular re-configuration here
+
+  # Codable implementations deliberately catch and propagate/wrap arbitrary
+  # user-thrown errors; requiring a downcast would misstate that contract.
+  - untyped_error_in_catch
 
 opt_in_rules:
   - array_init # Array(seq) instead of seq.map { $0 }
@@ -48,11 +63,8 @@ opt_in_rules:
   - last_where
   - reduce_into
   - redundant_nil_coalescing
-  - redundant_self_in_closure
   - static_operator
-  - switch_case_on_newline
   - yoda_condition
-  - untyped_error_in_catch
   - unowned_variable_capture
   - unneeded_parentheses_in_closure_argument
   - unhandled_throwing_task
@@ -72,6 +84,7 @@ excluded:
 identifier_name:
   max_length: 60
   excluded:
+    - N # fixed-size InlineArray generic value parameter
     - id
     - op
     - i
@@ -87,3 +100,10 @@ type_name:
     - ID
     - Key
   allowed_symbols: ["_"]
+
+# Keep a meaningful complexity gate without rejecting small exhaustive
+# representation switches. SwiftLint's defaults (10/20) flag reviewed
+# functions with 11–16 branches.
+cyclomatic_complexity:
+  warning: 20
+  error: 30

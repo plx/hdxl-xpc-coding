@@ -35,7 +35,7 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   
   /// The closure we use to insert the encoded value into the parent encoder's XPC object.
   @usableFromInline
-  internal let insertionClosure: (xpc_object_t) throws -> ()
+  internal let insertionClosure: (xpc_object_t) throws -> Void
   
   // MARK: - Initialization
 
@@ -49,7 +49,7 @@ internal struct XPCSingleValueEncodingContainer: SingleValueEncodingContainer {
   internal init(
     referencing encoder: _XPCEncoder,
     codingPath: [any CodingKey],
-    insertionClosure: @escaping (xpc_object_t) throws -> ()
+    insertionClosure: @escaping (xpc_object_t) throws -> Void
   ) {
     self.encoder = encoder
     self.codingPath = codingPath

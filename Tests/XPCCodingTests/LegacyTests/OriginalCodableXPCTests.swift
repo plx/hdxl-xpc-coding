@@ -219,7 +219,7 @@ private struct `Original CodableXPC Tests` {
 // MARK: - Support Types
 
 
-fileprivate struct EncodeFailure : Encodable {
+private struct EncodeFailure : Encodable {
   enum Failure: Error {
     case Failure
   }
@@ -237,7 +237,7 @@ fileprivate struct EncodeFailure : Encodable {
   }
 }
 
-fileprivate struct EncodeFailureNested : Encodable {
+private struct EncodeFailureNested : Encodable {
   var nestedValue: EncodeFailure
 }
 

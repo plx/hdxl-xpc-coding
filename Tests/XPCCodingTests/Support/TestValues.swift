@@ -31,7 +31,7 @@ extension String {
     """
   ]
   
-  static let exampleValues: [Self] = nullFreeExampleValues // TODO: emoji, examples with null, etc.
+  static let exampleValues: [Self] = nullFreeExampleValues
   
 }
 

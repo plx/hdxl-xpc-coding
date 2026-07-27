@@ -10,6 +10,6 @@ extension UUID {
     UUID(uuidString: "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF")!
   ]
 
-  static let optionalTestExamples: [Self?] = [nil] + testExamples.map { $0 }
+  static let optionalTestExamples: [Self?] = [nil] + testExamples.map(Optional.some)
 
 }

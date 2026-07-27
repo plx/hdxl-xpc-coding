@@ -123,7 +123,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       )
       
       if foundValue.decodeNil(at: codingPath) {
-        self.currentIndex += 1
+        currentIndex += 1
         return true
       }
       return false

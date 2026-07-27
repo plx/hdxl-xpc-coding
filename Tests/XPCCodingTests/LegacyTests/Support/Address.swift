@@ -19,7 +19,7 @@ struct Address : Codable, Equatable {
   }
   
   static var testValue: Address {
-    return Address(
+    Address(
       street: "1 Infinite Loop",
       city: "Cupertino",
       state: "CA",

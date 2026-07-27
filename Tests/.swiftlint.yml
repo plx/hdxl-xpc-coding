@@ -1,0 +1,66 @@
+# Swift Testing permits descriptive backticked suite and test names. These
+# refinements apply only below Tests/; production declarations retain the root
+# naming rules.
+
+disabled_rules:
+  # SwiftLint child lists replace rather than append to the root list, so the
+  # reviewed project-wide exceptions are repeated explicitly here.
+  - colon
+  - comma
+  - file_length
+  - for_where
+  - function_body_length
+  - function_name_whitespace
+  - function_parameter_count
+  - implicit_optional_initialization
+  - large_tuple
+  - leading_whitespace
+  - line_length
+  - opening_brace
+  - statement_position
+  - switch_case_on_newline
+  - todo
+  - trailing_comma
+  - trailing_newline
+  - trailing_whitespace
+  - type_body_length
+  - unneeded_synthesized_initializer
+  - untyped_error_in_catch
+  - vertical_whitespace
+
+  # Tests use force unwraps only for fixed literals and values proven valid by
+  # construction. Production code retains the force_unwrapping opt-in rule.
+  - force_unwrapping
+
+identifier_name:
+  min_length: 3
+  max_length: 60
+  excluded:
+    - "`.*`" # Swift Testing descriptive suite/test identifiers
+    - Failure # legacy fixture case preserved for compatibility
+    - N
+    - id
+    - op
+    - i
+    - j
+    - a
+    - b
+    - c
+    - d
+    - e
+    - f
+    - g
+    - "on"
+  allowed_symbols: ["_"]
+
+type_name:
+  min_length: 4
+  max_length: 60
+  excluded:
+    - ID
+    - Key
+  allowed_symbols: ["_", " ", "-"]
+
+cyclomatic_complexity:
+  warning: 20
+  error: 30

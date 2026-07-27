@@ -216,7 +216,7 @@ private func primitiveRepresentationFixtures() -> [RepresentationFixture] {
     ),
     representationFixture(
       name: "primitive/optional-some",
-      value: Optional<Int>.some(7),
+      value: Int?.some(7),
       expectedStructure: .int64(7)
     ),
     representationFixture(

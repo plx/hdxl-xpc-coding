@@ -231,7 +231,8 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   internal mutating func superEncoder() -> Encoder {
     do {
       return try withNextCodingKey { codingPath in
-        // TODO: investigate if we can refactor so as to avoid injecting this placeholder value
+        // Reserve the destination index before returning; the referencing
+        // encoder replaces this placeholder when it completes.
         xpc_array_append_value(underlyingXPCArray, xpc_null_create())
         return _XPCArrayReferencingEncoder(
           stringKeyStrategy: stringKeyStrategy,

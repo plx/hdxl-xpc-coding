@@ -51,7 +51,8 @@ extension UnkeyedEncodingContainer {
         let unsafeRawPointer,
         count > 0
       else {
-        return try encode(Data())
+        try encode(Data())
+        return
       }
       try encode(
         Data(
@@ -99,7 +100,8 @@ extension UnkeyedEncodingContainer {
         let unsafeMutableRawPointer,
         count > 0
       else {
-        return try encode(Data())
+        try encode(Data())
+        return
       }
       try encode(
         Data(
@@ -128,9 +130,10 @@ extension UnkeyedEncodingContainer {
     case .none:
       guard
         let baseAddress = unsafeRawBufferPointer.baseAddress,
-        unsafeRawBufferPointer.count > 0
+        !unsafeRawBufferPointer.isEmpty
       else {
-        return try encode(Data())
+        try encode(Data())
+        return
       }
       try encode(
         Data(
@@ -159,9 +162,10 @@ extension UnkeyedEncodingContainer {
     case .none:
       guard
         let baseAddress = unsafeMutableRawBufferPointer.baseAddress,
-        unsafeMutableRawBufferPointer.count > 0
+        !unsafeMutableRawBufferPointer.isEmpty
       else {
-        return try encode(Data())
+        try encode(Data())
+        return
       }
       try encode(
         Data(

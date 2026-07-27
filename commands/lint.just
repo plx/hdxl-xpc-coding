@@ -16,7 +16,7 @@ check-sources reporter=EMOJI_REPORTER: (_swiftlint reporter justfile_directory()
 
 # check (tests)
 [group('check')]
-check-tests reporter=EMOJI_REPORTER: (_swiftlint reporter  justfile_directory() / "Tests")
+check-tests reporter=EMOJI_REPORTER: (_swiftlint reporter justfile_directory() / "Tests")
 
 # check (all)
 [group('check')]
@@ -24,15 +24,15 @@ check-all reporter=EMOJI_REPORTER: (check-sources reporter) (check-tests reporte
 
 # summarize (single-file)
 [group('summarize')]
-summarize-file file: (_swiftlint SUMMARY_REPORTER file)
+summarize-file file: (_swiftlint-summary SUMMARY_REPORTER file)
 
 # summarize (sources)
 [group('summarize')]
-summarize-sources: (_swiftlint SUMMARY_REPORTER justfile_directory() / "Sources")
+summarize-sources: (_swiftlint-summary SUMMARY_REPORTER justfile_directory() / "Sources")
 
 # summarize (tests)
 [group('summarize')]
-summarize-tests: (_swiftlint SUMMARY_REPORTER justfile_directory() / "Tests/")
+summarize-tests: (_swiftlint-summary SUMMARY_REPORTER justfile_directory() / "Tests/")
 
 # summarize (all)
 [group('summarize')]

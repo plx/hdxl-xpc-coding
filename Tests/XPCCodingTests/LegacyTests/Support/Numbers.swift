@@ -27,7 +27,7 @@ struct Numbers : Codable, Equatable {
   }
   
   static var testValue: Numbers {
-    return Numbers()
+    Numbers()
   }
   
   static let testValues: [Self] = [testValue]
