@@ -440,7 +440,7 @@ implementation state. A deviation is not a legacy input promise.
 | referencing/super encoders | repeated-container reuse can lose data | [#10](https://github.com/plx/hdxl-xpc-coding/issues/10) |
 | codec configuration ownership | mutable stored coder references can diverge | [#21](https://github.com/plx/hdxl-xpc-coding/issues/21) |
 | independent structural fixtures | bidirectional, deterministic fixtures inspect encoder output and construct decoder input without sharing codec implementation | [`RepresentationFixtureTests.swift`](../Tests/XPCCodingTests/Fixtures/RepresentationFixtureTests.swift) and [`XPCStructuralFixture.swift`](../Tests/XPCCodingTests/Fixtures/XPCStructuralFixture.swift) |
-| real local process-boundary validation | absent | [#26](https://github.com/plx/hdxl-xpc-coding/issues/26) |
+| real local process-boundary validation | a co-built application and embedded service inspect physical peer-side shapes and complete bounded request/reply and remote-error exchanges | [`XPCProcessBoundary`](../IntegrationTests/XPCProcessBoundary/README.md) and [#26](https://github.com/plx/hdxl-xpc-coding/issues/26) |
 | library-owned versioned envelope | intentionally absent and out of scope | [#24](https://github.com/plx/hdxl-xpc-coding/issues/24) |
 
 ## Fixture derivation rules

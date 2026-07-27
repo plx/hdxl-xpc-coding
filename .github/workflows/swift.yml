@@ -69,6 +69,24 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  xpc-process-boundary:
+    name: Same-host XPC request/reply (Xcode 26.6)
+    runs-on: macos-26
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          clean: true
+          persist-credentials: false
+
+      - name: Verify the supported toolchain and manifest
+        run: bash Scripts/verify-support-policy.sh
+
+      - name: Run the real same-host XPC process-boundary fixture
+        run: bash Scripts/run-xpc-integration.sh
+
   address-sanitizer:
     name: Address Sanitizer (Xcode 26.6)
     runs-on: macos-26
