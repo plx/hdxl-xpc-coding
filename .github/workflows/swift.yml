@@ -87,6 +87,73 @@ jobs:
       - name: Run the real same-host XPC process-boundary fixture
         run: bash Scripts/run-xpc-integration.sh
 
+  baseline-evidence:
+    name: Regression-first baseline evidence (Xcode 26.6)
+    runs-on: macos-26
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          clean: true
+          persist-credentials: false
+          # The pinned audit revision has to be resolvable from the object
+          # database, which the default shallow fetch does not provide.
+          fetch-depth: 0
+
+      - name: Verify the supported toolchain and manifest
+        run: bash Scripts/verify-support-policy.sh
+
+      - name: Prove the audited defects reproduce at 813c52e and not in this tree
+        run: |
+          set -o pipefail
+          bash Scripts/run-baseline-evidence.sh \
+            2>&1 | tee "${RUNNER_TEMP}/baseline-evidence.log"
+
+      - name: Upload the baseline evidence transcript
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: baseline-evidence-xcode-26.6
+          path: ${{ runner.temp }}/baseline-evidence.log
+          if-no-files-found: error
+          retention-days: 14
+
+  fuzzing-smoke:
+    name: Deterministic fuzzing smoke (Xcode 26.6)
+    runs-on: macos-26
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          clean: true
+          persist-credentials: false
+
+      - name: Verify the supported toolchain and manifest
+        run: bash Scripts/verify-support-policy.sh
+
+      - name: Run the bounded deterministic fuzzing smoke campaign
+        env:
+          XPCCODING_FUZZING_ARTIFACTS: ${{ runner.temp }}/fuzzing-smoke
+        run: |
+          set -o pipefail
+          bash Scripts/run-fuzzing-smoke.sh \
+            2>&1 | tee "${RUNNER_TEMP}/fuzzing-smoke.log"
+
+      - name: Upload the fuzzing smoke report and any counterexamples
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: fuzzing-smoke-xcode-26.6
+          path: |
+            ${{ runner.temp }}/fuzzing-smoke.log
+            ${{ runner.temp }}/fuzzing-smoke
+          if-no-files-found: error
+          retention-days: 14
+
   address-sanitizer:
     name: Address Sanitizer (Xcode 26.6)
     runs-on: macos-26

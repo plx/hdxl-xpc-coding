@@ -1,0 +1,254 @@
+[
+  {
+    "id" : "models/hostile-strings/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "model" : {
+        "_0" : {
+          "strategy" : "percentEscape",
+          "value" : {
+            "child" : {
+              "enabled" : true,
+              "label" : "child\u0000%"
+            },
+            "data" : "AP8lAA==",
+            "dictionary" : {
+              "" : 5,
+              "%" : 2,
+              "%00" : 1,
+              "a" : 0,
+              "a\u0000b" : -1,
+              "é" : 3
+            },
+            "floatingPoint" : -0.5,
+            "numbers" : [
+              -2147483648,
+              -1,
+              0,
+              1,
+              2147483647
+            ],
+            "signed" : -9223372036854775808,
+            "string" : "a\u0000b%25%́🚀",
+            "unsigned" : 18446744073709551615
+          }
+        }
+      }
+    },
+    "seed" : 3197359268225263996
+  },
+  {
+    "id" : "models/empty/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "model" : {
+        "_0" : {
+          "strategy" : "percentEscape",
+          "value" : {
+            "data" : "",
+            "dictionary" : {
+
+            },
+            "floatingPoint" : 0,
+            "numbers" : [
+
+            ],
+            "signed" : 0,
+            "string" : "",
+            "unsigned" : 0
+          }
+        }
+      }
+    },
+    "seed" : 763584150116441040
+  },
+  {
+    "id" : "models/hostile-strings/dataUTF8",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "model" : {
+        "_0" : {
+          "strategy" : "dataUTF8",
+          "value" : {
+            "child" : {
+              "enabled" : true,
+              "label" : "child\u0000%"
+            },
+            "data" : "AP8lAA==",
+            "dictionary" : {
+              "" : 5,
+              "%" : 2,
+              "%00" : 1,
+              "a" : 0,
+              "a\u0000b" : -1,
+              "é" : 3
+            },
+            "floatingPoint" : -0.5,
+            "numbers" : [
+              -2147483648,
+              -1,
+              0,
+              1,
+              2147483647
+            ],
+            "signed" : -9223372036854775808,
+            "string" : "a\u0000b%25%́🚀",
+            "unsigned" : 18446744073709551615
+          }
+        }
+      }
+    },
+    "seed" : 4754099802945014781
+  },
+  {
+    "id" : "models/empty/dataUTF8",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "model" : {
+        "_0" : {
+          "strategy" : "dataUTF8",
+          "value" : {
+            "data" : "",
+            "dictionary" : {
+
+            },
+            "floatingPoint" : 0,
+            "numbers" : [
+
+            ],
+            "signed" : 0,
+            "string" : "",
+            "unsigned" : 0
+          }
+        }
+      }
+    },
+    "seed" : 9907113066239722113
+  },
+  {
+    "id" : "models/hostile-strings/dataUTF16",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "model" : {
+        "_0" : {
+          "strategy" : "dataUTF16",
+          "value" : {
+            "child" : {
+              "enabled" : true,
+              "label" : "child\u0000%"
+            },
+            "data" : "AP8lAA==",
+            "dictionary" : {
+              "" : 5,
+              "%" : 2,
+              "%00" : 1,
+              "a" : 0,
+              "a\u0000b" : -1,
+              "é" : 3
+            },
+            "floatingPoint" : -0.5,
+            "numbers" : [
+              -2147483648,
+              -1,
+              0,
+              1,
+              2147483647
+            ],
+            "signed" : -9223372036854775808,
+            "string" : "a\u0000b%25%́🚀",
+            "unsigned" : 18446744073709551615
+          }
+        }
+      }
+    },
+    "seed" : 7379097827550319692
+  },
+  {
+    "id" : "models/empty/dataUTF16",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "model" : {
+        "_0" : {
+          "strategy" : "dataUTF16",
+          "value" : {
+            "data" : "",
+            "dictionary" : {
+
+            },
+            "floatingPoint" : 0,
+            "numbers" : [
+
+            ],
+            "signed" : 0,
+            "string" : "",
+            "unsigned" : 0
+          }
+        }
+      }
+    },
+    "seed" : 8720633506771659008
+  },
+  {
+    "id" : "models/hostile-strings/dataUTF32",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "model" : {
+        "_0" : {
+          "strategy" : "dataUTF32",
+          "value" : {
+            "child" : {
+              "enabled" : true,
+              "label" : "child\u0000%"
+            },
+            "data" : "AP8lAA==",
+            "dictionary" : {
+              "" : 5,
+              "%" : 2,
+              "%00" : 1,
+              "a" : 0,
+              "a\u0000b" : -1,
+              "é" : 3
+            },
+            "floatingPoint" : -0.5,
+            "numbers" : [
+              -2147483648,
+              -1,
+              0,
+              1,
+              2147483647
+            ],
+            "signed" : -9223372036854775808,
+            "string" : "a\u0000b%25%́🚀",
+            "unsigned" : 18446744073709551615
+          }
+        }
+      }
+    },
+    "seed" : 7377290230433919258
+  },
+  {
+    "id" : "models/empty/dataUTF32",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "model" : {
+        "_0" : {
+          "strategy" : "dataUTF32",
+          "value" : {
+            "data" : "",
+            "dictionary" : {
+
+            },
+            "floatingPoint" : 0,
+            "numbers" : [
+
+            ],
+            "signed" : 0,
+            "string" : "",
+            "unsigned" : 0
+          }
+        }
+      }
+    },
+    "seed" : 8718799521376181510
+  }
+]

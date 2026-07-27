@@ -1,0 +1,455 @@
+[
+  {
+    "id" : "keys/collision-0/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "a\u0000b",
+            "a"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 8141651660812867454
+  },
+  {
+    "id" : "keys/collision-0/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "a\u0000b",
+            "a"
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 6413780708388707423
+  },
+  {
+    "id" : "keys/collision-1/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "\u0000",
+            ""
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 15252271737915586597
+  },
+  {
+    "id" : "keys/collision-1/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "\u0000",
+            ""
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 4836139657439612702
+  },
+  {
+    "id" : "keys/collision-2/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "%00",
+            "\u0000"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 17111562032459125748
+  },
+  {
+    "id" : "keys/collision-2/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "%00",
+            "\u0000"
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 4125712489127950121
+  },
+  {
+    "id" : "keys/collision-3/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "a%00b",
+            "a\u0000b"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 1070879282420785467
+  },
+  {
+    "id" : "keys/collision-3/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "a%00b",
+            "a\u0000b"
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 9351169669000547960
+  },
+  {
+    "id" : "keys/collision-4/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "%25",
+            "%"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 11403539821170645026
+  },
+  {
+    "id" : "keys/collision-4/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "%25",
+            "%"
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 861186634107452923
+  },
+  {
+    "id" : "keys/collision-5/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "%2500",
+            "%00"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 7415582157486678617
+  },
+  {
+    "id" : "keys/collision-5/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "%2500",
+            "%00"
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 13878226759222420298
+  },
+  {
+    "id" : "keys/collision-6/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "trail\u0000",
+            "trail"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 10296726295075616248
+  },
+  {
+    "id" : "keys/collision-6/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "trail\u0000",
+            "trail"
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 10987454435322352501
+  },
+  {
+    "id" : "keys/collision-7/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "\u0000lead",
+            ""
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 14316878887174757327
+  },
+  {
+    "id" : "keys/collision-7/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "\u0000lead",
+            ""
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 4739215049983425140
+  },
+  {
+    "id" : "keys/collision-8/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "a\u0000b",
+            "a\u0000c",
+            "a"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 8251883112774758454
+  },
+  {
+    "id" : "keys/collision-8/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "a\u0000b",
+            "a\u0000c",
+            "a"
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 9905999016931258007
+  },
+  {
+    "id" : "keys/collision-9/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "é",
+            "é\u0000́"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 3232555647831864893
+  },
+  {
+    "id" : "keys/collision-9/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "é",
+            "é\u0000́"
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 16290411267987867606
+  },
+  {
+    "id" : "keys/collision-10/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "é",
+            "é\u0000x"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 15649098687593403157
+  },
+  {
+    "id" : "keys/collision-10/assumeAbsent",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "é",
+            "é\u0000x"
+          ],
+          "strategy" : "assumeAbsent"
+        }
+      }
+    },
+    "seed" : 8696259336399724270
+  },
+  {
+    "id" : "keys/audit-corpus/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "",
+            "plain",
+            "%",
+            "%0",
+            "%00",
+            "%25",
+            "%41",
+            "%GG",
+            "100%",
+            "a%20b",
+            "a%00b",
+            "a\u0000b",
+            "%́",
+            "x%́41"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 4397410241070131085
+  },
+  {
+    "id" : "keys/combining-marks/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "é",
+            "é",
+            "́",
+            "%́",
+            "x%́41",
+            "á̧",
+            "q̈̄",
+            "\u0000́"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 3512016964884986506
+  },
+  {
+    "id" : "keys/unicode-planes/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "plain",
+            "ASCII~!@#",
+            "中文",
+            "Ωμέγα",
+            "🚀",
+            "𝄞",
+            "🇺🇳",
+            "é",
+            "é"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 2977697078321486130
+  },
+  {
+    "id" : "keys/literal-percent/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "keyCollision" : {
+        "_0" : {
+          "keys" : [
+            "%",
+            "%%",
+            "%25",
+            "%2525",
+            "100%",
+            "%at%start",
+            "at%end%",
+            "a%20b",
+            "%41",
+            "%GG",
+            "%0",
+            "50%%50"
+          ],
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 10275053044167851772
+  }
+]

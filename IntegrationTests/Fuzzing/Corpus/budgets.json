@@ -1,0 +1,452 @@
+[
+  {
+    "id" : "budgets/depth/limit-minus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 8,
+          "observed" : 7,
+          "resource" : "depth"
+        }
+      }
+    },
+    "seed" : 1488819801115021679
+  },
+  {
+    "id" : "budgets/depth/limit",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 8,
+          "observed" : 8,
+          "resource" : "depth"
+        }
+      }
+    },
+    "seed" : 841602855859603319
+  },
+  {
+    "id" : "budgets/depth/limit-plus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 8,
+          "observed" : 9,
+          "resource" : "depth"
+        }
+      }
+    },
+    "seed" : 16583656162473802695
+  },
+  {
+    "id" : "budgets/breadth/limit-minus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 12,
+          "observed" : 11,
+          "resource" : "breadth"
+        }
+      }
+    },
+    "seed" : 4299986907413527600
+  },
+  {
+    "id" : "budgets/breadth/limit",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 12,
+          "observed" : 12,
+          "resource" : "breadth"
+        }
+      }
+    },
+    "seed" : 8653760087826114236
+  },
+  {
+    "id" : "budgets/breadth/limit-plus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 12,
+          "observed" : 13,
+          "resource" : "breadth"
+        }
+      }
+    },
+    "seed" : 7874437652686180102
+  },
+  {
+    "id" : "budgets/totalNodes/limit-minus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 10,
+          "observed" : 9,
+          "resource" : "totalNodes"
+        }
+      }
+    },
+    "seed" : 9098391764198844161
+  },
+  {
+    "id" : "budgets/totalNodes/limit",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 10,
+          "observed" : 10,
+          "resource" : "totalNodes"
+        }
+      }
+    },
+    "seed" : 11519664242792129041
+  },
+  {
+    "id" : "budgets/totalNodes/limit-plus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 10,
+          "observed" : 11,
+          "resource" : "totalNodes"
+        }
+      }
+    },
+    "seed" : 1868304174767583881
+  },
+  {
+    "id" : "budgets/stringBytes/limit-minus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 16,
+          "observed" : 15,
+          "resource" : "stringBytes"
+        }
+      }
+    },
+    "seed" : 16240232301375438634
+  },
+  {
+    "id" : "budgets/stringBytes/limit",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 16,
+          "observed" : 16,
+          "resource" : "stringBytes"
+        }
+      }
+    },
+    "seed" : 4241472237895852486
+  },
+  {
+    "id" : "budgets/stringBytes/limit-plus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 16,
+          "observed" : 17,
+          "resource" : "stringBytes"
+        }
+      }
+    },
+    "seed" : 14156328979181860888
+  },
+  {
+    "id" : "budgets/dataBytes/limit-minus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 16,
+          "observed" : 15,
+          "resource" : "dataBytes"
+        }
+      }
+    },
+    "seed" : 17062900740772359313
+  },
+  {
+    "id" : "budgets/dataBytes/limit",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 16,
+          "observed" : 16,
+          "resource" : "dataBytes"
+        }
+      }
+    },
+    "seed" : 12260726026470643361
+  },
+  {
+    "id" : "budgets/dataBytes/limit-plus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 16,
+          "observed" : 17,
+          "resource" : "dataBytes"
+        }
+      }
+    },
+    "seed" : 4042546031363131097
+  },
+  {
+    "id" : "budgets/cumulativeBytes/limit-minus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 24,
+          "observed" : 23,
+          "resource" : "cumulativeBytes"
+        }
+      }
+    },
+    "seed" : 17811560873472295516
+  },
+  {
+    "id" : "budgets/cumulativeBytes/limit",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 24,
+          "observed" : 24,
+          "resource" : "cumulativeBytes"
+        }
+      }
+    },
+    "seed" : 15480138354520348296
+  },
+  {
+    "id" : "budgets/cumulativeBytes/limit-plus-one",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 24,
+          "observed" : 25,
+          "resource" : "cumulativeBytes"
+        }
+      }
+    },
+    "seed" : 4276990213299974194
+  },
+  {
+    "id" : "budgets/depth/zero-limit-observed-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 0,
+          "observed" : 0,
+          "resource" : "depth"
+        }
+      }
+    },
+    "seed" : 12274578144164915442
+  },
+  {
+    "id" : "budgets/depth/zero-limit-observed-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 0,
+          "observed" : 1,
+          "resource" : "depth"
+        }
+      }
+    },
+    "seed" : 12274579243676543653
+  },
+  {
+    "id" : "budgets/breadth/zero-limit-observed-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 0,
+          "observed" : 0,
+          "resource" : "breadth"
+        }
+      }
+    },
+    "seed" : 10284712088841302433
+  },
+  {
+    "id" : "budgets/breadth/zero-limit-observed-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 0,
+          "observed" : 1,
+          "resource" : "breadth"
+        }
+      }
+    },
+    "seed" : 10284710989329674222
+  },
+  {
+    "id" : "budgets/totalNodes/zero-limit-observed-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 0,
+          "observed" : 0,
+          "resource" : "totalNodes"
+        }
+      }
+    },
+    "seed" : 14693090416888216964
+  },
+  {
+    "id" : "budgets/totalNodes/zero-limit-observed-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 0,
+          "observed" : 1,
+          "resource" : "totalNodes"
+        }
+      }
+    },
+    "seed" : 14693091516399845175
+  },
+  {
+    "id" : "budgets/stringBytes/zero-limit-observed-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 0,
+          "observed" : 0,
+          "resource" : "stringBytes"
+        }
+      }
+    },
+    "seed" : 3893344725669644083
+  },
+  {
+    "id" : "budgets/stringBytes/zero-limit-observed-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 0,
+          "observed" : 1,
+          "resource" : "stringBytes"
+        }
+      }
+    },
+    "seed" : 3893343626158015872
+  },
+  {
+    "id" : "budgets/dataBytes/zero-limit-observed-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 0,
+          "observed" : 0,
+          "resource" : "dataBytes"
+        }
+      }
+    },
+    "seed" : 15944952983308218324
+  },
+  {
+    "id" : "budgets/dataBytes/zero-limit-observed-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 0,
+          "observed" : 1,
+          "resource" : "dataBytes"
+        }
+      }
+    },
+    "seed" : 15944954082819846535
+  },
+  {
+    "id" : "budgets/cumulativeBytes/zero-limit-observed-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "pass",
+          "limit" : 0,
+          "observed" : 0,
+          "resource" : "cumulativeBytes"
+        }
+      }
+    },
+    "seed" : 8620921095309857517
+  },
+  {
+    "id" : "budgets/cumulativeBytes/zero-limit-observed-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "resourceBoundary" : {
+        "_0" : {
+          "expectation" : "reject",
+          "limit" : 0,
+          "observed" : 1,
+          "resource" : "cumulativeBytes"
+        }
+      }
+    },
+    "seed" : 8620919995798229306
+  }
+]

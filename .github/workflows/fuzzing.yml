@@ -1,0 +1,73 @@
+name: Long Fuzzing Campaign
+
+# The bounded per-pull-request campaign lives in the Supported Configuration
+# workflow. This workflow is the long-running counterpart: it explores far more
+# generated and mutated cases and keeps its findings as durable artifacts.
+
+on:
+  schedule:
+    - cron: "23 6 * * 2"
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: >-
+          Root seed as decimal or 0x-prefixed hexadecimal. Leave empty to
+          explore new ground; the chosen seed is recorded in the report.
+        required: false
+        type: string
+      duration-seconds:
+        description: Additional generated/mutated exploration time, in seconds.
+        required: false
+        default: "900"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fuzzing-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  long-campaign:
+    name: Long fuzzing campaign (Xcode 26.6)
+    runs-on: macos-26
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          clean: true
+          persist-credentials: false
+
+      - name: Verify the supported toolchain and manifest
+        run: bash Scripts/verify-support-policy.sh
+
+      - name: Run the long deterministic fuzzing campaign
+        env:
+          XPCCODING_FUZZING_SEED: ${{ inputs.seed }}
+          XPCCODING_FUZZING_DURATION_SECONDS: ${{ inputs.duration-seconds || '900' }}
+          XPCCODING_FUZZING_ARTIFACTS: ${{ runner.temp }}/fuzzing-campaign
+        run: |
+          set -o pipefail
+          bash Scripts/run-fuzzing-campaign.sh \
+            2>&1 | tee "${RUNNER_TEMP}/fuzzing-campaign.log"
+
+      - name: Upload the campaign report, log, and every counterexample
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: fuzzing-campaign-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/fuzzing-campaign.log
+            ${{ runner.temp }}/fuzzing-campaign
+          if-no-files-found: error
+          retention-days: 90

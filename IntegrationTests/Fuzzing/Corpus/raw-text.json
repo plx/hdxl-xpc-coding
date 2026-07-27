@@ -1,0 +1,2782 @@
+[
+  {
+    "id" : "raw-text/invalid-utf8-0/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 11145048489581966904
+  },
+  {
+    "id" : "raw-text/invalid-utf8-0/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 2578076054068262308
+  },
+  {
+    "id" : "raw-text/invalid-utf8-0/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 14151175265611488317
+  },
+  {
+    "id" : "raw-text/invalid-utf8-0/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 13117905584680820625
+  },
+  {
+    "id" : "raw-text/invalid-utf8-1/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            195
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 465029428940937363
+  },
+  {
+    "id" : "raw-text/invalid-utf8-1/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            195
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 17011187880719579383
+  },
+  {
+    "id" : "raw-text/invalid-utf8-1/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            195
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 2758515998675858422
+  },
+  {
+    "id" : "raw-text/invalid-utf8-1/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            195
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 14629784730051545466
+  },
+  {
+    "id" : "raw-text/invalid-utf8-2/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            195,
+            40
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 10142072172916046398
+  },
+  {
+    "id" : "raw-text/invalid-utf8-2/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            195,
+            40
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 854826850209803010
+  },
+  {
+    "id" : "raw-text/invalid-utf8-2/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            195,
+            40
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 3998380684442039699
+  },
+  {
+    "id" : "raw-text/invalid-utf8-2/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            195,
+            40
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 12424805004168465911
+  },
+  {
+    "id" : "raw-text/invalid-utf8-3/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            192,
+            175
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 7003347373989956201
+  },
+  {
+    "id" : "raw-text/invalid-utf8-3/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            192,
+            175
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 14888094389798206781
+  },
+  {
+    "id" : "raw-text/invalid-utf8-3/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            192,
+            175
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 1940664704510495564
+  },
+  {
+    "id" : "raw-text/invalid-utf8-3/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            192,
+            175
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 17489616943071881656
+  },
+  {
+    "id" : "raw-text/invalid-utf8-4/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            224,
+            128,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 8516624523748128212
+  },
+  {
+    "id" : "raw-text/invalid-utf8-4/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            224,
+            128,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 2149551730032324256
+  },
+  {
+    "id" : "raw-text/invalid-utf8-4/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            224,
+            128,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 27372052741707769
+  },
+  {
+    "id" : "raw-text/invalid-utf8-4/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            224,
+            128,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 7927155349199784301
+  },
+  {
+    "id" : "raw-text/invalid-utf8-5/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            226,
+            130
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 8182223921977591247
+  },
+  {
+    "id" : "raw-text/invalid-utf8-5/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            226,
+            130
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 6947660052583618339
+  },
+  {
+    "id" : "raw-text/invalid-utf8-5/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            226,
+            130
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 15145025405302534530
+  },
+  {
+    "id" : "raw-text/invalid-utf8-5/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            226,
+            130
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 14051613299341400406
+  },
+  {
+    "id" : "raw-text/invalid-utf8-6/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            237,
+            160,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 6228474610799914922
+  },
+  {
+    "id" : "raw-text/invalid-utf8-6/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            237,
+            160,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 3456108608647965118
+  },
+  {
+    "id" : "raw-text/invalid-utf8-6/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            237,
+            160,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 3493917670998377167
+  },
+  {
+    "id" : "raw-text/invalid-utf8-6/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            237,
+            160,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 9398711087965391907
+  },
+  {
+    "id" : "raw-text/invalid-utf8-7/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            240,
+            40,
+            140,
+            40
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 185136704250022517
+  },
+  {
+    "id" : "raw-text/invalid-utf8-7/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            240,
+            40,
+            140,
+            40
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 7015799291614418953
+  },
+  {
+    "id" : "raw-text/invalid-utf8-7/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            240,
+            40,
+            140,
+            40
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 502346361329272120
+  },
+  {
+    "id" : "raw-text/invalid-utf8-7/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            240,
+            40,
+            140,
+            40
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 1304833652415311012
+  },
+  {
+    "id" : "raw-text/invalid-utf8-8/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            245,
+            128,
+            128,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 13626118742913721408
+  },
+  {
+    "id" : "raw-text/invalid-utf8-8/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            245,
+            128,
+            128,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 7089042487750988396
+  },
+  {
+    "id" : "raw-text/invalid-utf8-8/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            245,
+            128,
+            128,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 6926830962277202597
+  },
+  {
+    "id" : "raw-text/invalid-utf8-8/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            245,
+            128,
+            128,
+            128
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 9489943619021024025
+  },
+  {
+    "id" : "raw-text/invalid-utf8-9/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            254
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 3798856466929207771
+  },
+  {
+    "id" : "raw-text/invalid-utf8-9/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            254
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 15030544096959470559
+  },
+  {
+    "id" : "raw-text/invalid-utf8-9/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            254
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 2873203435191420958
+  },
+  {
+    "id" : "raw-text/invalid-utf8-9/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            254
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 14184674553227718306
+  },
+  {
+    "id" : "raw-text/invalid-utf8-10/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            255
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 18091575638255676689
+  },
+  {
+    "id" : "raw-text/invalid-utf8-10/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            255
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 7094930555323354757
+  },
+  {
+    "id" : "raw-text/invalid-utf8-10/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            255
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 10675277571017428244
+  },
+  {
+    "id" : "raw-text/invalid-utf8-10/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            255
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 4620081528256100064
+  },
+  {
+    "id" : "raw-text/invalid-utf8-11/stringValue/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            255,
+            98
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 8529541148862085414
+  },
+  {
+    "id" : "raw-text/invalid-utf8-11/stringValue/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            255,
+            98
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 11224486212917835850
+  },
+  {
+    "id" : "raw-text/invalid-utf8-11/dictionaryKey/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            255,
+            98
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 9377795522984780955
+  },
+  {
+    "id" : "raw-text/invalid-utf8-11/dictionaryKey/passthrough",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            255,
+            98
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 2567936440887626143
+  },
+  {
+    "id" : "raw-text/escape-0/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            112,
+            108,
+            97,
+            105,
+            110
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            112,
+            108,
+            97,
+            105,
+            110
+          ],
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 13643957612282264446
+  },
+  {
+    "id" : "raw-text/escape-0/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            112,
+            108,
+            97,
+            105,
+            110
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            112,
+            108,
+            97,
+            105,
+            110
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 8227916080530468466
+  },
+  {
+    "id" : "raw-text/escape-0/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            112,
+            108,
+            97,
+            105,
+            110
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            112,
+            108,
+            97,
+            105,
+            110
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 16825100855298230987
+  },
+  {
+    "id" : "raw-text/escape-0/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            112,
+            108,
+            97,
+            105,
+            110
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            112,
+            108,
+            97,
+            105,
+            110
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 13153333558906117215
+  },
+  {
+    "id" : "raw-text/escape-1/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            0
+          ],
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 18178800855506861569
+  },
+  {
+    "id" : "raw-text/escape-1/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48,
+            48
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 7664166429159282861
+  },
+  {
+    "id" : "raw-text/escape-1/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            0
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 12237614579561387028
+  },
+  {
+    "id" : "raw-text/escape-1/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48,
+            48
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 4100586212221570240
+  },
+  {
+    "id" : "raw-text/escape-2/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37
+          ],
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 17117157622087872864
+  },
+  {
+    "id" : "raw-text/escape-2/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            50,
+            53
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 10960970314400052244
+  },
+  {
+    "id" : "raw-text/escape-2/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 6104248214892388853
+  },
+  {
+    "id" : "raw-text/escape-2/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            50,
+            53
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 17073811425732254537
+  },
+  {
+    "id" : "raw-text/escape-3/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48,
+            48
+          ],
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 2325591703308593395
+  },
+  {
+    "id" : "raw-text/escape-3/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            50,
+            53,
+            48,
+            48
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 13630891929475137319
+  },
+  {
+    "id" : "raw-text/escape-3/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48,
+            48
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 11687797009266247102
+  },
+  {
+    "id" : "raw-text/escape-3/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            50,
+            53,
+            48,
+            48
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 18252061159193934866
+  },
+  {
+    "id" : "raw-text/escape-4/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            0,
+            50,
+            53
+          ],
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 2726455127913537194
+  },
+  {
+    "id" : "raw-text/escape-4/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48,
+            48,
+            50,
+            53
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 17108631654551119822
+  },
+  {
+    "id" : "raw-text/escape-4/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            0,
+            50,
+            53
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 17433321412714614711
+  },
+  {
+    "id" : "raw-text/escape-4/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48,
+            48,
+            50,
+            53
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 11479401389408822139
+  },
+  {
+    "id" : "raw-text/escape-5/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            37,
+            48,
+            48,
+            98
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            97,
+            0,
+            98
+          ],
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 418756181392473693
+  },
+  {
+    "id" : "raw-text/escape-5/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            37,
+            48,
+            48,
+            98
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            97,
+            37,
+            48,
+            48,
+            98
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 10873745601410824489
+  },
+  {
+    "id" : "raw-text/escape-5/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            37,
+            48,
+            48,
+            98
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            97,
+            0,
+            98
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 14987712148738119248
+  },
+  {
+    "id" : "raw-text/escape-5/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            37,
+            48,
+            48,
+            98
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            97,
+            37,
+            48,
+            48,
+            98
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 14511349764496429820
+  },
+  {
+    "id" : "raw-text/escape-6/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48,
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            0,
+            0
+          ],
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 1842781100610216460
+  },
+  {
+    "id" : "raw-text/escape-6/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48,
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48,
+            48,
+            37,
+            48,
+            48
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 18009779582192067904
+  },
+  {
+    "id" : "raw-text/escape-6/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48,
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            0,
+            0
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 10453649783335849345
+  },
+  {
+    "id" : "raw-text/escape-6/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            48,
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48,
+            48,
+            37,
+            48,
+            48
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 5171259082464012885
+  },
+  {
+    "id" : "raw-text/escape-7/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53,
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            0
+          ],
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 2831920286548267759
+  },
+  {
+    "id" : "raw-text/escape-7/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53,
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            50,
+            53,
+            37,
+            48,
+            48
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 12670154484844130227
+  },
+  {
+    "id" : "raw-text/escape-7/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53,
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            0
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 1711301734145974618
+  },
+  {
+    "id" : "raw-text/escape-7/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50,
+            53,
+            37,
+            48,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            50,
+            53,
+            37,
+            48,
+            48
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 14672074800891846782
+  },
+  {
+    "id" : "raw-text/escape-8/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            101,
+            204,
+            129,
+            37,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            101,
+            769,
+            37
+          ],
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 17976623769453469062
+  },
+  {
+    "id" : "raw-text/escape-8/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            101,
+            204,
+            129,
+            37,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            101,
+            769,
+            37,
+            50,
+            53
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 12313927104402151034
+  },
+  {
+    "id" : "raw-text/escape-8/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            101,
+            204,
+            129,
+            37,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            101,
+            769,
+            37
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 16485192196947524819
+  },
+  {
+    "id" : "raw-text/escape-8/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            101,
+            204,
+            129,
+            37,
+            50,
+            53
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            101,
+            769,
+            37,
+            50,
+            53
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 11578069999055755623
+  },
+  {
+    "id" : "raw-text/escape-9/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 17266893306630029481
+  },
+  {
+    "id" : "raw-text/escape-9/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 11301914067985344725
+  },
+  {
+    "id" : "raw-text/escape-9/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 5132461635195209340
+  },
+  {
+    "id" : "raw-text/escape-9/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 10841835214380987560
+  },
+  {
+    "id" : "raw-text/escape-10/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 4247143582982989427
+  },
+  {
+    "id" : "raw-text/escape-10/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 15276041179661992103
+  },
+  {
+    "id" : "raw-text/escape-10/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 5751824029745028926
+  },
+  {
+    "id" : "raw-text/escape-10/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 1726868965158779282
+  },
+  {
+    "id" : "raw-text/escape-11/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            52,
+            49
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 591965428052717280
+  },
+  {
+    "id" : "raw-text/escape-11/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            52,
+            49
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            52,
+            49
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 12606119564586907028
+  },
+  {
+    "id" : "raw-text/escape-11/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            52,
+            49
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 168275235371170677
+  },
+  {
+    "id" : "raw-text/escape-11/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            52,
+            49
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            52,
+            49
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 548619231697098953
+  },
+  {
+    "id" : "raw-text/escape-12/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            71,
+            71
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 1653608661471705985
+  },
+  {
+    "id" : "raw-text/escape-12/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            71,
+            71
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            71,
+            71
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 9309315679346137645
+  },
+  {
+    "id" : "raw-text/escape-12/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            71,
+            71
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 6301641600040168852
+  },
+  {
+    "id" : "raw-text/escape-12/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            71,
+            71
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            71,
+            71
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 6022138091895966272
+  },
+  {
+    "id" : "raw-text/escape-13/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            37
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 15565509491956660478
+  },
+  {
+    "id" : "raw-text/escape-13/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            37
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            37
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 9873065330717323250
+  },
+  {
+    "id" : "raw-text/escape-13/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            37
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 10889127875777012811
+  },
+  {
+    "id" : "raw-text/escape-13/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            37
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            37
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 15074885438580513247
+  },
+  {
+    "id" : "raw-text/escape-14/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            49,
+            48,
+            48,
+            37
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 4753472166222663791
+  },
+  {
+    "id" : "raw-text/escape-14/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            49,
+            48,
+            48,
+            37
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            49,
+            48,
+            48,
+            37
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 14315303735030985011
+  },
+  {
+    "id" : "raw-text/escape-14/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            49,
+            48,
+            48,
+            37
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 14222072828334308058
+  },
+  {
+    "id" : "raw-text/escape-14/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            49,
+            48,
+            48,
+            37
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            49,
+            48,
+            48,
+            37
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 16593626680566242814
+  },
+  {
+    "id" : "raw-text/escape-15/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            37,
+            50,
+            48,
+            98
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 3764332980284612492
+  },
+  {
+    "id" : "raw-text/escape-15/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            37,
+            50,
+            48,
+            98
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            97,
+            37,
+            50,
+            48,
+            98
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 1208184758669371072
+  },
+  {
+    "id" : "raw-text/escape-15/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            37,
+            50,
+            48,
+            98
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 4517676803814631169
+  },
+  {
+    "id" : "raw-text/escape-15/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            97,
+            37,
+            50,
+            48,
+            98
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            97,
+            37,
+            50,
+            48,
+            98
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 7092810962138408917
+  },
+  {
+    "id" : "raw-text/escape-16/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            204,
+            129
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 2340308061066869725
+  },
+  {
+    "id" : "raw-text/escape-16/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            204,
+            129
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            769
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 12518894851597679273
+  },
+  {
+    "id" : "raw-text/escape-16/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            204,
+            129
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 9051739169216901072
+  },
+  {
+    "id" : "raw-text/escape-16/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            204,
+            129
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            769
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 16432901644170825852
+  },
+  {
+    "id" : "raw-text/escape-17/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            120,
+            37,
+            204,
+            129,
+            52,
+            49
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 4648007007587933226
+  },
+  {
+    "id" : "raw-text/escape-17/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            120,
+            37,
+            204,
+            129,
+            52,
+            49
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            120,
+            37,
+            769,
+            52,
+            49
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 307036831028422990
+  },
+  {
+    "id" : "raw-text/escape-17/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            120,
+            37,
+            204,
+            129,
+            52,
+            49
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 11497348433193396535
+  },
+  {
+    "id" : "raw-text/escape-17/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            120,
+            37,
+            204,
+            129,
+            52,
+            49
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            120,
+            37,
+            769,
+            52,
+            49
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 13400953269083218171
+  },
+  {
+    "id" : "raw-text/escape-18/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            71
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 10957138928783899547
+  },
+  {
+    "id" : "raw-text/escape-18/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            71
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48,
+            71
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 12850418228089920719
+  },
+  {
+    "id" : "raw-text/escape-18/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            71
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 17598394753569922182
+  },
+  {
+    "id" : "raw-text/escape-18/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            48,
+            71
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            48,
+            71
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 13674208354144501690
+  },
+  {
+    "id" : "raw-text/escape-19/percentEscape/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50
+          ],
+          "expectation" : "reject",
+          "location" : "stringValue",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 78783702586755400
+  },
+  {
+    "id" : "raw-text/escape-19/passthrough/stringValue",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            50
+          ],
+          "location" : "stringValue",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 9342793609620326108
+  },
+  {
+    "id" : "raw-text/escape-19/percentEscape/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50
+          ],
+          "expectation" : "reject",
+          "location" : "dictionaryKey",
+          "strategy" : "percentEscape"
+        }
+      }
+    },
+    "seed" : 8510854436540105981
+  },
+  {
+    "id" : "raw-text/escape-19/passthrough/dictionaryKey",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "rawText" : {
+        "_0" : {
+          "bytes" : [
+            37,
+            50
+          ],
+          "expectation" : "pass",
+          "expectedScalars" : [
+            37,
+            50
+          ],
+          "location" : "dictionaryKey",
+          "strategy" : "passthrough"
+        }
+      }
+    },
+    "seed" : 4096851604700371441
+  }
+]
