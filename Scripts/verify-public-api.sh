@@ -89,14 +89,6 @@ expect_typecheck_failure() {
 }
 
 expect_typecheck_failure \
-  "${consumer_directory}/CompileFailProbes/UnavailableStandardDefaults.swift" \
-  "issue #30 standard/default visibility gap" \
-  "'standard' is inaccessible due to 'internal' protection level" \
-  "type 'XPCCodec.Configuration' has no member 'standard'" \
-  "missing argument for parameter 'configuration' in call" \
-  "type 'XPCCodec' has no member 'standard'"
-
-expect_typecheck_failure \
   "${consumer_directory}/CompileFailProbes/InternalEncoder.swift" \
   "internal encoder module boundary" \
   "cannot find '_XPCEncoder' in scope"
@@ -108,4 +100,4 @@ expect_typecheck_failure \
   "type 'XPCDecoder' does not conform to the 'Sendable' protocol"
 
 printf '%s\n' \
-  "Verified plain-import tests, external consumer execution, expected issue #30 failures, mutable facade task confinement, and internal API rejection."
+  "Verified plain-import tests, standard/default construction, external consumer execution, mutable facade task confinement, and internal API rejection."

@@ -34,6 +34,7 @@ struct XPCCodingPublicAPIConsumer {
       throw ConsumerFailure.roundTripMismatch
     }
 
+    try exerciseStandardDefaults()
     try exerciseExplicitFacades(
       configuration: configuration,
       message: message
@@ -41,6 +42,47 @@ struct XPCCodingPublicAPIConsumer {
     try await exerciseSharedCodec(configuration: configuration)
     try exerciseTransientEncoder(configuration: configuration)
     try exerciseEnhancedAPI(configuration: configuration)
+  }
+
+  private static func exerciseStandardDefaults() throws {
+    let encoderKeyStrategy: XPCEncoder.StringKeyStrategy = .standard
+    let encoderValueStrategy: XPCEncoder.StringValueStrategy = .standard
+    let decoderKeyStrategy: XPCDecoder.StringKeyStrategy = .standard
+    let decoderValueStrategy: XPCDecoder.StringValueStrategy = .standard
+    let configuration: XPCCodec.Configuration = .standard
+    let defaultConfiguration = XPCCodec.Configuration()
+    let defaultedKeyConfiguration = XPCCodec.Configuration(
+      stringValueStrategy: .standard
+    )
+    let defaultedValueConfiguration = XPCCodec.Configuration(
+      stringKeyStrategy: .standard
+    )
+    let codec = XPCCodec()
+    let standardCodec = XPCCodec.standard
+
+    guard
+      encoderKeyStrategy == .percentEscape,
+      encoderValueStrategy == .percentEscape,
+      decoderKeyStrategy == .percentEscape,
+      decoderValueStrategy == .percentEscape,
+      configuration == defaultConfiguration,
+      defaultedKeyConfiguration == configuration,
+      defaultedValueConfiguration == configuration,
+      codec.configuration == configuration,
+      standardCodec.configuration == configuration
+    else {
+      throw ConsumerFailure.configurationMismatch
+    }
+
+    let value = ["key\u{0}%": "value\u{0}%"]
+    for defaultCodec in [codec, standardCodec] {
+      let object = try defaultCodec.encode(value)
+      guard
+        try defaultCodec.decode([String: String].self, from: object) == value
+      else {
+        throw ConsumerFailure.roundTripMismatch
+      }
+    }
   }
 
   private static func exerciseSharedCodec(

@@ -6,6 +6,76 @@ import XPCCoding
 struct PublicAPITests {
 
   @Test
+  func `standard default forms compile and use one safe configuration`() throws {
+    let encoderKeyStrategy: XPCEncoder.StringKeyStrategy = .standard
+    let encoderValueStrategy: XPCEncoder.StringValueStrategy = .standard
+    let decoderKeyStrategy: XPCDecoder.StringKeyStrategy = .standard
+    let decoderValueStrategy: XPCDecoder.StringValueStrategy = .standard
+    let codecKeyStrategy: XPCCodec.StringKeyStrategy = .standard
+    let codecValueStrategy: XPCCodec.StringValueStrategy = .standard
+
+    let configuration = XPCCodec.Configuration()
+    let standardConfiguration: XPCCodec.Configuration = .standard
+    let defaultedKeyConfiguration = XPCCodec.Configuration(
+      stringValueStrategy: .standard
+    )
+    let defaultedValueConfiguration = XPCCodec.Configuration(
+      stringKeyStrategy: .standard
+    )
+    let codec = XPCCodec()
+    let explicitlyStandardCodec = XPCCodec(configuration: .standard)
+    let standardCodec = XPCCodec.standard
+    let encoder = XPCEncoder()
+    let standardEncoder = XPCEncoder.standard
+    let decoder = XPCDecoder()
+    let standardDecoder = XPCDecoder.standard
+
+    let expectedConfiguration = XPCCodec.Configuration(
+      stringKeyStrategy: .percentEscape,
+      stringValueStrategy: .percentEscape
+    )
+    #expect(encoderKeyStrategy == .percentEscape)
+    #expect(encoderValueStrategy == .percentEscape)
+    #expect(decoderKeyStrategy == .percentEscape)
+    #expect(decoderValueStrategy == .percentEscape)
+    #expect(codecKeyStrategy == .percentEscape)
+    #expect(codecValueStrategy == .percentEscape)
+    #expect(configuration == expectedConfiguration)
+    #expect(standardConfiguration == expectedConfiguration)
+    #expect(defaultedKeyConfiguration == expectedConfiguration)
+    #expect(defaultedValueConfiguration == expectedConfiguration)
+    #expect(codec.configuration == expectedConfiguration)
+    #expect(explicitlyStandardCodec.configuration == expectedConfiguration)
+    #expect(standardCodec.configuration == expectedConfiguration)
+    #expect(encoder.stringKeyStrategy == .percentEscape)
+    #expect(encoder.stringValueStrategy == .percentEscape)
+    #expect(standardEncoder.stringKeyStrategy == .percentEscape)
+    #expect(standardEncoder.stringValueStrategy == .percentEscape)
+    #expect(decoder.stringKeyStrategy == .percentEscape)
+    #expect(decoder.stringValueStrategy == .percentEscape)
+    #expect(standardDecoder.stringKeyStrategy == .percentEscape)
+    #expect(standardDecoder.stringValueStrategy == .percentEscape)
+
+    let value = ["key\u{0}%": "value\u{0}%"]
+    for defaultCodec in [codec, explicitlyStandardCodec, standardCodec] {
+      let encoded = try defaultCodec.encode(value)
+      #expect(
+        try defaultCodec.decode([String: String].self, from: encoded) == value
+      )
+    }
+
+    for (defaultEncoder, defaultDecoder) in [
+      (encoder, decoder),
+      (standardEncoder, standardDecoder),
+    ] {
+      let encoded = try defaultEncoder.encode(value)
+      #expect(
+        try defaultDecoder.decode([String: String].self, from: encoded) == value
+      )
+    }
+  }
+
+  @Test
   func `documented facades compile and round-trip from a plain import`() throws {
     let message = PublicMessage(
       identifier: 29,

@@ -25,13 +25,20 @@ import XPC
 /// ## Usage
 ///
 /// ```swift
-/// let codec = XPCCodec(configuration: .init(
+/// let codec = XPCCodec()
+/// let encoded = try codec.encode(myValue)
+/// let decoded = try codec.decode(MyType.self, from: encoded)
+/// ```
+///
+/// The zero-argument initializer uses ``Configuration/standard``. Supply an
+/// explicit configuration only when the processes built together have agreed
+/// to use different strategies:
+///
+/// ```swift
+/// let codec = XPCCodec(configuration: XPCCodec.Configuration(
 ///     stringKeyStrategy: .percentEscape,
 ///     stringValueStrategy: .percentEscape
 /// ))
-///
-/// let encoded = try codec.encode(myValue)
-/// let decoded = try codec.decode(MyType.self, from: encoded)
 /// ```
 public struct XPCCodec: Sendable {
 
@@ -44,10 +51,14 @@ public struct XPCCodec: Sendable {
   /// The strategy for handling embedded null bytes in string values.
   public var stringValueStrategy: StringValueStrategy { configuration.stringValueStrategy }
 
+  /// A codec using ``Configuration/standard``.
+  public static let standard: Self = Self()
+
   /// Creates a new codec with the specified configuration.
   ///
-  /// - Parameter configuration: The configuration specifying how to handle string keys and values.
-  public init(configuration: Configuration) {
+  /// - Parameter configuration: The configuration specifying how to handle
+  ///   string keys and values. Defaults to ``Configuration/standard``.
+  public init(configuration: Configuration = .standard) {
     self.configuration = configuration
   }
 

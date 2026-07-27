@@ -51,6 +51,19 @@ reference types; keep each instance confined to one task.
 Sharing a codec does not make an `xpc_object_t` Swift `Sendable`. Concurrent
 round trips should keep each XPC object within the task that produced it.
 
+The standard codec safely preserves embedded null and literal percent scalars
+in string keys and values:
+
+```swift
+let codec = XPCCodec()
+let object = try codec.encode(["key\u{0}%": "value\u{0}%"])
+let value = try codec.decode([String: String].self, from: object)
+```
+
+`XPCCodec.standard`, `XPCCodec.Configuration.standard`, `XPCEncoder.standard`,
+and `XPCDecoder.standard` select that same configuration. Use explicit
+strategies only when all co-built peers agree on them.
+
 See the [migration guide](reference/MigrationGuide.md) when updating code that
 previously accessed `codec.encoder` or `codec.decoder`.
 
