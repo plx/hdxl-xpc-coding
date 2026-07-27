@@ -5,6 +5,8 @@ import XPCCoding
 enum XPCCodingPublicAPIConsumer {
 
   static func main() async throws {
+    _ = _XPCEncoder.self
+
     try verifyGreetingRoundTrip()
     try verifyApplicationMessageRoundTrip()
 
