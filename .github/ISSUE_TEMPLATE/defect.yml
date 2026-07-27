@@ -1,0 +1,100 @@
+name: Defect report
+description: Report a reproducible problem in a supported XPCCoding configuration.
+title: "[Defect] "
+labels:
+  - "type:defect"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a defect. Please minimize examples and remove private data.
+
+        **Do not disclose a suspected vulnerability here.** Use [private vulnerability reporting](https://github.com/plx/hdxl-xpc-coding/security/advisories/new) instead.
+
+  - type: checkboxes
+    id: public-routing
+    attributes:
+      label: Public-report confirmation
+      options:
+        - label: This report contains no suspected vulnerability, credential, production payload, or other sensitive data.
+          required: true
+
+  - type: input
+    id: revision
+    attributes:
+      label: Affected release or revision
+      description: Provide the GitHub Release, tag, or complete commit SHA.
+      placeholder: 1.0.0 or 0123456789abcdef...
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Supported environment
+      description: Include Xcode and Swift versions, Apple platform, deployment target, architecture, and hardware model.
+      placeholder: |
+        Xcode 26.6 (17F113)
+        Apple Swift 6.3.3
+        macOS 26.0, arm64, Mac...
+    validations:
+      required: true
+
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+      description: State what happened, including the complete error and coding path when relevant.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: State the behavior you expected and the contract that supports it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Minimal reproducer
+      description: Provide the smallest synthetic model, input, configuration, and command that reproduces the problem.
+      render: swift
+    validations:
+      required: true
+
+  - type: textarea
+    id: regression
+    attributes:
+      label: Regression-first evidence
+      description: Identify a last-known-good revision or propose a test that fails before a fix. Write "Unknown" if no earlier working revision is known.
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Related issues and dependencies
+      description: Link related issues or pull requests and identify anything that must land first.
+      placeholder: "Related to #...; blocked by #..."
+
+  - type: dropdown
+    id: compatibility
+    attributes:
+      label: Suspected compatibility surface
+      options:
+        - No public API or XPC representation impact identified
+        - Public Swift source API
+        - XPC object representation
+        - Toolchain or platform support
+        - Unsure
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add sanitized logs, benchmark reports, or other details that materially help diagnosis.

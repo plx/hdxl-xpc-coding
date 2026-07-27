@@ -168,6 +168,10 @@ it; it is noted here only because it changes how a codec is constructed.
   (#69); deterministic property/hostile-input fuzzing and regression-first
   baseline evidence (#89); fail-closed SwiftLint (#91); audited and constrained
   `@inlinable` / `@usableFromInline` exposure (#93).
+- **Maintainable contributor workflow and community standards**: documented the
+  supported environment and exact local gates; added a code of conduct,
+  namespaced defect/design issue forms with private security routing, and a
+  regression/compatibility-focused pull request template (#49).
 - **Documentation for every public declaration**, including actionable
   pointer/count, memory-extent, and lifetime contracts on every unsafe-pointer
   entry point, plus a fail-closed public-documentation completeness gate
