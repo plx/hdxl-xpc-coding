@@ -1,0 +1,106 @@
+{
+  "name": "Protect main",
+  "target": "branch",
+  "enforcement": "active",
+  "bypass_actors": [],
+  "conditions": {
+    "ref_name": {
+      "include": [
+        "~DEFAULT_BRANCH"
+      ],
+      "exclude": []
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "allowed_merge_methods": [
+          "merge",
+          "squash",
+          "rebase"
+        ],
+        "dismiss_stale_reviews_on_push": false,
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_approving_review_count": 0,
+        "required_review_thread_resolution": true
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "do_not_enforce_on_create": false,
+        "required_status_checks": [
+          {
+            "context": "Supported tests (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Strict formatting (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Strict SwiftLint and recipe contracts (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "API documentation (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Source coverage (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Same-host XPC request/reply (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Regression-first baseline evidence (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Source API stability (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Deterministic fuzzing smoke (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Address Sanitizer (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Undefined Behavior Sanitizer (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Thread Sanitizer (Xcode 26.6)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Compile macOS 26 (arm64)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Compile iOS 26 (arm64)",
+            "integration_id": 15368
+          },
+          {
+            "context": "Compile Mac Catalyst 26 (arm64)",
+            "integration_id": 15368
+          }
+        ],
+        "strict_required_status_checks_policy": true
+      }
+    }
+  ]
+}

@@ -25,9 +25,10 @@ The `Supported Configuration` workflow exposes:
 - `Compile iOS 26 (arm64)`; and
 - `Compile Mac Catalyst 26 (arm64)`.
 
-Issue #50 selects and applies the required subset in the repository ruleset.
-Until that settings ticket completes, this list documents the exact contexts
-available for protection; it does not claim that GitHub already requires them.
+The default-branch
+[ruleset](MainBranchProtection.md) requires all 15 supported-configuration
+checks and pins them to the GitHub Actions app. The CodeQL and whole-history
+secret-scan jobs remain advisory under the current maintainer decision.
 
 ## Canonical quality commands
 

@@ -49,6 +49,9 @@ placeholder; the concrete first-release version is chosen at release time.
 ### 1. Prepare the release branch
 
 - Prepare the release branch; do not create the final tag yet.
+- Use a pull request and satisfy the
+  [main-branch protection policy](reference/MainBranchProtection.md). Do not
+  weaken or bypass a required check to prepare or merge a release.
 - Choose the proposed `<version>` and tag name `<version>` (bare semver, no `v`
   prefix — matching the existing `0.0.x` tags).
 
