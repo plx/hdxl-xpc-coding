@@ -6,13 +6,25 @@ set quiet
 default:
     @just --list docs --unsorted
 
-# generates the XPCCoding documentation archive into `destination` (DocC warnings fail)
+# generates the XPCCoding documentation archive into `destination` (undocumented public declarations and DocC warnings fail)
 [group('generate')]
 generate-documentation destination:
     #!/usr/bin/env bash
     set -euxo pipefail
     cd {{ justfile_directory() }}
     bash Scripts/generate-api-documentation.sh {{ quote(destination) }}
+
+# fails when any public declaration in the emitted symbol graphs is undocumented
+#
+# This is the authoritative completeness gate; `generate-documentation` runs the
+# same script against the symbol graphs it has already emitted. The SwiftLint
+# `missing_docs` recipes below stay as the fast, file-scoped developer aid.
+[group('check')]
+check-public-api-completeness:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    cd {{ justfile_directory() }}
+    bash Scripts/verify-public-documentation.sh
 
 # invokes a blocking missing-documentation check
 [private]
@@ -28,7 +40,7 @@ check-sources reporter=EMOJI_REPORTER: (invoke-doc-checker reporter justfile_dir
 
 # checks documentation (all)
 [group('check')]
-check-all reporter=EMOJI_REPORTER: (check-sources reporter)
+check-all reporter=EMOJI_REPORTER: (check-sources reporter) check-public-api-completeness
 
 # invokes a nonblocking missing-documentation summary
 [private]

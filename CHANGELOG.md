@@ -168,6 +168,11 @@ it; it is noted here only because it changes how a codec is constructed.
   (#69); deterministic property/hostile-input fuzzing and regression-first
   baseline evidence (#89); fail-closed SwiftLint (#91); audited and constrained
   `@inlinable` / `@usableFromInline` exposure (#93).
+- **Documentation for every public declaration**, including actionable
+  pointer/count, memory-extent, and lifetime contracts on every unsafe-pointer
+  entry point, plus a fail-closed public-documentation completeness gate
+  (`Scripts/verify-public-documentation.sh`) wired into the API documentation
+  build and its CI job (#38).
 
 ### Fixed
 

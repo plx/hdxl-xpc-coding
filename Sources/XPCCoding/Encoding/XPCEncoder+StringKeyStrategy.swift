@@ -36,6 +36,11 @@ extension XPCEncoder.StringKeyStrategy: CaseIterable { }
 // MARK: - CustomStringConvertible
 
 extension XPCEncoder.StringKeyStrategy: CustomStringConvertible {
+
+  /// A brief, human-readable name for the string-key encoding strategy.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var description: String {
     switch self {
     case .assumeAbsent:
@@ -49,6 +54,11 @@ extension XPCEncoder.StringKeyStrategy: CustomStringConvertible {
 // MARK: - CustomDebugStringConvertible
 
 extension XPCEncoder.StringKeyStrategy: CustomDebugStringConvertible {
+
+  /// A developer-facing description naming the case in source-like form.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var debugDescription: String {
     switch self {
     case .assumeAbsent:

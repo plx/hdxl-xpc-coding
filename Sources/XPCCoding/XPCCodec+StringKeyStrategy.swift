@@ -44,7 +44,11 @@ extension XPCCodec.StringKeyStrategy: CaseIterable { }
 // MARK: - CustomStringConvertible
 
 extension XPCCodec.StringKeyStrategy: CustomStringConvertible {
-  
+
+  /// A brief, human-readable name for the string-key strategy.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var description: String {
     switch self {
     case .assumeAbsent: "assume absent"
@@ -57,7 +61,11 @@ extension XPCCodec.StringKeyStrategy: CustomStringConvertible {
 // MARK: - CustomDebugStringConvertible
 
 extension XPCCodec.StringKeyStrategy: CustomDebugStringConvertible {
-  
+
+  /// A developer-facing description naming the case in source-like form.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var debugDescription: String {
     switch self {
     case .assumeAbsent: ".assumeAbsent"

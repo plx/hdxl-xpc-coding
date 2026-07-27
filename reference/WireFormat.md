@@ -155,11 +155,14 @@ bytes. This includes `InlineArray<N, UInt8>`, raw buffer pointers, and raw
 pointer/count overloads. XPCCoding copies the bytes before the method returns;
 the caller's address and alignment are not represented.
 
-A zero byte count emits empty XPC data and permits a nil or non-nil pointer. A
-positive count requires a non-nil pointer, and a negative count is invalid.
-Invalid combinations throw `EncodingError.invalidValue` before calling XPC.
-The caller remains responsible for the initialized readable extent and
-lifetime promised by the public unsafe API.
+For pointer/count overloads, a zero byte count emits empty XPC data and permits
+a nil or non-nil pointer. A positive count requires a non-nil pointer, and a
+negative count is invalid. Invalid combinations throw
+`EncodingError.invalidValue` before calling XPC. Buffer-pointer overloads
+instead require the caller to satisfy the standard library buffer type's own
+base-address/count invariants. In every case, the caller remains responsible
+for the initialized readable extent and lifetime promised by the public unsafe
+API.
 
 The `efficientlyEncodeElements` helpers are different: they encode each
 `Encodable` element through the ordinary unkeyed-container rules. They produce

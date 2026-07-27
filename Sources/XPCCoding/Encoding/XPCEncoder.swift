@@ -28,6 +28,16 @@ import Combine
 /// ```
 ///
 public final class XPCEncoder: TopLevelEncoder {
+
+  /// The `TopLevelEncoder` output type: an XPC object tree.
+  ///
+  /// The object kinds and values XPCCoding produces are described by the
+  /// repository's XPC object representation contract
+  /// (`reference/WireFormat.md`). That representation is precise within one
+  /// compilation cohort — peers built from the same XPCCoding revision,
+  /// toolchain, models, and configuration, and deployed together — and is not
+  /// a separately-versioned interchange format. Do not archive the object or
+  /// send it to an independently versioned peer.
   public typealias Output = xpc_object_t
 
   /// The strategy for handling embedded null bytes in string keys.
@@ -139,6 +149,11 @@ public final class XPCEncoder: TopLevelEncoder {
 // MARK: - CustomStringConvertible
 
 extension XPCEncoder: CustomStringConvertible {
+
+  /// A brief, human-readable summary of the encoder's configured strategies.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var description: String {
     "(string-keys: \(stringKeyStrategy), string-values: \(stringValueStrategy))"
   }
@@ -148,6 +163,10 @@ extension XPCEncoder: CustomStringConvertible {
 
 extension XPCEncoder: CustomDebugStringConvertible {
 
+  /// A developer-facing description naming the encoder's configured strategies.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var debugDescription: String {
     "XPCEncoder(stringKeyStrategy: \(stringKeyStrategy), stringValueStrategy: \(stringValueStrategy))"
   }

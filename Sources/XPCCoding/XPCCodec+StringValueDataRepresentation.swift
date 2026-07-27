@@ -46,7 +46,11 @@ extension XPCCodec.StringValueDataRepresentation: CaseIterable { }
 // MARK: - CustomStringConvertible
 
 extension XPCCodec.StringValueDataRepresentation: CustomStringConvertible {
-  
+
+  /// A brief, human-readable name for the Unicode encoding.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var description: String {
     switch self {
     case .utf8: "UTF-8"
@@ -60,7 +64,11 @@ extension XPCCodec.StringValueDataRepresentation: CustomStringConvertible {
 // MARK: - CustomDebugStringConvertible
 
 extension XPCCodec.StringValueDataRepresentation: CustomDebugStringConvertible {
-  
+
+  /// A developer-facing description naming the case in source-like form.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var debugDescription: String {
     switch self {
     case .utf8: ".utf8"

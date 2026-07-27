@@ -65,7 +65,12 @@ extension XPCCodec.Configuration: Codable { }
 // MARK: - CaseIterable
 
 extension XPCCodec.Configuration: CaseIterable {
-  
+
+  /// Every configuration formed by pairing each
+  /// ``XPCCodec/StringKeyStrategy`` with each ``XPCCodec/StringValueStrategy``.
+  ///
+  /// The order is an implementation detail; treat this as a set. It exists so
+  /// exhaustive round-trip tests can cover the whole configuration space.
   public static let allCases: [Self] = {
     var result: [Self] = []
     let stringKeyStrategies = XPCCodec.StringKeyStrategy.allCases

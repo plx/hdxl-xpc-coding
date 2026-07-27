@@ -53,7 +53,7 @@ Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift:42:@usableFromInline	Compil
 Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift:54:@usableFromInline	Compiler-required ABI dependency or Encoder witness for the measured generic entry point.
 Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift:60:@usableFromInline	Compiler-required ABI dependency or Encoder witness for the measured generic entry point.
 Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift:86:@usableFromInline	Compiler-required ABI dependency or Encoder witness for the measured generic entry point.
-Sources/XPCCoding/Encoding/XPCEncoder.swift:94:@inlinable	Measured cross-module specialization of the public generic encoding entry point.
+Sources/XPCCoding/Encoding/XPCEncoder.swift:104:@inlinable	Measured cross-module specialization of the public generic encoding entry point.
 Sources/XPCCoding/Protocols/LosslessXPCObjectConvertible.swift:104:@usableFromInline	Compiler-required protocol or witness visibility for measured lossless conversion leaves.
 Sources/XPCCoding/Protocols/LosslessXPCObjectConvertible.swift:113:@usableFromInline	Compiler-required protocol or witness visibility for measured lossless conversion leaves.
 Sources/XPCCoding/Protocols/LosslessXPCObjectConvertible.swift:122:@usableFromInline	Compiler-required protocol or witness visibility for measured lossless conversion leaves.
