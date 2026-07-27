@@ -18,7 +18,7 @@ struct PercentEscapeRegressionTests {
       "%\u{301}": "%25\u{301}",
       "%\u{FE0F}": "%25\u{FE0F}",
     ]
-    let encoder = percentEscapeEncoder()
+   let encoder = percentEscapeEncoder()
 
     for (source, expectedRepresentation) in expectedRepresentations {
       let encodedValue = try encoder.encode(source)
