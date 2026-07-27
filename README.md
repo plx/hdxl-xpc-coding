@@ -134,6 +134,7 @@ recover it on the other side:
 import XPCCoding
 
 enum ApplicationMessageError: Error {
+  case invalidMessage
   case missingPayload
 }
 
@@ -160,6 +161,9 @@ func decodeRequest(
   from message: xpc_object_t,
   using codec: XPCCodec = .standard
 ) throws -> WorkRequest {
+  guard xpc_get_type(message) == XPC_TYPE_DICTIONARY else {
+    throw ApplicationMessageError.invalidMessage
+  }
   guard
     let root = applicationPayloadKey.withCString({
       xpc_dictionary_get_value(message, $0)

@@ -2,6 +2,7 @@
 import XPCCoding
 
 enum ApplicationMessageError: Error {
+  case invalidMessage
   case missingPayload
 }
 
@@ -28,6 +29,9 @@ func decodeRequest(
   from message: xpc_object_t,
   using codec: XPCCodec = .standard
 ) throws -> WorkRequest {
+  guard xpc_get_type(message) == XPC_TYPE_DICTIONARY else {
+    throw ApplicationMessageError.invalidMessage
+  }
   guard
     let root = applicationPayloadKey.withCString({
       xpc_dictionary_get_value(message, $0)
@@ -57,4 +61,11 @@ func verifyApplicationMessageRoundTrip() throws {
   let message = try makeMessage(for: request)
   let decoded = try decodeRequest(from: message)
   precondition(decoded == request)
+
+  do {
+    _ = try decodeRequest(from: xpc_int64_create(29))
+    preconditionFailure("A non-dictionary connection event was accepted.")
+  } catch ApplicationMessageError.invalidMessage {
+    // The application must reject non-dictionary XPC events before lookup.
+  }
 }
