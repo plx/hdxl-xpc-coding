@@ -269,6 +269,8 @@ and the [changelog](CHANGELOG.md) before adopting a version.
 
 ## Project resources
 
+- [Contributing and local validation](CONTRIBUTING.md)
+- [Code of conduct](CODE_OF_CONDUCT.md)
 - [API documentation build instructions](reference/ApiDocumentation.md)
 - [swift-format policy and commands](reference/SwiftFormat.md)
 - [Migration guide](reference/MigrationGuide.md)
@@ -281,7 +283,8 @@ and the [changelog](CHANGELOG.md) before adopting a version.
 
 Report suspected vulnerabilities through the private route in
 [SECURITY.md](SECURITY.md), never in a public issue. For ordinary defects,
-proposals, or contributions, use the repository's
+proposals, or contributions, read [CONTRIBUTING.md](CONTRIBUTING.md) and use
+the repository's
 [issues](https://github.com/plx/hdxl-xpc-coding/issues) and
 [pull requests](https://github.com/plx/hdxl-xpc-coding/pulls). Representation
 changes must update the normative contract and same-build fixtures in the same

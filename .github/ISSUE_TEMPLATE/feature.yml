@@ -1,0 +1,90 @@
+name: Feature or design proposal
+description: Propose a focused addition or intentional compatibility change.
+title: "[Proposal] "
+labels:
+  - "type:design"
+  - "enhancement"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        XPCCoding is maintained for one narrow same-host, co-built XPC use case. Explain the problem before prescribing an implementation.
+
+        **Do not disclose a suspected vulnerability here.** Use [private vulnerability reporting](https://github.com/plx/hdxl-xpc-coding/security/advisories/new) instead.
+
+  - type: checkboxes
+    id: public-routing
+    attributes:
+      label: Public-report confirmation
+      options:
+        - label: This proposal contains no suspected vulnerability, credential, production payload, or other sensitive data.
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and supported use case
+      description: Describe the concrete problem, affected callers, and why it belongs inside XPCCoding's supported envelope.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe observable behavior and success criteria without requiring one implementation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Include application-level solutions and explain why the existing API is insufficient.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: compatibility
+    attributes:
+      label: Compatibility surface
+      options:
+        - No public API or XPC representation change
+        - Additive public Swift source API
+        - Breaking public Swift source API
+        - XPC object representation
+        - Toolchain or platform support
+        - Unsure
+    validations:
+      required: true
+
+  - type: textarea
+    id: compatibility-plan
+    attributes:
+      label: Compatibility, migration, and changelog plan
+      description: Explain required API docs, baseline, representation-contract, same-build fixture, coordinated-deployment, migration, and changelog updates.
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: Regression and validation plan
+      description: Describe failing-before evidence, tests, negative controls, integration evidence, or same-machine benchmarks.
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Related issues and dependencies
+      description: Link related work and identify what must land before implementation begins.
+      placeholder: "Related to #...; blocked by #..."
+
+  - type: textarea
+    id: maintenance
+    attributes:
+      label: Ongoing maintenance cost
+      description: Identify new dependencies, CI time, platform matrix, generated files, or recurring work the solo maintainer would inherit.
+    validations:
+      required: true
