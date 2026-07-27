@@ -27,6 +27,54 @@ internal enum XPCStringExtractionError: Error {
 
 extension xpc_object_t {
 
+  /// Copies the complete payload of an XPC data object into independently owned
+  /// `Data` storage without first zero-initializing that storage.
+  ///
+  /// Small payloads copy directly into `Data`'s inline storage. Larger payloads
+  /// copy into uninitialized storage whose ownership is transferred to `Data`.
+  /// Neither result borrows the XPC object's internal storage.
+  internal func copiedData() -> Data? {
+    assert(hasType(XPC_TYPE_DATA))
+    let expectedLength = xpc_data_get_length(self)
+    guard expectedLength > 0 else {
+      return Data()
+    }
+
+    let maximumInlineByteCount = 14
+    if expectedLength <= maximumInlineByteCount {
+      guard let bytes = xpc_data_get_bytes_ptr(self) else {
+        return nil
+      }
+      return Data(
+        bytes: bytes,
+        count: expectedLength
+      )
+    }
+
+    let buffer = UnsafeMutableRawPointer.allocate(
+      byteCount: expectedLength,
+      alignment: MemoryLayout<UInt8>.alignment
+    )
+    let copiedCount = xpc_data_get_bytes(
+      self,
+      buffer,
+      0,
+      expectedLength
+    )
+    guard copiedCount == expectedLength else {
+      buffer.deallocate()
+      return nil
+    }
+
+    return Data(
+      bytesNoCopy: buffer,
+      count: expectedLength,
+      deallocator: .custom { buffer, _ in
+        buffer.deallocate()
+      }
+    )
+  }
+
   /// Entry point for string-value extraction.
   internal func extractStringValue(
     stringValueStrategy: XPCDecoder.StringValueStrategy,
@@ -119,23 +167,7 @@ extension xpc_object_t {
       guard expectedLength > 0 else {
         return ""
       }
-      var data = Data(repeating: 0, count: expectedLength)
-      let copiedOK = data.withUnsafeMutableBytes { (unsafeMutableBytesPtr: UnsafeMutableRawBufferPointer) in
-        let baseAddress = infalliblyUnwrap(
-          unsafeMutableBytesPtr.baseAddress,
-          explanation:
-            "`UnsafeMutableRawBufferPointer.baseAddress` is nil only for empty buffers, but we already early-returned for `expectedLength == 0`."
-        )
-
-        let copiedCount = xpc_data_get_bytes(
-          self,
-          baseAddress,
-          0,
-          expectedLength
-        )
-        return expectedLength == copiedCount
-      }
-      guard copiedOK else {
+      guard let data = copiedData() else {
         throw .unableToCopyStringContent("Unable to copy \(expectedLength) bytes from xpc data.")
       }
 
