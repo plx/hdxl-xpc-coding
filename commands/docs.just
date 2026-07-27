@@ -6,12 +6,13 @@ set quiet
 default:
     @just --list docs --unsorted
 
+# generates the XPCCoding documentation archive into `destination` (DocC warnings fail)
 [group('generate')]
 generate-documentation destination:
-    # generates documentation
-    swift package --allow-writing-to-directory {{destination}} generate-documentation \
-        --enable-experimental-combined-documentation \
-        --output-path {{destination}} \
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    cd {{ justfile_directory() }}
+    bash Scripts/generate-api-documentation.sh {{ quote(destination) }}
 
 # invokes doc-check command
 [private]
