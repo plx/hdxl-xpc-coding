@@ -115,11 +115,13 @@ leaf:
 | hostile input | `Scripts/run-hostile-input-tests.sh` | Address and Thread Sanitizer |
 | fuzz smoke | `Scripts/run-fuzzing-smoke.sh` | Deterministic fuzzing smoke |
 | XPC integration | `Scripts/run-xpc-integration.sh` | Same-host XPC request/reply |
+| Swift Package Index metadata | `Scripts/verify-swift-package-index-metadata.sh` | Strict SwiftLint and recipe contracts |
 
 `Scripts/verify-just-recipe-contracts.sh` rejects obsolete validation-variant
 names, any remaining `HEAVY_VALIDATION` reference in implementation or recipe
 files, and any aggregate whose dependency set differs from the groups described
 above.
+It also requires the release metadata recipe to invoke its real validator.
 It is the local preflight for aggregate wiring; final CI quality-gate assembly
 owns installing its `just`, `jq`, and ripgrep prerequisites and adding the
 preflight as a required check.

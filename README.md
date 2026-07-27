@@ -276,6 +276,7 @@ and the [changelog](CHANGELOG.md) before adopting a version.
 - [Sanitizer testing](reference/SanitizerTesting.md)
 - [Local and CI validation recipes](reference/ValidationRecipes.md)
 - [Continuous-integration checks and stable names](reference/ContinuousIntegration.md)
+- [Swift Package Index metadata and limitations](reference/SwiftPackageIndex.md)
 - [Release process](RELEASING.md)
 
 Report suspected vulnerabilities through the private route in

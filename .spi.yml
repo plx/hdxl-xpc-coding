@@ -1,0 +1,14 @@
+version: 1
+builder:
+  configs:
+    - platform: macos-spm
+      swift_version: "6.3"
+      target: XPCCoding
+      documentation_targets:
+        - XPCCoding
+    - platform: macos-xcodebuild
+      swift_version: "6.3"
+      scheme: XPCCoding
+    - platform: ios
+      swift_version: "6.3"
+      scheme: XPCCoding

@@ -44,11 +44,15 @@ CI calls the same implementations used locally:
 | Source API | `bash Scripts/verify-api-stability.sh` |
 | Source coverage | `bash Scripts/generate-source-coverage.sh <output-directory>` |
 | Aggregate recipes | `bash Scripts/verify-just-recipe-contracts.sh` |
+| Swift Package Index metadata | `bash Scripts/verify-swift-package-index-metadata.sh` |
 
 The quality job installs exact arm64 release archives of just 1.51.0, ripgrep
 15.1.0, and SwiftLint 0.65.0. `Scripts/install-ci-quality-tools.sh` verifies
 their published SHA-256 digests before installation. No release gate uses
 `continue-on-error`, and shell pipelines use `pipefail` before `tee`.
+The same job runs the repository's
+[Swift Package Index metadata gate](SwiftPackageIndex.md) with its separately
+pinned official parser.
 
 Test, documentation, coverage, baseline, fuzzing, benchmark, and sanitizer
 jobs retain the reports or complete transcripts that materially aid

@@ -142,6 +142,12 @@ jobs:
           bash Scripts/verify-just-recipe-contracts.sh \
             2>&1 | tee "${RUNNER_TEMP}/recipe-contracts.log"
 
+      - name: Verify Swift Package Index metadata
+        run: |
+          set -o pipefail
+          bash Scripts/verify-swift-package-index-metadata.sh \
+            2>&1 | tee "${RUNNER_TEMP}/spi-metadata.log"
+
       - name: Upload quality-gate transcripts
         if: ${{ always() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -150,6 +156,7 @@ jobs:
           path: |
             ${{ runner.temp }}/swiftlint.log
             ${{ runner.temp }}/recipe-contracts.log
+            ${{ runner.temp }}/spi-metadata.log
           if-no-files-found: warn
           retention-days: 14
 
