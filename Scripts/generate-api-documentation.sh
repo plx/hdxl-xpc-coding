@@ -11,7 +11,11 @@ set -euo pipefail
 # separately-versioned plugin, and nothing to resolve, so a clean clone
 # reproduces this output offline.
 #
-# Every DocC warning, including an unresolved symbol link, fails the run.
+# Every DocC warning, including an unresolved symbol link, fails the run, and
+# Scripts/verify-public-documentation.sh fails the run when any public
+# declaration in those symbol graphs lacks a documentation comment. That gate
+# reuses the symbol graphs emitted here, so completeness and strict DocC are
+# enforced by one build rather than by two drifting recipes.
 
 readonly module_name="XPCCoding"
 readonly bundle_identifier="com.plx.hdxl-xpc-coding.XPCCoding"
@@ -51,6 +55,8 @@ swift build \
 
 [[ -f "${symbol_graph_directory}/${module_name}.symbols.json" ]] || fail \
   "the build did not emit a symbol graph for ${module_name}."
+
+bash "${script_directory}/verify-public-documentation.sh" "${symbol_graph_directory}"
 
 xcrun docc convert \
   --additional-symbol-graph-dir "${symbol_graph_directory}" \

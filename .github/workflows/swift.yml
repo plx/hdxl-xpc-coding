@@ -87,7 +87,7 @@ jobs:
       - name: Verify the supported toolchain and manifest
         run: bash Scripts/verify-support-policy.sh
 
-      - name: Generate the XPCCoding documentation with DocC warnings as errors
+      - name: Generate the XPCCoding documentation, gating public-doc completeness and DocC warnings
         run: bash Scripts/generate-api-documentation.sh "${RUNNER_TEMP}/documentation"
 
   xpc-process-boundary:

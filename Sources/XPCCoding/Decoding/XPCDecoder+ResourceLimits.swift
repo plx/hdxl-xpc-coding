@@ -112,6 +112,10 @@ extension XPCDecoder {
 
 extension XPCDecoder.ResourceLimits: CustomStringConvertible {
 
+  /// A brief, human-readable summary of every configured limit.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var description: String {
     """
     (depth: \(maximumNestingDepth), container-elements: \(maximumContainerElementCount), \
@@ -126,6 +130,10 @@ extension XPCDecoder.ResourceLimits: CustomStringConvertible {
 
 extension XPCDecoder.ResourceLimits: CustomDebugStringConvertible {
 
+  /// A developer-facing description naming every configured limit.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var debugDescription: String {
     """
     XPCDecoder.ResourceLimits(

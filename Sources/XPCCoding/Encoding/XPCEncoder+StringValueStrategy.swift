@@ -33,7 +33,7 @@ extension XPCEncoder {
     /// Encode strings as binary data using the specified encoding.
     ///
     /// This bypasses the XPC string type entirely by encoding strings as
-    /// `xpc_data_t` in the specified Unicode encoding. Use this when you
+    /// an XPC data object in the specified Unicode encoding. Use this when you
     /// need to preserve arbitrary string content without escaping.
     case useDataRepresentation(XPCCodec.StringValueDataRepresentation)
   }
@@ -51,7 +51,14 @@ extension XPCEncoder.StringValueStrategy: Codable { }
 // MARK: - CaseIterable
 
 extension XPCEncoder.StringValueStrategy: CaseIterable {
-  
+
+  /// Every string-value encoding strategy, including one
+  /// ``XPCEncoder/StringValueStrategy/useDataRepresentation(_:)`` case per
+  /// ``XPCCodec/StringValueDataRepresentation``.
+  ///
+  /// The order is an implementation detail; treat this as a set. It exists so
+  /// exhaustive tests and configuration UIs can enumerate the strategies
+  /// despite the associated-value case.
   static public let allCases: [Self] = {
     [
       .assumeAbsent,
@@ -67,6 +74,11 @@ extension XPCEncoder.StringValueStrategy: CaseIterable {
 // MARK: - CustomStringConvertible
 
 extension XPCEncoder.StringValueStrategy: CustomStringConvertible {
+
+  /// A brief, human-readable name for the string-value encoding strategy.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var description: String {
     switch self {
     case .assumeAbsent:
@@ -84,6 +96,11 @@ extension XPCEncoder.StringValueStrategy: CustomStringConvertible {
 // MARK: - CustomDebugStringConvertible
 
 extension XPCEncoder.StringValueStrategy: CustomDebugStringConvertible {
+
+  /// A developer-facing description naming the case in source-like form.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var debugDescription: String {
     switch self {
     case .assumeAbsent:

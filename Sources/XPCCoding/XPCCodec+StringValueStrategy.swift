@@ -57,7 +57,14 @@ extension XPCCodec.StringValueStrategy: Codable { }
 // MARK: - CaseIterable
 
 extension XPCCodec.StringValueStrategy: CaseIterable {
-  
+
+  /// Every string-value strategy, including one
+  /// ``XPCCodec/StringValueStrategy/useDataRepresentation(_:)`` case per
+  /// ``XPCCodec/StringValueDataRepresentation``.
+  ///
+  /// The order is an implementation detail; treat this as a set. It exists so
+  /// exhaustive tests and configuration UIs can enumerate the strategies
+  /// despite the associated-value case.
   static public let allCases: [Self] = {
     [
       .assumeAbsent,
@@ -73,7 +80,11 @@ extension XPCCodec.StringValueStrategy: CaseIterable {
 // MARK: - CustomStringConvertible
 
 extension XPCCodec.StringValueStrategy: CustomStringConvertible {
-  
+
+  /// A brief, human-readable name for the string-value strategy.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var description: String {
     switch self {
     case .assumeAbsent: "assume absent"
@@ -88,7 +99,11 @@ extension XPCCodec.StringValueStrategy: CustomStringConvertible {
 // MARK: - CustomDebugStringConvertible
 
 extension XPCCodec.StringValueStrategy: CustomDebugStringConvertible {
-  
+
+  /// A developer-facing description naming the case in source-like form.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var debugDescription: String {
     switch self {
     case .assumeAbsent: ".assumeAbsent"

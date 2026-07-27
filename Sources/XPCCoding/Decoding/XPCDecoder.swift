@@ -40,6 +40,18 @@ import Combine
 /// this facade. Errors thrown directly by a type's `Decodable` implementation
 /// propagate unchanged.
 public final class XPCDecoder: TopLevelDecoder {
+
+  /// The `TopLevelDecoder` input type: an XPC object tree.
+  ///
+  /// The object kinds and values XPCCoding accepts are described by the
+  /// repository's XPC object representation contract
+  /// (`reference/WireFormat.md`). Supported input is an object produced by the
+  /// same compilation cohort — peers built from the same XPCCoding revision,
+  /// toolchain, models, and configuration, and deployed together. Objects from
+  /// another XPCCoding release, from persistence, or from an independently
+  /// versioned peer are out of scope. They may fail with the `DecodingError`
+  /// taxonomy documented on ``XPCDecoder`` or may happen to decode; neither
+  /// outcome is a compatibility guarantee.
   public typealias Input = xpc_object_t
 
   /// The strategy for handling encoded null bytes in string keys.
@@ -134,6 +146,11 @@ public final class XPCDecoder: TopLevelDecoder {
 // MARK: - CustomStringConvertible
 
 extension XPCDecoder: CustomStringConvertible {
+
+  /// A brief, human-readable summary of the decoder's strategies and limits.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var description: String {
     """
     (string-keys: \(stringKeyStrategy), string-values: \(stringValueStrategy), \
@@ -146,6 +163,10 @@ extension XPCDecoder: CustomStringConvertible {
 
 extension XPCDecoder: CustomDebugStringConvertible {
 
+  /// A developer-facing description naming the decoder's strategies and limits.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var debugDescription: String {
     """
     XPCDecoder(

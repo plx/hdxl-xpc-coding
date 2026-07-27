@@ -47,7 +47,14 @@ extension XPCDecoder.StringValueStrategy: Codable { }
 // MARK: - CaseIterable
 
 extension XPCDecoder.StringValueStrategy: CaseIterable {
-  
+
+  /// Every string-value decoding strategy, including one
+  /// ``XPCDecoder/StringValueStrategy/useDataRepresentation(_:)`` case per
+  /// ``XPCCodec/StringValueDataRepresentation``.
+  ///
+  /// The order is an implementation detail; treat this as a set. It exists so
+  /// exhaustive tests and configuration UIs can enumerate the strategies
+  /// despite the associated-value case.
   static public let allCases: [Self] = {
     [
       .passthrough,
@@ -63,6 +70,10 @@ extension XPCDecoder.StringValueStrategy: CaseIterable {
 
 extension XPCDecoder.StringValueStrategy: CustomStringConvertible {
 
+  /// A brief, human-readable name for the string-value decoding strategy.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var description: String {
     switch self {
     case .passthrough:
@@ -77,7 +88,11 @@ extension XPCDecoder.StringValueStrategy: CustomStringConvertible {
 }
 
 extension XPCDecoder.StringValueStrategy: CustomDebugStringConvertible {
-  
+
+  /// A developer-facing description naming the case in source-like form.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var debugDescription: String {
     switch self {
     case .passthrough:

@@ -38,7 +38,12 @@ extension XPCDecoder.StringKeyStrategy: CaseIterable { }
 
 // MARK: - CustomStringConvertible
 
-extension XPCDecoder.StringKeyStrategy: CustomStringConvertible { 
+extension XPCDecoder.StringKeyStrategy: CustomStringConvertible {
+
+  /// A brief, human-readable name for the string-key decoding strategy.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var description: String {
     switch self {
     case .passthrough:
@@ -51,7 +56,12 @@ extension XPCDecoder.StringKeyStrategy: CustomStringConvertible {
 
 // MARK: - CustomDebugStringConvertible
 
-extension XPCDecoder.StringKeyStrategy: CustomDebugStringConvertible { 
+extension XPCDecoder.StringKeyStrategy: CustomDebugStringConvertible {
+
+  /// A developer-facing description naming the case in source-like form.
+  ///
+  /// - Note: Intended for diagnostics and logging. The exact text is not API
+  ///   and must not be parsed.
   public var debugDescription: String {
     switch self {
     case .passthrough:
