@@ -232,23 +232,15 @@ jobs:
         run: bash Scripts/verify-support-policy.sh
 
       - name: Run the complete suite under AddressSanitizer
-        env:
-          ASAN_OPTIONS: halt_on_error=1
         run: |
           set -o pipefail
-          swift test \
-            --sanitize=address \
-            -Xswiftc -warnings-as-errors \
+          bash Scripts/run-sanitizer-tests.sh address \
             2>&1 | tee "${RUNNER_TEMP}/address-sanitizer.log"
 
       - name: Run subprocess-isolated hostile-input regressions
         run: |
           set -o pipefail
-          swift test \
-            --scratch-path "${RUNNER_TEMP}/address-subprocess-tests" \
-            -Xswiftc -warnings-as-errors \
-            --filter \
-            'UnalignedNumericDecodingTests|DecoderResourceLimitTests|ReferencingEncoderStateTests|UnsafePointerCountValidationTests' \
+          bash Scripts/run-hostile-input-tests.sh \
             2>&1 | tee -a "${RUNNER_TEMP}/address-sanitizer.log"
 
       - name: Upload the complete AddressSanitizer log
@@ -276,13 +268,9 @@ jobs:
         run: bash Scripts/verify-support-policy.sh
 
       - name: Run the complete suite under UndefinedBehaviorSanitizer
-        env:
-          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
         run: |
           set -o pipefail
-          swift test \
-            --sanitize=undefined \
-            -Xswiftc -warnings-as-errors \
+          bash Scripts/run-sanitizer-tests.sh undefined \
             2>&1 | tee "${RUNNER_TEMP}/undefined-behavior-sanitizer.log"
 
       - name: Upload the complete UndefinedBehaviorSanitizer log
@@ -310,23 +298,15 @@ jobs:
         run: bash Scripts/verify-support-policy.sh
 
       - name: Run the complete suite under ThreadSanitizer
-        env:
-          TSAN_OPTIONS: halt_on_error=1
         run: |
           set -o pipefail
-          swift test \
-            --sanitize=thread \
-            -Xswiftc -warnings-as-errors \
+          bash Scripts/run-sanitizer-tests.sh thread \
             2>&1 | tee "${RUNNER_TEMP}/thread-sanitizer.log"
 
       - name: Run subprocess-isolated hostile-input regressions
         run: |
           set -o pipefail
-          swift test \
-            --scratch-path "${RUNNER_TEMP}/thread-subprocess-tests" \
-            -Xswiftc -warnings-as-errors \
-            --filter \
-            'UnalignedNumericDecodingTests|DecoderResourceLimitTests|ReferencingEncoderStateTests|UnsafePointerCountValidationTests' \
+          bash Scripts/run-hostile-input-tests.sh \
             2>&1 | tee -a "${RUNNER_TEMP}/thread-sanitizer.log"
 
       - name: Upload the complete ThreadSanitizer log
