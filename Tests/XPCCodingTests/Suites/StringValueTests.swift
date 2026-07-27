@@ -160,61 +160,56 @@ struct `String-Value Tests` {
 
   // MARK: - Embedded Null Scenarios
 
-  /// Check `.assumeAbsent` "succeeds" at encoding, but fails to round-trip.
+  /// Check `.assumeAbsent` truncates at the first null byte, in every container
+  /// shape, and therefore stays lossy — distinct from every safe strategy below.
   @Test(
     .tags(.roundTrip),
-    arguments: XPCCodec.StringKeyStrategy.allCases, String.embeddedNullByteExamples
+    arguments: XPCCodec.StringKeyStrategy.allCases, EmbeddedNullStringProbe.allCases
   )
-  func `assumeAbsent (fails)`(
+  func `assumeAbsent truncates (lossy)`(
     stringKeyStrategy: XPCCodec.StringKeyStrategy,
-    probe: String
+    probe: EmbeddedNullStringProbe
   ) throws {
-    try #require(probe.containsNullBytes)
-    withKnownIssue("Encoding/decoding succeeds, but produces different values for embedded null byte values under `.assumeAbsent`") {
-      try verifyRoundTrip(
-        ofValueAndWrappers: probe,
-        configuration: XPCCodec.Configuration(
-          stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: .assumeAbsent
-        )
+    try verifyTruncatingRoundTrip(
+      of: probe,
+      using: embeddedNullCodec(
+        stringKeyStrategy: stringKeyStrategy,
+        stringValueStrategy: .assumeAbsent
       )
-    }
+    )
   }
 
-  /// Check `.throwsOnDiscovery` should throw when it detects embedded null bytes.
+  /// Check `.throwOnDiscovery` throws `EncodingError.invalidValue`, caused by
+  /// the internal `containsNullBytes` conversion failure, in every shape.
   @Test(
     .tags(.roundTrip),
-    arguments: XPCCodec.StringKeyStrategy.allCases, String.embeddedNullByteExamples
+    arguments: XPCCodec.StringKeyStrategy.allCases, EmbeddedNullStringProbe.allCases
   )
   func `throwOnDiscovery (fails)`(
     stringKeyStrategy: XPCCodec.StringKeyStrategy,
-    probe: String
+    probe: EmbeddedNullStringProbe
   ) throws {
-    try #require(probe.containsNullBytes)
-    #expect(throws: (any Error).self) {
-      try verifyRoundTrip(
-        ofValueAndWrappers: probe,
-        configuration: XPCCodec.Configuration(
-          stringKeyStrategy: stringKeyStrategy,
-          stringValueStrategy: .throwOnDiscovery
-        )
+    verifyThrowOnDiscoveryFailure(
+      for: probe,
+      using: embeddedNullCodec(
+        stringKeyStrategy: stringKeyStrategy,
+        stringValueStrategy: .throwOnDiscovery
       )
-    }
+    )
   }
 
   /// Check `.percentEscape` should round-trip strings even with embedded null bytes.
   @Test(
     .tags(.roundTrip),
-    arguments: XPCCodec.StringKeyStrategy.allCases, String.embeddedNullByteExamples
+    arguments: XPCCodec.StringKeyStrategy.allCases, EmbeddedNullStringProbe.allCases
   )
   func `percentEscape (ok)`(
     stringKeyStrategy: XPCCodec.StringKeyStrategy,
-    probe: String
+    probe: EmbeddedNullStringProbe
   ) throws {
-    try #require(probe.containsNullBytes)
-    try verifyRoundTrip(
-      ofValueAndWrappers: probe,
-      configuration: XPCCodec.Configuration(
+    try verifyExactRoundTrip(
+      of: probe,
+      using: embeddedNullCodec(
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: .percentEscape
       )
@@ -224,16 +219,15 @@ struct `String-Value Tests` {
   /// Check `.useDataRepresentation(.utf8)` should round-trip strings even with embedded null bytes.
   @Test(
     .tags(.roundTrip),
-    arguments: XPCCodec.StringKeyStrategy.allCases, String.embeddedNullByteExamples
+    arguments: XPCCodec.StringKeyStrategy.allCases, EmbeddedNullStringProbe.allCases
   )
   func `utf-8 (ok)`(
     stringKeyStrategy: XPCCodec.StringKeyStrategy,
-    probe: String
+    probe: EmbeddedNullStringProbe
   ) throws {
-    try #require(probe.containsNullBytes)
-    try verifyRoundTrip(
-      ofValueAndWrappers: probe,
-      configuration: XPCCodec.Configuration(
+    try verifyExactRoundTrip(
+      of: probe,
+      using: embeddedNullCodec(
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: .useDataRepresentation(.utf8)
       )
@@ -243,16 +237,15 @@ struct `String-Value Tests` {
   /// Check `.useDataRepresentation(.utf16)` should round-trip strings even with embedded null bytes.
   @Test(
     .tags(.roundTrip),
-    arguments: XPCCodec.StringKeyStrategy.allCases, String.embeddedNullByteExamples
+    arguments: XPCCodec.StringKeyStrategy.allCases, EmbeddedNullStringProbe.allCases
   )
   func `utf-16 (ok)`(
     stringKeyStrategy: XPCCodec.StringKeyStrategy,
-    probe: String
+    probe: EmbeddedNullStringProbe
   ) throws {
-    try #require(probe.containsNullBytes)
-    try verifyRoundTrip(
-      ofValueAndWrappers: probe,
-      configuration: XPCCodec.Configuration(
+    try verifyExactRoundTrip(
+      of: probe,
+      using: embeddedNullCodec(
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: .useDataRepresentation(.utf16)
       )
@@ -262,18 +255,29 @@ struct `String-Value Tests` {
   /// Check `.useDataRepresentation(.utf32)` should round-trip strings even with embedded null bytes.
   @Test(
     .tags(.roundTrip),
-    arguments: XPCCodec.StringKeyStrategy.allCases, String.embeddedNullByteExamples
+    arguments: XPCCodec.StringKeyStrategy.allCases, EmbeddedNullStringProbe.allCases
   )
   func `utf-32 (ok)`(
     stringKeyStrategy: XPCCodec.StringKeyStrategy,
-    probe: String
+    probe: EmbeddedNullStringProbe
   ) throws {
-    try #require(probe.containsNullBytes)
-    try verifyRoundTrip(
-      ofValueAndWrappers: probe,
-      configuration: XPCCodec.Configuration(
+    try verifyExactRoundTrip(
+      of: probe,
+      using: embeddedNullCodec(
         stringKeyStrategy: stringKeyStrategy,
         stringValueStrategy: .useDataRepresentation(.utf32)
+      )
+    )
+  }
+
+  private func embeddedNullCodec(
+    stringKeyStrategy: XPCCodec.StringKeyStrategy,
+    stringValueStrategy: XPCCodec.StringValueStrategy
+  ) -> XPCCodec {
+    XPCCodec(
+      configuration: XPCCodec.Configuration(
+        stringKeyStrategy: stringKeyStrategy,
+        stringValueStrategy: stringValueStrategy
       )
     )
   }

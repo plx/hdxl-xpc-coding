@@ -123,6 +123,17 @@ func verifyCodingPath(
 
 // MARK: - Round-Trip Verification
 
+/// Encodes and then decodes a value with one codec.
+func transcodedValue<Value: Codable>(
+  _ value: Value,
+  using codec: XPCCodec
+) throws -> Value {
+  try codec.decode(
+    Value.self,
+    from: codec.encode(value)
+  )
+}
+
 /// Verifies a value round-trips correctly through XPC encoding.
 /// - Parameters:
 ///   - value: The value to encode and decode

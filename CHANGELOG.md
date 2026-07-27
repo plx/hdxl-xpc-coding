@@ -173,6 +173,15 @@ it; it is noted here only because it changes how a codec is constructed.
   entry point, plus a fail-closed public-documentation completeness gate
   (`Scripts/verify-public-documentation.sh`) wired into the API documentation
   build and its CI job (#38).
+- **A zero-known-issue release policy**, enforced by the canonical
+  `Scripts/run-tests-with-zero-known-issues.sh` that backs both `just test
+  debug|release` and the CI test job. The 69 `withKnownIssue` reports that used
+  to accompany a "passing" run are replaced by exact assertions of the
+  intentionally lossy `.assumeAbsent` behavior — first-null truncation, key
+  collision, and the resulting inequality — and the gate additionally rejects
+  reintroduced `withKnownIssue` / `XCTExpectFailure` markers, known-issue
+  summaries, and raw NUL bytes in test output. Its detectors ship with positive
+  and negative controls (`just test zero-known-issue-controls`) (#42).
 
 ### Fixed
 

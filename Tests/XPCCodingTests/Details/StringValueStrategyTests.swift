@@ -70,67 +70,65 @@ private struct StringKeyStrategyTests {
 
   // MARK: - Embedded Null Bytes
 
+  /// Verifies `.assumeAbsent` truncates at the first null byte.
+  ///
+  /// It hands the string to `xpc_string_create` as a C string, so the
+  /// representation ends there. That truncation is the documented,
+  /// intentionally lossy behavior, so assert it exactly.
   @Test(
-    arguments: String.embeddedNullByteExamples
+    arguments: EmbeddedNullStringProbe.allCases
   )
-  func `assumeAbsent <-> xpc (nulls)`(probe: String) throws {
-    withKnownIssue("Assume absent will 'succeed' but with truncated values!") {
-      try verifyStringRoundTrip(
-        probe,
-        stringValueStrategy: .assumeAbsent
-      )
-    }
+  func `assumeAbsent <-> xpc truncates (nulls)`(probe: EmbeddedNullStringProbe) throws {
+    probe.verifyFixtureIntegrity()
+
+    let transcodedUTF8 = try probe.transcodedUTF8(stringValueStrategy: .assumeAbsent)
+
+    #expect(transcodedUTF8 == probe.expectedTruncatedUTF8)
+    #expect(transcodedUTF8 != probe.valueUTF8)
   }
 
   @Test(
-    arguments: String.embeddedNullByteExamples
+    arguments: EmbeddedNullStringProbe.allCases
   )
-  func `throwOnDiscovery <-> xpc throws (nulls)`(probe: String) throws {
-    #expect(throws: (any Error).self) {
-      try verifyStringRoundTrip(
-        probe,
-        stringValueStrategy: .throwOnDiscovery
-      )
-    }
+  func `throwOnDiscovery <-> xpc throws (nulls)`(probe: EmbeddedNullStringProbe) throws {
+    probe.verifyFixtureIntegrity()
+    probe.verifyThrowOnDiscoveryConversionFailure()
   }
 
   @Test(
-    arguments: String.embeddedNullByteExamples
+    arguments: EmbeddedNullStringProbe.allCases
   )
-  func `percentEscape <-> xpc (nulls)`(probe: String) throws {
-    try verifyStringRoundTrip(
-      probe,
-      stringValueStrategy: .percentEscape
+  func `percentEscape <-> xpc (nulls)`(probe: EmbeddedNullStringProbe) throws {
+    #expect(try probe.transcodedUTF8(stringValueStrategy: .percentEscape) == probe.valueUTF8)
+  }
+
+  @Test(
+    arguments: EmbeddedNullStringProbe.allCases
+  )
+  func `utf8 <-> xpc (nulls)`(probe: EmbeddedNullStringProbe) throws {
+    #expect(
+      try probe.transcodedUTF8(stringValueStrategy: .useDataRepresentation(.utf8))
+        == probe.valueUTF8
     )
   }
 
   @Test(
-    arguments: String.embeddedNullByteExamples
+    arguments: EmbeddedNullStringProbe.allCases
   )
-  func `utf8 <-> xpc (nulls)`(probe: String) throws {
-    try verifyStringRoundTrip(
-      probe,
-      stringValueStrategy: .useDataRepresentation(.utf8)
+  func `utf16 <-> xpc (nulls)`(probe: EmbeddedNullStringProbe) throws {
+    #expect(
+      try probe.transcodedUTF8(stringValueStrategy: .useDataRepresentation(.utf16))
+        == probe.valueUTF8
     )
   }
 
   @Test(
-    arguments: String.embeddedNullByteExamples
+    arguments: EmbeddedNullStringProbe.allCases
   )
-  func `utf16 <-> xpc (nulls)`(probe: String) throws {
-    try verifyStringRoundTrip(
-      probe,
-      stringValueStrategy: .useDataRepresentation(.utf16)
-    )
-  }
-
-  @Test(
-    arguments: String.embeddedNullByteExamples
-  )
-  func `utf32 <-> xpc (nulls)`(probe: String) throws {
-    try verifyStringRoundTrip(
-      probe,
-      stringValueStrategy: .useDataRepresentation(.utf32)
+  func `utf32 <-> xpc (nulls)`(probe: EmbeddedNullStringProbe) throws {
+    #expect(
+      try probe.transcodedUTF8(stringValueStrategy: .useDataRepresentation(.utf32))
+        == probe.valueUTF8
     )
   }
 
