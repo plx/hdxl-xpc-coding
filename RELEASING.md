@@ -79,7 +79,19 @@ placeholder; the concrete first-release version is chosen at release time.
 - Confirm the candidate is reachable from the reviewed release branch/PR. Do
   not create the final tag yet.
 
-### 4. Run the source API stability gate
+### 4. Run the metadata and source API stability gates
+
+Validate the committed Swift Package Index manifest against its pinned
+official parser and the package's real identity, product, module, supported
+configuration, documentation target, and repository URL:
+
+```sh
+bash Scripts/verify-swift-package-index-metadata.sh
+```
+
+See
+[reference/SwiftPackageIndex.md](reference/SwiftPackageIndex.md) for the
+configuration and service limitations.
 
 ```sh
 bash Scripts/verify-api-stability.sh
@@ -172,10 +184,10 @@ gh release create <version> \
 
 ### 10. Post-release
 
-Swift Package Index submission and any `.spi.yml` verification follow the audit's
-release-mechanics phase and the publication ticket. They occur only after the
-GO decision and the tag/Release exist. Nothing here is done speculatively before
-a GO.
+The committed `.spi.yml` is verified before the audit. Swift Package Index
+submission follows the audit's release-mechanics phase and the publication
+ticket; it occurs only after the GO decision and the tag/Release exist. Nothing
+is submitted speculatively before a GO.
 
 ## What a release must never do
 

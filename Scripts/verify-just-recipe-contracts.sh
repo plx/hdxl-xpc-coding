@@ -6,6 +6,7 @@ script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repository_root="$(cd -- "${script_directory}/.." && pwd)"
 build_justfile="${repository_root}/commands/build.just"
 test_justfile="${repository_root}/commands/test.just"
+release_justfile="${repository_root}/commands/release.just"
 
 fail() {
   printf 'error: %s\n' "$*" >&2
@@ -93,6 +94,7 @@ assert_body_mentions() {
 
 build_dump="$(just --justfile "${build_justfile}" --dump --dump-format json)"
 test_dump="$(just --justfile "${test_justfile}" --dump --dump-format json)"
+release_dump="$(just --justfile "${release_justfile}" --dump --dump-format json)"
 
 assert_pattern_absent \
   'HEAVY_VALIDATION' \
@@ -150,6 +152,10 @@ assert_body_mentions "${test_dump}" fuzz-smoke 'run-fuzzing-smoke.sh'
 assert_body_mentions "${test_dump}" hostile-input 'run-hostile-input-tests.sh'
 assert_body_mentions "${test_dump}" recipe-contracts 'verify-just-recipe-contracts.sh'
 assert_body_mentions "${test_dump}" xpc-integration 'run-xpc-integration.sh'
+assert_body_mentions \
+  "${release_dump}" \
+  verify-spi-metadata \
+  'verify-swift-package-index-metadata.sh'
 
 printf '%s\n' \
-  "Verified build/test aggregate dependencies and distinct real validation commands."
+  "Verified build/test aggregate dependencies and release validation commands."

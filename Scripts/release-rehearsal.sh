@@ -141,6 +141,8 @@ run_in_clone() {
 #    toolchain. Each step is fail-closed.
 run_in_clone "Verify the supported toolchain and manifest" \
   bash Scripts/verify-support-policy.sh
+run_in_clone "Verify Swift Package Index metadata" \
+  bash Scripts/verify-swift-package-index-metadata.sh
 run_in_clone "Source API stability gate" \
   bash Scripts/verify-api-stability.sh
 run_in_clone "Verify reviewed inlining annotations" \
@@ -186,6 +188,7 @@ note "Writing rehearsal report"
   printf -- '- host: `%s`\n' "$(uname -mrs)"
   printf '\n## Evidence executed in the clean clone\n\n'
   printf -- '- support-policy verification\n'
+  printf -- '- Swift Package Index metadata verification\n'
   printf -- '- source API stability gate (diagnose-api-breaking-changes vs pinned baseline)\n'
   printf -- '- reviewed inlining-annotation verification\n'
   printf -- '- debug build + test, release build (all `-warnings-as-errors`)\n'
@@ -198,7 +201,8 @@ note "Writing rehearsal report"
   printf -- '- source archive SHA-256: `%s` (rehearsal-internal; uncompressed\n' "${archive_checksum}"
   printf -- '  `git archive` tar with no path prefix, so it does NOT match the\n'
   printf -- '  gzipped, prefixed tarball GitHub generates for a release)\n'
-  printf -- '- dependencies: none (dependency-free package; no `Package.resolved` to pin)\n'
+  printf -- '- library dependencies: none (the isolated SPI metadata validator\n'
+  printf -- '  pins its tooling dependencies in its own `Package.resolved`)\n'
   printf '\n## Not performed (by design)\n\n'
   printf -- '- no annotated/signed tag created\n'
   printf -- '- no GitHub Release created\n'
