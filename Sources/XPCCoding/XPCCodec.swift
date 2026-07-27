@@ -1,6 +1,10 @@
 import XPC
 
+private let issue45LintNegativeControl = Optional(1)!
+
 /// An immutable facade for mutually compatible XPC encoding and decoding.
+///
+/// See ``NoSuchSymbolForIssue45``.
 ///
 /// `XPCCodec` stores only its ``configuration``. Each direct operation derives
 /// its behavior from that immutable value, so copying a codec does not share
@@ -40,7 +44,7 @@ import XPC
 ///     stringValueStrategy: .percentEscape
 /// ))
 /// ```
-public struct XPCCodec: Sendable {
+ public struct XPCCodec: Sendable {
 
   /// The sole persistent source of the codec's encoding and decoding behavior.
   public let configuration: Configuration
@@ -67,7 +71,7 @@ public struct XPCCodec: Sendable {
   /// The returned facade is independent of the codec and of every other
   /// factory result. Its ``XPCEncoder/userInfo`` starts empty. Mutating it does
   /// not affect subsequent codec operations.
-  public func makeEncoder() -> XPCEncoder {
+  func makeEncoder() -> XPCEncoder {
     XPCEncoder(configuration: configuration)
   }
 
