@@ -31,7 +31,7 @@ extension KeyedEncodingContainer {
       )
     }
   }
-  
+
   // MARK: - Data Elements
 
   /// Encodes `count` raw bytes beginning at `unsafeRawPointer` as binary data for
@@ -377,33 +377,33 @@ extension KeyedEncodingContainer {
 // MARK: - UnsafeRawPointerShim
 
 /// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
-/// 
+///
 /// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
-/// 
+///
 /// - unkeyed and snigle-value containers get used directly when encoding data
 /// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
-/// 
+///
 /// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
 /// instead, the best we can do is:
-/// 
+///
 /// - use a wrapper type as our encoded value
 /// - have the wrapper type use a single-value encoding container from its encoder
 /// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
-/// 
+///
 /// - SeeAlso: ``UnsafeMutableRawPointerShim``
 /// - SeeAlso: ``UnsafeRawBufferPointerShim``
 /// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
 internal struct UnsafeRawPointerShim: Encodable {
-  
+
   internal let unsafeRawPointer: UnsafeRawPointer?
-  
+
   internal let count: Int
-  
+
   init(unsafeRawPointer: UnsafeRawPointer?, count: Int) {
     self.unsafeRawPointer = unsafeRawPointer
     self.count = count
   }
-  
+
   internal func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
     try container.efficientlyEncodeBinaryData(
@@ -411,39 +411,39 @@ internal struct UnsafeRawPointerShim: Encodable {
       count: count
     )
   }
-  
+
 }
 
 // MARK: - UnsafeMutableRawPointerShim
 
 /// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
-/// 
+///
 /// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
-/// 
+///
 /// - unkeyed and snigle-value containers get used directly when encoding data
 /// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
-/// 
+///
 /// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
 /// instead, the best we can do is:
-/// 
+///
 /// - use a wrapper type as our encoded value
 /// - have the wrapper type use a single-value encoding container from its encoder
 /// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
-/// 
+///
 /// - SeeAlso: ``UnsafeRawPointerShim``
 /// - SeeAlso: ``UnsafeRawBufferPointerShim``
 /// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
 internal struct UnsafeMutableRawPointerShim: Encodable {
-  
+
   internal let unsafeMutableRawPointer: UnsafeMutableRawPointer?
-  
+
   internal let count: Int
-  
+
   init(unsafeMutableRawPointer: UnsafeMutableRawPointer?, count: Int) {
     self.unsafeMutableRawPointer = unsafeMutableRawPointer
     self.count = count
   }
-  
+
   internal func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
     try container.efficientlyEncodeBinaryData(
@@ -451,73 +451,73 @@ internal struct UnsafeMutableRawPointerShim: Encodable {
       count: count
     )
   }
-  
+
 }
 
 // MARK: - UnsafeRawBufferPointerShim
 
 /// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
-/// 
+///
 /// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
-/// 
+///
 /// - unkeyed and snigle-value containers get used directly when encoding data
 /// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
-/// 
+///
 /// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
 /// instead, the best we can do is:
-/// 
+///
 /// - use a wrapper type as our encoded value
 /// - have the wrapper type use a single-value encoding container from its encoder
 /// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
-/// 
+///
 /// - SeeAlso: ``UnsafeRawPointerShim``
 /// - SeeAlso: ``UnsafeMutableRawPointerShim``
 /// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
 internal struct UnsafeRawBufferPointerShim: Encodable {
-  
+
   internal let unsafeRawBufferPointer: UnsafeRawBufferPointer
-  
+
   init(unsafeRawBufferPointer: UnsafeRawBufferPointer) {
     self.unsafeRawBufferPointer = unsafeRawBufferPointer
   }
-  
+
   internal func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
     try container.efficientlyEncodeBinaryData(unsafeRawBufferPointer)
   }
-  
+
 }
 
 // MARK: - UnsafeMutableRawBufferPointerShim
 
 /// Internal "adapter" used to ensure binary data takes our "efficient path" when used with a keyed encoder.
-/// 
+///
 /// The underlying issue is that there's an asymmetry between keyed encoding containers and the other two types:
-/// 
+///
 /// - unkeyed and snigle-value containers get used directly when encoding data
 /// - keyed encoding containers are used indirectly (the actual container is used via a struct wrapper that hides the underlying container)
-/// 
+///
 /// As such, there's no way for end-user code to check if the keyed encoding container has our fast path available;
 /// instead, the best we can do is:
-/// 
+///
 /// - use a wrapper type as our encoded value
 /// - have the wrapper type use a single-value encoding container from its encoder
 /// - attempt to call the appropriate special-case method we want to call (and fall back to the standard path if it's not available)
-/// 
+///
 /// - SeeAlso: ``UnsafeRawPointerShim``
 /// - SeeAlso: ``UnsafeMutableRawPointerShim``
 /// - SeeAlso: ``UnsafeRawBufferPointerShim``
 internal struct UnsafeMutableRawBufferPointerShim: Encodable {
-  
+
   internal let unsafeMutableRawBufferPointer: UnsafeMutableRawBufferPointer
-  
+
   init(unsafeMutableRawBufferPointer: UnsafeMutableRawBufferPointer) {
     self.unsafeMutableRawBufferPointer = unsafeMutableRawBufferPointer
   }
-  
+
   internal func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
     try container.efficientlyEncodeBinaryData(unsafeMutableRawBufferPointer)
   }
-  
+
 }

@@ -3,13 +3,13 @@
 // See LICENSE and THIRD_PARTY_NOTICES.md for details.
 
 /// A simple address type that encodes as a dictionary of values.
-struct Address : Codable, Equatable {
+struct Address: Codable, Equatable {
   let street: String
   let city: String
   let state: String
   let zipCode: Int
   let country: String
-  
+
   init(street: String, city: String, state: String, zipCode: Int, country: String) {
     self.street = street
     self.city = city
@@ -17,7 +17,7 @@ struct Address : Codable, Equatable {
     self.zipCode = zipCode
     self.country = country
   }
-  
+
   static var testValue: Address {
     Address(
       street: "1 Infinite Loop",
@@ -27,6 +27,6 @@ struct Address : Codable, Equatable {
       country: "United States"
     )
   }
-  
+
   static let testValues: [Self] = [testValue]
 }

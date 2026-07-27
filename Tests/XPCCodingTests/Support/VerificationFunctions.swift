@@ -11,7 +11,7 @@ func verifyXPCConversion<T>(
     xpc_get_type(xpcObject) == T.associatedXPCObjectType,
     """
     Found mismatch in conversion and extraction types for \(T.self):
-    
+
     - value: \(value)
     - expected-type: \(T.associatedXPCObjectType.typeDescription)
     - observed-type: \(xpcObject.typeDescription)
@@ -29,7 +29,7 @@ func verifyXPCConversion<T>(
     value == roundTripped,
     """
     Found mismatch between original and round-tripped values for \(T.self):
-    
+
     - value: \(value)
     - roundTripped: \(roundTripped)
     """
@@ -46,7 +46,7 @@ func verifyXPCConversion<T>(
     xpc_get_type(xpcObject) == T.associatedXPCObjectType,
     """
     Found mismatch in conversion and extraction types for \(T.self):
-    
+
     - value: \(value)
     - expected-type: \(T.associatedXPCObjectType.typeDescription)
     - observed-type: \(xpcObject.typeDescription)
@@ -64,7 +64,7 @@ func verifyXPCConversion<T>(
     equivalence(value, roundTripped),
     """
     Found mismatch between original and round-tripped values for \(T.self):
-    
+
     - value: \(value)
     - roundTripped: \(roundTripped)
     """
@@ -87,16 +87,15 @@ func verifyXPCConversion(
   let roundTripped = try xpcObject._extractStringValue(
     stringValueStrategy: stringValueStrategy.decodingStrategy
   )
-  
+
   #expect(
     stringValue == roundTripped,
     """
     Round-trip failure for strategy \(stringValueStrategy)!
-    
+
     - original:      `\(stringValue)`
     - round-tripped: `\(roundTripped)`
     """,
     sourceLocation: sourceLocation
   )
 }
-

@@ -270,6 +270,7 @@ and the [changelog](CHANGELOG.md) before adopting a version.
 ## Project resources
 
 - [API documentation build instructions](reference/ApiDocumentation.md)
+- [swift-format policy and commands](reference/SwiftFormat.md)
 - [Migration guide](reference/MigrationGuide.md)
 - [Benchmarks and reproducible reports](Benchmarks/README.md)
 - [Sanitizer testing](reference/SanitizerTesting.md)

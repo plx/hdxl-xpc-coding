@@ -14,55 +14,55 @@ import XPC
 /// implementations deliberately remain non-inlinable.
 @usableFromInline
 internal class _XPCEncoder: Encoder {
-  
+
   @usableFromInline
   internal typealias StringKeyStrategy = XPCEncoder.StringKeyStrategy
-  
+
   @usableFromInline
   internal typealias StringValueStrategy = XPCEncoder.StringValueStrategy
-  
+
   /// The string key strategy to use (locked at construction).
   @usableFromInline
   internal let stringKeyStrategy: XPCEncoder.StringKeyStrategy
-  
+
   /// The string value strategy to use (locked at construction).
   internal let stringValueStrategy: XPCEncoder.StringValueStrategy
 
   /// Backing storage for the coding path.
   internal let _codingPath: [CodingKey]
-  
+
   /// Read-only access to the coding path (protocol requirement).
   @usableFromInline
   internal var codingPath: [any CodingKey] { _codingPath }
-  
+
   /// Backing storage for the user info.
-  internal let _userInfo: [CodingUserInfoKey : Any]
-  
+  internal let _userInfo: [CodingUserInfoKey: Any]
+
   /// Read-only access to the user info (protocol requirement).
   @usableFromInline
-  internal var userInfo: [CodingUserInfoKey : Any] { _userInfo}
-  
+  internal var userInfo: [CodingUserInfoKey: Any] { _userInfo }
+
   /// Our internal state vis-a-vis our top-level container.
   internal var topLevelContainerState: ContainerState = .noContainerYet
-  
+
   /// The active kind of our top-level container (if any).
   internal var topLevelContainerKind: ContainerKind? {
     topLevelContainerState.containerKind
   }
-  
+
   /// The underlying top-level container (if any).
   @usableFromInline
   internal var topLevelContainer: xpc_object_t? {
     topLevelContainerState.containerObject
   }
-  
+
   /// Memberwise initializer.
   @usableFromInline
   internal init(
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy,
     codingPath: [CodingKey] = [],
-    userInfo: [CodingUserInfoKey : Any] = [:]
+    userInfo: [CodingUserInfoKey: Any] = [:]
   ) {
     self.stringKeyStrategy = stringKeyStrategy
     self.stringValueStrategy = stringValueStrategy
@@ -82,11 +82,11 @@ internal class _XPCEncoder: Encoder {
   }
 
   // MARK: - Encoder
-  
+
   @usableFromInline
   internal final func container<Key>(
     keyedBy type: Key.Type
-  ) -> KeyedEncodingContainer<Key> where Key : CodingKey {
+  ) -> KeyedEncodingContainer<Key> where Key: CodingKey {
     switch containerRequestDisposition(containerKind: .keyed) {
     case .proceedWithContainerCreation:
       let dictionaryLikeTopLevelObject = xpc_dictionary_create_empty()
@@ -200,9 +200,9 @@ extension _XPCEncoder {
     try insertIntoOutputDestination(singleValueXPCObject)
     topLevelContainerState = .completedSingleValue(singleValueXPCObject)
   }
-  
+
   /// Shorthand to create a transient encoder and immediately encode a value.
-  /// 
+  ///
   /// - Parameters:
   ///   - value: The value to encode.
   ///   - codingPath: The coding path to report in case of errors.
@@ -244,7 +244,7 @@ extension _XPCEncoder {
     }
     return topLevelContainer
   }
-  
+
 }
 
 // MARK: - Container Management
@@ -257,30 +257,30 @@ extension _XPCEncoder {
     case unableToContinueSingleValueContainer
 
     /// We were asked to create a new container of a different kind from the active one.
-    /// 
+    ///
     /// This shows up when a user requests a keyed container, but then goes on to request an unkeyed one (from the same encoder).
     /// Such "container-kind switches" are not allowed within the serialization API contract.
     case unableToSwitchContainerKind(ContainerKind, ContainerKind)
 
     /// The user has requested a container of the same kind as the active one.
-    /// 
+    ///
     /// Although potentially non-intuitive, this is actually allowed within the serialization API contract:
-    /// 
+    ///
     /// ```swift
     /// class Bar: Encodable {
-    /// 
+    ///
     ///   func encode(to encoder: Encoder) throws {
     ///     var container = encoder.container(keyedBy: CodingKeys.self)
     ///     try container.encode(Bar(), forKey: .bar)
     ///   }
     /// }
-    /// 
+    ///
     /// class Bar: Foo {
-    /// 
+    ///
     ///   override func encode(to encoder: Encoder) throws {
     ///     var container = encoder.container(keyedBy: CodingKeys.self)
     ///     try container.encode(Bar(), forKey: .bar)
-    ///     try super.encode(to: encoder) 
+    ///     try super.encode(to: encoder)
     ///     // ^ re-using same encoder is allowed, as long as superclass doesn't request a different container kind.
     ///   }
     /// }
@@ -336,7 +336,7 @@ extension _XPCEncoder {
       // never ok to continue after vending a single-value container
       .unableToContinueSingleValueContainer
     case (.keyed(let xpcObject), .keyed):
-      // ok to "continue" a keyed container 
+      // ok to "continue" a keyed container
       .continueExistingContainer(xpcObject)
     case (.keyed, _):
       // not ok to "switch" from keyed to unkeyed
@@ -349,7 +349,7 @@ extension _XPCEncoder {
       .unableToSwitchContainerKind(.unkeyed, containerKind)
     }
   }
-  
+
   /// Internal helper to create-or-continue a keyed container.
   ///
   /// - Note: the associated `Encoder` API doesn't support failure here, so we just "crash out" upon improper usage.
@@ -358,7 +358,7 @@ extension _XPCEncoder {
     wrapping xpcDictionary: xpc_object_t,
     file: StaticString = #file,
     line: UInt = #line
-  ) -> KeyedEncodingContainer<Key> where Key : CodingKey {
+  ) -> KeyedEncodingContainer<Key> where Key: CodingKey {
     precondition(
       xpcDictionary.isDictionary,
       "Internal error: non-dictionary xpc object provided when we *must* have a dictionary!",
@@ -372,8 +372,7 @@ extension _XPCEncoder {
         codingPath: codingPath
       )
       return KeyedEncodingContainer(container)
-    }
-    catch let error {
+    } catch let error {
       preconditionFailure(
         """
         Encountered unrecoverable internal error creating keyed-container:
@@ -407,8 +406,7 @@ extension _XPCEncoder {
         wrapping: xpcArray,
         codingPath: codingPath
       )
-    }
-    catch let error {
+    } catch let error {
       preconditionFailure(
         """
         Encountered unrecoverable internal error creating unkeyed-container:
@@ -510,12 +508,12 @@ extension _XPCEncoder.ContainerKind: CustomDebugStringConvertible {
 extension _XPCEncoder {
 
   /// The state of our top-level container.
-  /// 
+  ///
   /// The reason we use this is twofold:
-  /// 
+  ///
   /// - we can't make our container until we know the type of container we need
   /// - users aren't allowed to create multiple containers for a given encoder—we need to protect that invariant
-  /// 
+  ///
   internal enum ContainerState {
 
     /// We have not yet created a container.
@@ -526,13 +524,13 @@ extension _XPCEncoder {
 
     /// We have created an unkeyed container.
     case unkeyed(xpc_object_t)
-    
+
     /// We have vended a single-value container, but haven't yet received the underlying value.
     case pendingSingleValue
-    
+
     /// We vended a single-value container and have received the completed value.
     case completedSingleValue(xpc_object_t)
-    
+
     /// Access the active container object, if any.
     internal var containerObject: xpc_object_t? {
       switch self {
@@ -574,7 +572,7 @@ extension _XPCEncoder {
         false
       }
     }
-    
+
   }
 
 }
@@ -602,7 +600,7 @@ extension _XPCEncoder.ContainerState: CustomStringConvertible {
 
 // MARK: - CustomStringConvertible
 
-extension _XPCEncoder.ContainerState: CustomDebugStringConvertible {  
+extension _XPCEncoder.ContainerState: CustomDebugStringConvertible {
   internal var debugDescription: String {
     switch self {
     case .noContainerYet:

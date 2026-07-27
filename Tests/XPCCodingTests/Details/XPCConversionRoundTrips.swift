@@ -50,22 +50,22 @@ private struct XPCConversionRoundTrips {
   private func `Int16 round-trips`(value: Int16) throws {
     try verifyXPCConversion(of: value)
   }
-  
+
   @Test(arguments: Int32.exampleValues)
   private func `Int32 round-trips`(value: Int32) throws {
     try verifyXPCConversion(of: value)
   }
-  
+
   @Test(arguments: Int64.exampleValues)
   private func `Int64 round-trips`(value: Int64) throws {
     try verifyXPCConversion(of: value)
   }
-  
+
   @Test(arguments: Int128.exampleValues)
   private func `Int128 round-trips`(value: Int128) throws {
     try verifyXPCConversion(of: value)
   }
-  
+
   @Test(arguments: Int.exampleValues)
   private func `Int round-trips`(value: Int) throws {
     try verifyXPCConversion(of: value)
@@ -112,5 +112,5 @@ private struct XPCConversionRoundTrips {
       )
     )
   }
-  
+
 }

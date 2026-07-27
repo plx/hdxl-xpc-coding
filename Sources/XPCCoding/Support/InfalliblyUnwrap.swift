@@ -11,6 +11,10 @@ import Foundation
 /// - Parameters:
 ///   - value: The optional to unwrap.
 ///   - explanation: A non-empty rationale describing why this call site believes `value` cannot be nil.
+///   - function: The calling function recorded if the invariant fails.
+///   - file: The source file recorded if the invariant fails.
+///   - line: The source line recorded if the invariant fails.
+/// - Returns: The value wrapped by `value`.
 internal func infalliblyUnwrap<T>(
   _ value: T?,
   explanation: StaticString,
@@ -19,25 +23,25 @@ internal func infalliblyUnwrap<T>(
   line: UInt = #line
 ) -> T {
   #if DEBUG
-  assert(
-    !"\(explanation)".isEmpty,
-    "infalliblyUnwrap requires a non-empty explanation",
-    file: file,
-    line: line
-  )
-  guard let value else {
-    fatalError(
-      """
-      infalliblyUnwrap received an unexpected nil at \(function); the force-unwrap was deemed safe because: \(explanation)
-      """,
+    assert(
+      !"\(explanation)".isEmpty,
+      "infalliblyUnwrap requires a non-empty explanation",
       file: file,
       line: line
     )
-  }
-  return value
+    guard let value else {
+      fatalError(
+        """
+        infalliblyUnwrap received an unexpected nil at \(function); the force-unwrap was deemed safe because: \(explanation)
+        """,
+        file: file,
+        line: line
+      )
+    }
+    return value
   #else
-  // This helper is the documented, centralized release fast path.
-  // swiftlint:disable:next force_unwrapping
-  return value!
+    // This helper is the documented, centralized release fast path.
+    // swiftlint:disable:next force_unwrapping
+    return value!
   #endif
 }

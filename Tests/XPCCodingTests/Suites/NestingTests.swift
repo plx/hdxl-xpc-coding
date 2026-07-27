@@ -6,7 +6,7 @@ import XPC
 /// Tests exercising deeply-nested values.
 @Suite(.tags(.edgeCases))
 struct `Nested-Value Tests` {
-  
+
   @Test(
     .tags(.roundTrip, .nested),
     arguments: XPCCodec.Configuration.allCases, Deep15.exampleValues
@@ -20,9 +20,9 @@ struct `Nested-Value Tests` {
       configuration: configuration
     )
   }
-  
+
   // MARK: - Wide Structure
-  
+
   @Test(
     .tags(.roundTrip, .keyed),
     arguments: XPCCodec.Configuration.allCases
@@ -34,15 +34,15 @@ struct `Nested-Value Tests` {
     for i in 0..<100 {
       dict["key\(i)"] = i
     }
-    
+
     try verifyRoundTrip(
       ofValueAndWrappers: dict,
       configuration: configuration
     )
   }
-  
+
   // MARK: - Empty Nested Containers
-  
+
   @Test(
     .tags(.roundTrip, .nested),
     arguments: XPCCodec.Configuration.allCases, EmptyContainerStruct.testValues
@@ -56,10 +56,9 @@ struct `Nested-Value Tests` {
       configuration: configuration
     )
   }
-  
+
   // MARK: - Alternating Structures
-  
-  
+
   @Test(
     .tags(.roundTrip, .nested),
     arguments: XPCCodec.Configuration.allCases
@@ -69,9 +68,9 @@ struct `Nested-Value Tests` {
     let bar: [Int: [Int]] = [
       1: [1],
       2: [2],
-      3: [3]
+      3: [3],
     ]
-    let baz: [Int: [[Int:[Int]]]] = [
+    let baz: [Int: [[Int: [Int]]]] = [
       0: [],
       1: [
         [
@@ -79,28 +78,28 @@ struct `Nested-Value Tests` {
         ],
         [
           2: [2, 1],
-          3: [3, 2, 1]
-        ]
+          3: [3, 2, 1],
+        ],
       ],
       2: [
         [
           2: [4],
           8: [16],
           7: [15],
-          3: [4, 5, 6]
+          3: [4, 5, 6],
         ],
         [
           32: [64, 128],
-          256: [512, 1024, 2048]
+          256: [512, 1024, 2048],
         ],
         [
           11: [22, 33, 44, 55]
-        ]
+        ],
       ],
-      3: []
+      3: [],
     ]
-    
-    let quux: [Int: [[Int:[Int]]]] = [:]
+
+    let quux: [Int: [[Int: [Int]]]] = [:]
     try verifyRoundTrip(
       ofValueAndWrappers: foo,
       configuration: configuration
@@ -118,5 +117,5 @@ struct `Nested-Value Tests` {
       configuration: configuration
     )
   }
-  
+
 }

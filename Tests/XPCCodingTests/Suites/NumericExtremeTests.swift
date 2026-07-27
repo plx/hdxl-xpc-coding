@@ -7,10 +7,9 @@ import XPC
 
 @Suite(.tags(.edgeCases))
 struct `Numeric Extremes` {
-  
-  
+
   // MARK: - Signed Integers
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, Int8.extremeValues
@@ -24,7 +23,7 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, Int16.extremeValues
@@ -38,7 +37,7 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, Int32.extremeValues
@@ -52,7 +51,7 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, Int64.extremeValues
@@ -66,7 +65,7 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, Int128.extremeValues
@@ -80,7 +79,7 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, Int.extremeValues
@@ -94,9 +93,9 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   // MARK: - Unsigned Integers
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, UInt8.extremeValues
@@ -110,7 +109,7 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, UInt16.extremeValues
@@ -124,7 +123,7 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, UInt32.extremeValues
@@ -138,7 +137,7 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, UInt64.extremeValues
@@ -152,7 +151,7 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, UInt128.extremeValues
@@ -166,7 +165,7 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, UInt.extremeValues
@@ -180,9 +179,9 @@ struct `Numeric Extremes` {
       configuration: configuration
     )
   }
-  
+
   // MARK: - Floating-Point
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, Float16.extremeValues
@@ -198,7 +197,7 @@ struct `Numeric Extremes` {
       equivalentFloats(lhs, rhs)
     }
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, Float.extremeValues
@@ -214,7 +213,7 @@ struct `Numeric Extremes` {
       equivalentFloats(lhs, rhs)
     }
   }
-  
+
   @Test(
     .tags(.roundTrip, .primitives),
     arguments: XPCCodec.Configuration.allCases, Double.extremeValues
@@ -233,17 +232,17 @@ struct `Numeric Extremes` {
 }
 
 extension FixedWidthInteger {
-  
+
   static var extremeValues: [Self] {
     [
       .min,
-      .max
+      .max,
     ]
   }
 }
 
 extension BinaryFloatingPoint {
-  
+
   static var extremeValues: [Self] {
     [
       .greatestFiniteMagnitude,
@@ -257,7 +256,7 @@ extension BinaryFloatingPoint {
       .ulpOfOne,
       -.ulpOfOne,
       .nan,
-      .signalingNaN
+      .signalingNaN,
     ]
   }
 }

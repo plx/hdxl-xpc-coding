@@ -9,20 +9,20 @@ import XPC
 
 /// Internal single-value decoding container.
 internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
-  
+
   internal typealias StringKeyStrategy = XPCDecoder.StringKeyStrategy
-  
+
   internal typealias StringValueStrategy = XPCDecoder.StringValueStrategy
-  
+
   /// We always source the string key strategy from the parent decoder.
   internal var stringKeyStrategy: XPCDecoder.StringKeyStrategy { decoder.stringKeyStrategy }
-  
+
   /// We always source the string value strategy from the parent decoder.
   internal var stringValueStrategy: XPCDecoder.StringValueStrategy { decoder.stringValueStrategy }
 
   /// The parent decoder.
   internal let decoder: _XPCDecoder
-  
+
   /// The underlying XPC message from-which we're' decoding.
   internal let underlyingMessage: xpc_object_t
 
@@ -31,7 +31,7 @@ internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
 
   /// The recursive decoding depth of this value below the root object.
   internal let depth: Int
-  
+
   // MARK: - Initialization
 
   /// Memberwise initializer.
@@ -46,13 +46,13 @@ internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
     self.codingPath = codingPath
     self.depth = depth ?? decoder.depth
   }
-  
+
   // MARK: - SingleValueDecodingContainer
 
   public func decodeNil() -> Bool {
     underlyingMessage.decodeNil(at: codingPath)
   }
-  
+
   public func decode(_ type: Bool.Type) throws -> Bool {
     try decoder.extractVisitedValue(
       type,
@@ -60,38 +60,38 @@ internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
       at: codingPath
     )
   }
-  
+
   public func decode(_ type: String.Type) throws -> String {
     try decoder.extractVisitedString(
       from: underlyingMessage,
       at: codingPath
     )
   }
-  
+
   public func decode(_ type: Double.Type) throws -> Double {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
-  
+
   public func decode(_ type: Float.Type) throws -> Float {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
-  
+
   public func decode(_ type: Int.Type) throws -> Int {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
-  
+
   public func decode(_ type: Int8.Type) throws -> Int8 {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
-  
+
   public func decode(_ type: Int16.Type) throws -> Int16 {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
-  
+
   public func decode(_ type: Int32.Type) throws -> Int32 {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
-  
+
   public func decode(_ type: Int64.Type) throws -> Int64 {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
@@ -103,19 +103,19 @@ internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
   public func decode(_ type: UInt.Type) throws -> UInt {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
-  
+
   public func decode(_ type: UInt8.Type) throws -> UInt8 {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
-  
+
   public func decode(_ type: UInt16.Type) throws -> UInt16 {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
-  
+
   public func decode(_ type: UInt32.Type) throws -> UInt32 {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }
-  
+
   public func decode(_ type: UInt64.Type) throws -> UInt64 {
     try decoder.extractVisitedValue(type, from: underlyingMessage, at: codingPath)
   }

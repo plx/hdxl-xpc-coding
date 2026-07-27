@@ -11,29 +11,29 @@ import XPC
 internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
   internal typealias StringKeyStrategy = XPCEncoder.StringKeyStrategy
-  
+
   internal typealias StringValueStrategy = XPCEncoder.StringValueStrategy
-  
+
   /// We always retrieve our string key strategy from our parent encoder.
   internal var stringKeyStrategy: StringKeyStrategy { encoder.stringKeyStrategy }
-  
+
   /// We always retrieve our string value strategy from our parent encoder.
   internal var stringValueStrategy: StringValueStrategy { encoder.stringValueStrategy }
 
   /// The immutable path at which this container was created.
   internal let codingPath: [any CodingKey]
-  
+
   /// Count of already-encoded items in this container.
   internal var count: Int {
     xpc_array_get_count(underlyingXPCArray)
   }
-  
+
   /// The encoder into-which we're doing our encoding.
   internal let encoder: _XPCEncoder
-  
+
   /// The underlying XPC array we're encoding into.
   internal let underlyingXPCArray: xpc_object_t
-  
+
   // MARK: - Initialization
 
   /// Memberwise-initialize a new unkeyed encoding container.
@@ -49,7 +49,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   ) throws {
     self.encoder = encoder
     self.codingPath = codingPath
-    
+
     guard underlyingXPCArray.isArray else {
       throw EncodingError.invalidValue(
         underlyingXPCArray,
@@ -59,16 +59,16 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
         )
       )
     }
-    
+
     self.underlyingXPCArray = underlyingXPCArray
   }
 
   // MARK: - UnkeyedEncodingContainer
-  
+
   internal mutating func encodeNil() throws {
     xpc_array_append_value(underlyingXPCArray, xpc_null_create())
   }
-  
+
   internal mutating func encode(_ value: Bool) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
@@ -77,31 +77,31 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     // string needs special handling to respect our string-value strategy
     try appendNextStringValue(value)
   }
-  
+
   internal mutating func encode(_ value: Double) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
-  
+
   internal mutating func encode(_ value: Float) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
-  
+
   internal mutating func encode(_ value: Int) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
-  
+
   internal mutating func encode(_ value: Int8) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
-  
+
   internal mutating func encode(_ value: Int16) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
-  
+
   internal mutating func encode(_ value: Int32) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
-  
+
   internal mutating func encode(_ value: Int64) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
@@ -113,19 +113,19 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
   internal mutating func encode(_ value: UInt) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
-  
+
   internal mutating func encode(_ value: UInt8) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
-  
+
   internal mutating func encode(_ value: UInt16) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
-  
+
   internal mutating func encode(_ value: UInt32) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
-  
+
   internal mutating func encode(_ value: UInt64) throws {
     appendNextLosslesslyConvertibleValue(value)
   }
@@ -146,8 +146,9 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
       xpc_array_append_value(underlyingXPCArray, xpcObject)
     }
   }
-  
-  internal mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
+
+  internal mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey>
+  where NestedKey: CodingKey {
     do {
       return try withNextCodingKey { codingPath in
         let xpcDictionary = xpc_dictionary_create(nil, nil, 0)
@@ -160,8 +161,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
         )
         return KeyedEncodingContainer(container)
       }
-    }
-    catch let error {
+    } catch let error {
       fatalError(
         """
         Encountered unrecoverable error preparing nested keyed container (due to API limitations requiring non-throwing construction here).
@@ -185,8 +185,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
           codingPath: codingPath
         )
       }
-    }
-    catch let error {
+    } catch let error {
       fatalError(
         """
         Encountered unrecoverable error preparing nested unkeyed container (due to API limitations requiring non-throwing construction here).
@@ -212,8 +211,7 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
           array: underlyingXPCArray
         )
       }
-    }
-    catch let error {
+    } catch let error {
       fatalError(
         """
         Encountered unrecoverable error preparing nested unkeyed container (due to API limitations requiring non-throwing construction here).
@@ -228,25 +226,25 @@ internal struct XPCUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 // MARK: - Support API
 
 extension XPCUnkeyedEncodingContainer {
-  
+
   /// The coding key suitable-for appending our next encoded value.
   internal var nextCodingKey: XPCCodingKey {
     XPCCodingKey(intValue: count)
   }
-  
+
   /// Executes `closure` with our immutable base path extended by `nextCodingKey`.
-  /// 
+  ///
   /// - Parameter closure: The closure to execute.
   /// - Returns: The return value of `closure`.
   /// - Throws: Any error thrown by `closure`.
-  /// 
+  ///
   /// - SeeAlso: ``nextCodingKey``
   internal func withNextCodingKey<R>(_ closure: ([any CodingKey]) throws -> R) throws -> R {
     var codingPath = codingPath
     codingPath.append(nextCodingKey)
     return try closure(codingPath)
   }
-  
+
   /// Directly appends an XPC object to our underlying XPC array.
   internal func appendNextXPCValue(_ value: xpc_object_t) {
     xpc_array_append_value(underlyingXPCArray, value)
@@ -257,7 +255,7 @@ extension XPCUnkeyedEncodingContainer {
     appendNextXPCValue(value.xpcObjectRepresentation)
   }
 
-  /// Directly appends a string value to our underlying XPC array, with proper coding-path management (and ensuring proper string-value strategy handling). 
+  /// Directly appends a string value to our underlying XPC array, with proper coding-path management (and ensuring proper string-value strategy handling).
   internal func appendNextStringValue(_ value: String) throws {
     try withNextCodingKey { codingPath in
       let xpcObject = try value.makeXPCObjectRepresentation(
@@ -272,7 +270,7 @@ extension XPCUnkeyedEncodingContainer {
 // MARK: - XPCEnhancedUnkeyedEncodingContainer
 
 extension XPCUnkeyedEncodingContainer: XPCEnhancedUnkeyedEncodingContainer {
-    
+
   internal mutating func directlyEncodeXPCData(
     _ unsafePointer: UnsafeRawPointer?,
     count: Int
@@ -289,7 +287,7 @@ extension XPCUnkeyedEncodingContainer: XPCEnhancedUnkeyedEncodingContainer {
       )
     )
   }
-  
+
   internal mutating func directlyEncodeXPCData(
     _ unsafePointer: UnsafeMutableRawPointer?,
     count: Int
@@ -306,19 +304,19 @@ extension XPCUnkeyedEncodingContainer: XPCEnhancedUnkeyedEncodingContainer {
       )
     )
   }
-  
+
   internal mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeRawBufferPointer) throws {
     try directlyEncodeXPCData(
       unsafeBufferPointer.baseAddress,
       count: unsafeBufferPointer.count
     )
   }
-  
+
   internal mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeMutableRawBufferPointer) throws {
     try directlyEncodeXPCData(
       unsafeBufferPointer.baseAddress,
       count: unsafeBufferPointer.count
     )
   }
- 
+
 }

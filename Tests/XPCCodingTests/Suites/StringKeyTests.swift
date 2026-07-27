@@ -8,7 +8,6 @@ import XPC
 /// Tests exercising string-key functionality.
 @Suite(.tags(.edgeCases, .strings))
 struct `String-Key Tests` {
-  
 
   // MARK: 5.1 Keys with Special Characters
 
@@ -90,7 +89,7 @@ struct `String-Key Tests` {
   }
 
   // MARK: Embedded Null-Byte Cases
-  
+
   /// Verify we encode/decode "ok" for keys with embedded nulls, but get unexpected values as a result.
   @Test(
     .tags(.roundTrip, .keyed),
@@ -102,7 +101,7 @@ struct `String-Key Tests` {
       stringValueStrategy: stringValueStrategy
     )
     let value = KeysWithEmbeddedNullStruct.exampleValue
-    
+
     withKnownIssue("`assume absent` will encode/decode, but won't round trip for keys with null bytes") {
       try verifyRoundTrip(
         ofValueAndWrappers: value,
@@ -122,7 +121,7 @@ struct `String-Key Tests` {
       stringValueStrategy: stringValueStrategy
     )
     let value = KeysWithEmbeddedNullStruct.exampleValue
-    
+
     try verifyRoundTrip(
       ofValueAndWrappers: value,
       configuration: configuration

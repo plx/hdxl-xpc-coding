@@ -17,7 +17,7 @@ func verifyCodingPath(
       codingPath.count == expectedKeys.count,
       """
       Incorrect coding-path length: expected \(expectedKeys.count) items, but got \(codingPath.count)!
-      
+
       - codingPath: [ \(codingPath.map { $0.stringValue }.joined(separator: ", ")) ]
       - expectedKeys: [ \(expectedKeys.joined(separator: ", ")) ]
       """,
@@ -28,14 +28,14 @@ func verifyCodingPath(
       codingPath.count >= expectedKeys.count,
       """
       Discovered too-short coding-path length: expected \(expectedKeys.count) items, but got \(codingPath.count)!
-      
+
       - codingPath: [ \(codingPath.map { $0.stringValue }.joined(separator: ", ")) ]
       - expectedKeys: [ \(expectedKeys.joined(separator: ", ")) ]
       """,
       sourceLocation: sourceLocation
     )
   }
-  
+
   for (index, (codingKey, expectedKey)) in zip(codingPath, expectedKeys).enumerated() {
     #expect(
       codingKey.stringValue == expectedKey,
@@ -60,7 +60,7 @@ func verifyCodingPath(
     """,
     sourceLocation: sourceLocation
   )
-  
+
   try verifyCodingPath(
     codingPath,
     matches: expectedKeys,
@@ -70,7 +70,7 @@ func verifyCodingPath(
 }
 
 extension EncodingError {
-  
+
   var codingPath: [any CodingKey]? {
     switch self {
     case .invalidValue(_, let context):
@@ -82,7 +82,7 @@ extension EncodingError {
 }
 
 extension DecodingError {
-  
+
   var codingPath: [any CodingKey]? {
     switch self {
     case .typeMismatch(_, let context):
@@ -112,7 +112,7 @@ func verifyCodingPath(
     """,
     sourceLocation: sourceLocation
   )
-  
+
   try verifyCodingPath(
     codingPath,
     matches: expectedKeys,
@@ -192,6 +192,7 @@ func verifyRoundTrip<T: Codable & Equatable>(
 }
 
 /// Verifies a value round-trips correctly, using a custom equality check.
+///
 /// Useful for types like floating point that need special NaN handling.
 /// - Parameters:
 ///   - value: The value to encode and decode
@@ -214,6 +215,7 @@ func verifyRoundTrip<T: Codable>(
 }
 
 /// Verifies a value round-trips correctly, using a custom equality check.
+///
 /// Useful for types like floating point that need special NaN handling.
 /// - Parameters:
 ///   - value: The value to encode and decode

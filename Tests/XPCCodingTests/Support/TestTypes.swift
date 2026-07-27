@@ -13,4 +13,4 @@ struct PrimitiveWrapper<T: Codable & Equatable>: Codable, Equatable {
   }
 }
 
-extension PrimitiveWrapper: Sendable where T: Sendable { }
+extension PrimitiveWrapper: Sendable where T: Sendable {}

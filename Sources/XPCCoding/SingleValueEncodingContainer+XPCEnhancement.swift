@@ -24,7 +24,7 @@ extension SingleValueEncodingContainer {
       )
     }
   }
-  
+
   /// Encodes `count` raw bytes beginning at `unsafeRawPointer` as binary data.
   ///
   /// With ``XPCEncoder`` this reaches the direct `xpc_data_create` path, skipping the
@@ -91,7 +91,7 @@ extension SingleValueEncodingContainer {
       )
     }
   }
-  
+
   /// Encodes `count` raw bytes beginning at `unsafeMutableRawPointer` as binary data.
   ///
   /// This behaves exactly like the `UnsafeRawPointer?` overload; the memory is only
@@ -160,7 +160,7 @@ extension SingleValueEncodingContainer {
       )
     }
   }
-  
+
   /// Encodes the bytes addressed by `unsafeRawBufferPointer` as binary data.
   ///
   /// This is the buffer-shaped spelling of the pointer/count overload, and exists so
@@ -209,7 +209,7 @@ extension SingleValueEncodingContainer {
       )
     }
   }
-  
+
   /// Encodes the bytes addressed by `unsafeMutableRawBufferPointer` as binary data.
   ///
   /// This behaves exactly like the `UnsafeRawBufferPointer` overload; the memory is
@@ -257,5 +257,5 @@ extension SingleValueEncodingContainer {
       )
     }
   }
-  
+
 }

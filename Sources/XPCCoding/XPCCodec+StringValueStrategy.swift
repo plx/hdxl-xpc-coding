@@ -1,4 +1,3 @@
-
 // MARK: XPCCodec.StringValueStrategy
 
 extension XPCCodec {
@@ -16,13 +15,13 @@ extension XPCCodec {
   ///
   /// This enumeration describes the *strategies* we support vis-a-vis string keys and string values.
   public enum StringValueStrategy {
-    
+
     /// Encoders will take a naive approach, and skip over any null-byte checks.
     ///
     /// This has the lowest performance impact, but will encode truncated values
     /// when encoding keys or values with embedded null bytes...use with caution.
     case assumeAbsent
-    
+
     /// Encoders will throw an error on discovering embedded null bytes.
     ///
     /// This has zero space overhead on success, at cost of being unable to handle
@@ -30,7 +29,7 @@ extension XPCCodec {
     /// `EncodingError.invalidValue` at the string's exact value path, with the
     /// low-level conversion cause retained as `underlyingError`.
     case throwOnDiscovery
-    
+
     /// Apply XPCCoding's reversible percent-escape grammar.
     ///
     /// Null scalars become `%00` and literal percent scalars become `%25`,
@@ -38,21 +37,20 @@ extension XPCCodec {
     ///
     /// This configuration is the default for keys and values.
     case percentEscape
-    
+
     /// Represent strings as binary data, not as an xpc string.
     case useDataRepresentation(StringValueDataRepresentation)
 
   }
-  
 
 }
 
 // MARK: - Synthesized Conformances
 
-extension XPCCodec.StringValueStrategy: Sendable { }
-extension XPCCodec.StringValueStrategy: Equatable { }
-extension XPCCodec.StringValueStrategy: Hashable { }
-extension XPCCodec.StringValueStrategy: Codable { }
+extension XPCCodec.StringValueStrategy: Sendable {}
+extension XPCCodec.StringValueStrategy: Equatable {}
+extension XPCCodec.StringValueStrategy: Hashable {}
+extension XPCCodec.StringValueStrategy: Codable {}
 
 // MARK: - CaseIterable
 
@@ -69,12 +67,13 @@ extension XPCCodec.StringValueStrategy: CaseIterable {
     [
       .assumeAbsent,
       .throwOnDiscovery,
-      .percentEscape
-    ] + XPCCodec.StringValueDataRepresentation.allCases.map {
-      Self.useDataRepresentation($0)
-    }
+      .percentEscape,
+    ]
+      + XPCCodec.StringValueDataRepresentation.allCases.map {
+        Self.useDataRepresentation($0)
+      }
   }()
-  
+
 }
 
 // MARK: - CustomStringConvertible
@@ -93,7 +92,7 @@ extension XPCCodec.StringValueStrategy: CustomStringConvertible {
     case .useDataRepresentation(let representation): "represent as \(representation.description)"
     }
   }
-  
+
 }
 
 // MARK: - CustomDebugStringConvertible
@@ -112,12 +111,12 @@ extension XPCCodec.StringValueStrategy: CustomDebugStringConvertible {
     case .useDataRepresentation(let representation): ".useDataRepresentation(\(representation.debugDescription))"
     }
   }
-  
+
 }
 
 extension XPCCodec.StringValueStrategy {
-  
+
   /// "Standard" null-byte strategy for encoding and decoding.
   public static let standard: Self = .percentEscape
-  
+
 }

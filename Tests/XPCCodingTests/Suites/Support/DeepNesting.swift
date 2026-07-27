@@ -1,4 +1,3 @@
-
 struct Deep1: Codable, Equatable {
   let value: Int
 }
@@ -74,7 +73,7 @@ struct Deep15: Codable, Equatable {
 }
 
 extension Deep15 {
-  
+
   static let exampleValues: [Self] = [
     Deep15(
       value: 15,

@@ -27,11 +27,11 @@ extension XPCEncoder {
 
 // MARK: - Synthesized Conformances
 
-extension XPCEncoder.StringKeyStrategy: Sendable { }
-extension XPCEncoder.StringKeyStrategy: Equatable { }
-extension XPCEncoder.StringKeyStrategy: Hashable { }
-extension XPCEncoder.StringKeyStrategy: Codable { }
-extension XPCEncoder.StringKeyStrategy: CaseIterable { }
+extension XPCEncoder.StringKeyStrategy: Sendable {}
+extension XPCEncoder.StringKeyStrategy: Equatable {}
+extension XPCEncoder.StringKeyStrategy: Hashable {}
+extension XPCEncoder.StringKeyStrategy: Codable {}
+extension XPCEncoder.StringKeyStrategy: CaseIterable {}
 
 // MARK: - CustomStringConvertible
 
@@ -96,7 +96,7 @@ extension XPCEncoder.StringKeyStrategy {
 // MARK: - From XPCCodec
 
 extension XPCCodec.StringKeyStrategy {
-  
+
   internal var encodingStrategy: XPCEncoder.StringKeyStrategy {
     switch self {
     case .assumeAbsent:
@@ -105,5 +105,5 @@ extension XPCCodec.StringKeyStrategy {
       .percentEscape
     }
   }
-  
+
 }

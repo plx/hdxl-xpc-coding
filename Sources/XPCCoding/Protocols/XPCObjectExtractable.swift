@@ -15,17 +15,17 @@ import XPC
 /// - SeeAlso: ``XPCObjectConvertible``
 /// - SeeAlso: ``LosslessXPCObjectConvertible``
 internal protocol XPCObjectExtractable {
-  
+
   /// The "XPC object type" from-which we're able to extract a value.
-  /// 
+  ///
   /// - Note: for the cases we care about a single possible type is fine (no need for e.g. a set of possible representations).
   static var associatedXPCObjectType: xpc_type_t { get }
 
   /// Extract a value of this type from the given `xpc_object_t`, or `nil` if none can be found.
-  /// 
+  ///
   /// - Precondition: `object` has type `associatedXPCObjectType`; guaranteed when called via `extracting(from:)` convenience method.
   static func _extracting(from object: xpc_object_t) -> Self?
-  
+
 }
 
 // MARK: - Convenience Methods
@@ -39,15 +39,15 @@ extension XPCObjectExtractable {
     }
     return _extracting(from: object)
   }
-  
+
 }
 
 // MARK: - XPCBinaryDataRepresentationConvertible Interop
 
 extension XPCObjectExtractable where Self: XPCBinaryDataRepresentationConvertible {
-  
+
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DATA }
-  
+
   /// Extracts a value from the *exact* bytes of an xpc data object.
   ///
   /// - Note: the length check comes first, so we never read from an xpc data object of the wrong length.
@@ -72,7 +72,7 @@ extension XPCObjectExtractable where Self: XPCBinaryDataRepresentationConvertibl
       )
     )
   }
-  
+
 }
 
 // MARK: - Double Conformance
@@ -85,7 +85,7 @@ extension Double: XPCObjectExtractable {
     assert(object.hasType(associatedXPCObjectType))
     return xpc_double_get_value(object)
   }
-  
+
 }
 
 // MARK: - Narrow Floating-Point Conformances
@@ -130,7 +130,7 @@ extension Int64: XPCObjectExtractable {
     assert(object.hasType(associatedXPCObjectType))
     return xpc_int64_get_value(object)
   }
-  
+
 }
 
 // MARK: - Narrow Signed Integer Conformances
@@ -171,14 +171,14 @@ extension Int8: XPCObjectExtractable {
 // MARK: - UInt64 Conformance
 
 extension UInt64: XPCObjectExtractable {
-  
+
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_UINT64 }
 
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return xpc_uint64_get_value(object)
   }
-  
+
 }
 
 // MARK: - Narrow Unsigned Integer Conformances
@@ -234,7 +234,7 @@ extension Int: XPCObjectExtractable {
 // MARK: - UInt Conformance
 
 extension UInt: XPCObjectExtractable {
-  
+
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_UINT64 }
 
   static func _extracting(from object: xpc_object_t) -> Self? {
@@ -243,13 +243,13 @@ extension UInt: XPCObjectExtractable {
     }
     return Self(exactly: value)
   }
-  
+
 }
 
 // MARK: - Data Conformance
 
 extension Data: XPCObjectExtractable {
-  
+
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DATA }
 
   static func _extracting(from object: xpc_object_t) -> Self? {
@@ -262,7 +262,8 @@ extension Data: XPCObjectExtractable {
     let copiedOK = result.withUnsafeMutableBytes { unsafeMutableBufferPtr in
       let baseAddress = infalliblyUnwrap(
         unsafeMutableBufferPtr.baseAddress,
-        explanation: "`UnsafeMutableRawBufferPointer.baseAddress` is nil only for empty buffers, but we already early-returned for `length == 0`."
+        explanation:
+          "`UnsafeMutableRawBufferPointer.baseAddress` is nil only for empty buffers, but we already early-returned for `length == 0`."
       )
 
       let copiedAmount = xpc_data_get_bytes(
@@ -279,25 +280,24 @@ extension Data: XPCObjectExtractable {
 
     return result
   }
-  
+
 }
 
 // MARK: - Bool Conformance
 
 extension Bool: XPCObjectExtractable {
-  
+
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_BOOL }
 
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return xpc_bool_get_value(object)
   }
-  
-}
 
+}
 
 // MARK: - Synthesized Conformances
 
-extension Int128: XPCObjectExtractable { }
+extension Int128: XPCObjectExtractable {}
 
-extension UInt128: XPCObjectExtractable { }
+extension UInt128: XPCObjectExtractable {}

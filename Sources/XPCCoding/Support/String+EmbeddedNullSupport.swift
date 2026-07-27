@@ -13,7 +13,7 @@ extension String {
   }
 
   /// Access the c-string representation of the string, handling null bytes as per the `stringKeyStrategy`.
-  /// 
+  ///
   /// - seealso: `withUTF8CString(embeddedNullByteRepresentation:_:)`
   ///
   /// Inlining audit rationale: compiler-required ABI dependency of the measured
@@ -30,7 +30,7 @@ extension String {
   }
 
   /// Access the c-string representation of the string, handling null bytes as per the `stringKeyStrategy`.
-  /// 
+  ///
   /// - seealso: `withUTF8CString(embeddedNullByteRepresentation:_:)`
   internal func withUTF8CString<R>(
     stringKeyStrategy: XPCDecoder.StringKeyStrategy,
@@ -139,12 +139,12 @@ extension String {
 }
 
 extension CharacterSet {
-  
+
   static let everythingButNull: Self = Self(charactersIn: (.nullByte)...(.nullByte)).inverted
-  
+
 }
 
 extension UnicodeScalar {
-  
+
   static let nullByte: Self = UnicodeScalar(0)
 }

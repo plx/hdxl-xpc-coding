@@ -1,7 +1,7 @@
 import Foundation
 
 extension UnkeyedEncodingContainer {
-  
+
   // MARK: - Data Elements
 
   /// Appends an inline array's bytes as one binary-data element, without forming an
@@ -98,7 +98,7 @@ extension UnkeyedEncodingContainer {
       )
     }
   }
-  
+
   /// Appends `count` raw bytes beginning at `unsafeMutableRawPointer` as one
   /// binary-data element.
   ///
@@ -169,7 +169,7 @@ extension UnkeyedEncodingContainer {
       )
     }
   }
-  
+
   /// Appends the bytes addressed by `unsafeRawBufferPointer` as one binary-data
   /// element.
   ///
@@ -219,7 +219,7 @@ extension UnkeyedEncodingContainer {
       )
     }
   }
-  
+
   /// Appends the bytes addressed by `unsafeMutableRawBufferPointer` as one
   /// binary-data element.
   ///
@@ -268,9 +268,9 @@ extension UnkeyedEncodingContainer {
       )
     }
   }
-  
+
   // MARK: - Element Buffers
-  
+
   /// Appends `count` elements beginning at `unsafePointer`, one encoded element each.
   ///
   /// Each value is encoded through the container's ordinary `encode(_:)`, so this is
@@ -316,14 +316,14 @@ extension UnkeyedEncodingContainer {
     else {
       return
     }
-    
+
     for offset in 0..<count {
       try encode(
         unsafePointer.advanced(by: offset).pointee
       )
     }
   }
-  
+
   /// Appends `count` elements beginning at `unsafeMutablePointer`, one encoded
   /// element each.
   ///
@@ -371,14 +371,14 @@ extension UnkeyedEncodingContainer {
     else {
       return
     }
-    
+
     for offset in 0..<count {
       try encode(
         unsafeMutablePointer.advanced(by: offset).pointee
       )
     }
   }
-  
+
   /// Appends every element of `unsafeBufferPointer`, one encoded element each.
   ///
   /// This is the buffer-shaped spelling of the pointer/count overload. Each value is
@@ -405,7 +405,7 @@ extension UnkeyedEncodingContainer {
       try encode(element)
     }
   }
-  
+
   /// Appends every element of `unsafeMutableBufferPointer`, one encoded element each.
   ///
   /// This behaves exactly like the `UnsafeBufferPointer<T>` overload; the memory is
@@ -434,5 +434,5 @@ extension UnkeyedEncodingContainer {
       try encode(element)
     }
   }
-  
+
 }

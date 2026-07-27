@@ -56,11 +56,10 @@ extension XPCCodec.Configuration {
 
 // MARK: - Synthesized Conformances
 
-extension XPCCodec.Configuration: Sendable { }
-extension XPCCodec.Configuration: Equatable { }
-extension XPCCodec.Configuration: Hashable { }
-extension XPCCodec.Configuration: Codable { }
-
+extension XPCCodec.Configuration: Sendable {}
+extension XPCCodec.Configuration: Equatable {}
+extension XPCCodec.Configuration: Hashable {}
+extension XPCCodec.Configuration: Codable {}
 
 // MARK: - CaseIterable
 
@@ -86,7 +85,7 @@ extension XPCCodec.Configuration: CaseIterable {
         )
       }
     }
-    
+
     return result
   }()
 }

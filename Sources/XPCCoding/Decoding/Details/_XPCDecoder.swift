@@ -9,7 +9,7 @@ import XPC
 internal final class _XPCDecoder: Decoder {
 
   internal typealias StringKeyStrategy = XPCDecoder.StringKeyStrategy
-  
+
   internal typealias StringValueStrategy = XPCDecoder.StringValueStrategy
 
   /// The strategy to use for decoding `String` keys.
@@ -20,7 +20,7 @@ internal final class _XPCDecoder: Decoder {
 
   /// The underlying XPC message.
   internal let underlyingMessage: xpc_object_t
-  
+
   /// The current coding path.
   internal let codingPath: [CodingKey]
 
@@ -29,15 +29,15 @@ internal final class _XPCDecoder: Decoder {
 
   /// The recursive decoding depth of `underlyingMessage` below the root object.
   internal let depth: Int
-    
-  internal let userInfo: [CodingUserInfoKey : Any]
-  
+
+  internal let userInfo: [CodingUserInfoKey: Any]
+
   internal init(
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy,
     decoding message: xpc_object_t,
     at codingPath: [CodingKey] = [],
-    userInfo: [CodingUserInfoKey : Any],
+    userInfo: [CodingUserInfoKey: Any],
     decodingState: _XPCDecodingState,
     depth: Int
   ) {
@@ -54,7 +54,7 @@ internal final class _XPCDecoder: Decoder {
 
   internal func container<Key>(
     keyedBy type: Key.Type
-  ) throws -> KeyedDecodingContainer<Key> where Key : CodingKey {
+  ) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
     let container = try XPCKeyedDecodingContainer<Key>(
       referencing: self,
       wrapping: underlyingMessage,
@@ -63,7 +63,7 @@ internal final class _XPCDecoder: Decoder {
     )
     return KeyedDecodingContainer(container)
   }
-  
+
   internal func unkeyedContainer() throws -> UnkeyedDecodingContainer {
     try XPCUnkeyedDecodingContainer(
       referencing: self,
@@ -72,7 +72,7 @@ internal final class _XPCDecoder: Decoder {
       depth: depth
     )
   }
-  
+
   internal func singleValueContainer() throws -> SingleValueDecodingContainer {
     XPCSingleValueDecodingContainer(
       referencing: self,
@@ -81,7 +81,7 @@ internal final class _XPCDecoder: Decoder {
       depth: depth
     )
   }
-  
+
 }
 
 // MARK: - Support API
@@ -189,8 +189,7 @@ extension _XPCDecoder {
     from object: xpc_object_t,
     at codingPath: [any CodingKey]
   ) throws -> Value where Value: XPCObjectExtractable {
-    if
-      valueType.associatedXPCObjectType == XPC_TYPE_DATA,
+    if valueType.associatedXPCObjectType == XPC_TYPE_DATA,
       object.hasType(XPC_TYPE_DATA)
     {
       try decodingState.validateDataValue(
@@ -280,8 +279,7 @@ extension _XPCDecoder {
       return value
     }
 
-    if
-      let extractableType = valueType as? XPCObjectExtractable.Type,
+    if let extractableType = valueType as? XPCObjectExtractable.Type,
       object.hasType(extractableType.associatedXPCObjectType)
     {
       if extractableType.associatedXPCObjectType == XPC_TYPE_DATA {

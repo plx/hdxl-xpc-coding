@@ -1,4 +1,3 @@
-
 // MARK: XPCCodec.StringKeyStrategy
 
 extension XPCCodec {
@@ -16,13 +15,13 @@ extension XPCCodec {
   ///
   /// This enumeration describes the *strategies* we support vis-a-vis string keys and string values.
   public enum StringKeyStrategy {
-    
+
     /// Encoders will take a naive approach, and skip over any null-byte checks.
     ///
     /// This has the lowest performance impact, but will encode truncated values
     /// when encoding keys or values with embedded null bytes...use with caution.
     case assumeAbsent
-        
+
     /// Apply XPCCoding's reversible percent-escape grammar.
     ///
     /// Null scalars become `%00` and literal percent scalars become `%25`,
@@ -35,11 +34,11 @@ extension XPCCodec {
 
 // MARK: - Synthesized Conformances
 
-extension XPCCodec.StringKeyStrategy: Sendable { }
-extension XPCCodec.StringKeyStrategy: Equatable { }
-extension XPCCodec.StringKeyStrategy: Hashable { }
-extension XPCCodec.StringKeyStrategy: Codable { }
-extension XPCCodec.StringKeyStrategy: CaseIterable { }
+extension XPCCodec.StringKeyStrategy: Sendable {}
+extension XPCCodec.StringKeyStrategy: Equatable {}
+extension XPCCodec.StringKeyStrategy: Hashable {}
+extension XPCCodec.StringKeyStrategy: Codable {}
+extension XPCCodec.StringKeyStrategy: CaseIterable {}
 
 // MARK: - CustomStringConvertible
 
@@ -55,7 +54,7 @@ extension XPCCodec.StringKeyStrategy: CustomStringConvertible {
     case .percentEscape: "%-escape"
     }
   }
-  
+
 }
 
 // MARK: - CustomDebugStringConvertible
@@ -72,12 +71,12 @@ extension XPCCodec.StringKeyStrategy: CustomDebugStringConvertible {
     case .percentEscape: ".percentEscape"
     }
   }
-  
+
 }
 
 extension XPCCodec.StringKeyStrategy {
-  
+
   /// "Standard" null-byte strategy for encoding and decoding.
   public static let standard: Self = .percentEscape
-  
+
 }

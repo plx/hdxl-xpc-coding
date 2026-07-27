@@ -6,13 +6,13 @@ import Foundation
 import XPC
 
 extension String {
-  
+
   /// Represents errors that can occur when converting a string to an `xpc_object_t`.
   internal enum XPCObjectConversionError: Error {
     /// The string contains null bytes (relevant for the `.throwOnDiscovery` strategy).
     case containsNullBytes(String)
   }
-  
+
   /// Converts the string to an `xpc_object_t` representation, as per `stringKeyStrategy`.
   internal func makeXPCObjectRepresentation(
     stringKeyStrategy: XPCEncoder.StringKeyStrategy
@@ -46,7 +46,8 @@ extension String {
           using: representation.stringEncoding,
           allowLossyConversion: false
         ),
-        explanation: "Every `XPCCodec.StringValueDataRepresentation` case (`.utf8`, `.utf16`, `.utf32`) is a lossless Unicode encoding, so `String.data(using:allowLossyConversion: false)` is total over all valid `String` values."
+        explanation:
+          "Every `XPCCodec.StringValueDataRepresentation` case (`.utf8`, `.utf16`, `.utf32`) is a lossless Unicode encoding, so `String.data(using:allowLossyConversion: false)` is total over all valid `String` values."
       )
       return dataRepresentation.withUnsafeBytes { (unsafeRawBufferPointer: UnsafeRawBufferPointer) in
         xpc_data_create(

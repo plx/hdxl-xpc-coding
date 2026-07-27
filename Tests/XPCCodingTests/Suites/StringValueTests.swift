@@ -8,7 +8,7 @@ import XPC
 /// Tests exercising string-serialization.
 @Suite(.tags(.edgeCases, .strings))
 struct `String-Value Tests` {
-  
+
   /// Verifies behavior on the empty string.
   @Test(
     .tags(.roundTrip),
@@ -82,7 +82,7 @@ struct `String-Value Tests` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip),
     arguments: XPCCodec.Configuration.allCases
@@ -96,7 +96,7 @@ struct `String-Value Tests` {
       configuration: configuration
     )
   }
-  
+
   @Test(
     .tags(.roundTrip),
     arguments: XPCCodec.Configuration.allCases
@@ -122,21 +122,21 @@ struct `String-Value Tests` {
       ofValueAndWrappers: String(controlChars),
       configuration: configuration
     )
- 
+
     // also check these
-    
+
     // Bell, backspace, form feed, vertical tab
     try verifyRoundTrip(
       ofValueAndWrappers: "\u{0007}\u{0008}\u{000C}\u{000B}",
       configuration: configuration
     )
-    
+
     // Escape character
     try verifyRoundTrip(
       ofValueAndWrappers: "\u{001B}",
       configuration: configuration
     )
-    
+
     // Delete character
     try verifyRoundTrip(
       ofValueAndWrappers: "\u{007F}",
@@ -157,9 +157,9 @@ struct `String-Value Tests` {
       configuration: configuration
     )
   }
-  
+
   // MARK: - Embedded Null Scenarios
-  
+
   /// Check `.assumeAbsent` "succeeds" at encoding, but fails to round-trip.
   @Test(
     .tags(.roundTrip),
@@ -220,7 +220,7 @@ struct `String-Value Tests` {
       )
     )
   }
-  
+
   /// Check `.useDataRepresentation(.utf8)` should round-trip strings even with embedded null bytes.
   @Test(
     .tags(.roundTrip),
