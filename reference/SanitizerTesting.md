@@ -5,21 +5,27 @@ toolchain: Xcode 26.6 (build 17F113), Apple Swift 6.3.3, and arm64 macOS 26.
 AddressSanitizer, UndefinedBehaviorSanitizer, and ThreadSanitizer are never
 combined.
 
-Run the complete suite locally from the repository root with:
+The scripts used by CI are also the local entry points:
 
 ```sh
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
-  ASAN_OPTIONS=halt_on_error=1 \
-  swift test --sanitize=address -Xswiftc -warnings-as-errors
+  bash Scripts/run-sanitizer-tests.sh address
 
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
-  UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 \
-  swift test --sanitize=undefined -Xswiftc -warnings-as-errors
+  bash Scripts/run-sanitizer-tests.sh undefined
 
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
-  TSAN_OPTIONS=halt_on_error=1 \
-  swift test --sanitize=thread -Xswiftc -warnings-as-errors
+  bash Scripts/run-sanitizer-tests.sh thread
 ```
+
+The matching convenience recipes are `just test address-sanitizer`,
+`just test undefined-behavior-sanitizer`, and
+`just test thread-sanitizer`.
+
+Each invocation uses and removes a fresh SwiftPM scratch directory. That keeps
+instrumented products from different analyzers isolated when the recipes run
+back-to-back. Caller-supplied sanitizer options are preserved, but the scripts
+append `halt_on_error=1` last so callers cannot weaken the fail-closed policy.
 
 Every unsuppressed sanitizer report, unexpected signal, test failure, or
 timeout fails its lane. CI pipes each command through `tee` with
@@ -40,14 +46,8 @@ hostile-input and expected-crash suites without instrumentation, from a
 separate scratch build. This preserves their process-boundary assertions
 without weakening either sanitizer run:
 
-```sh
-DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
-  swift test \
-    --scratch-path /tmp/hdxl-xpc-subprocess-tests \
-    -Xswiftc -warnings-as-errors \
-    --filter \
-    'UnalignedNumericDecodingTests|DecoderResourceLimitTests|ReferencingEncoderStateTests|UnsafePointerCountValidationTests'
-```
+Run the same isolated command used by both CI lanes with
+`just test hostile-input` or `bash Scripts/run-hostile-input-tests.sh`.
 
 UndefinedBehaviorSanitizer does not have the interceptor-loading limitation,
 so its complete suite runs those subprocess tests directly.

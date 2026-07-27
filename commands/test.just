@@ -2,9 +2,9 @@ set quiet
 
 [private]
 default:
-  @just --list test --unsorted
+    @just --list test --unsorted
 
-# run all tests (Debug configuration)
+# run the complete unit suite in debug
 [group('debug')]
 [group('standard')]
 debug:
@@ -13,16 +13,7 @@ debug:
     cd {{ justfile_directory() }}
     swift test -q
 
-# run all tests (Debug configuration)
-[group('debug')]
-[group('validation')]
-debug-with-validation:
-    #!/usr/bin/env bash
-    set -euxo pipefail
-    cd {{ justfile_directory() }}
-    swift test -q -Xswiftc "-DHEAVY_VALIDATION"
-
-# run all tests (Release configuration)
+# run the complete unit suite in release
 [group('release')]
 [group('standard')]
 release:
@@ -31,18 +22,18 @@ release:
     cd {{ justfile_directory() }}
     swift test -q -c release
 
-# run all tests (Release configuration)
-[group('release')]
+# run the complete suite under AddressSanitizer
+[group('sanitizers')]
 [group('validation')]
-release-with-validation:
+address-sanitizer:
     #!/usr/bin/env bash
     set -euxo pipefail
     cd {{ justfile_directory() }}
-    swift test -q -c release -Xswiftc "-DHEAVY_VALIDATION"
+    bash Scripts/run-sanitizer-tests.sh address
 
 # run the bounded deterministic fuzzing smoke campaign
 [group('fuzzing')]
-[group('standard')]
+[group('validation')]
 fuzz-smoke:
     #!/usr/bin/env bash
     set -euxo pipefail
@@ -57,6 +48,15 @@ fuzz-campaign:
     cd {{ justfile_directory() }}
     bash Scripts/run-fuzzing-campaign.sh
 
+# run subprocess-isolated hostile-input and expected-crash regressions
+[group('hostile-input')]
+[group('validation')]
+hostile-input:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    cd {{ justfile_directory() }}
+    bash Scripts/run-hostile-input-tests.sh
+
 # prove the audited defects reproduce at 813c52e and are absent today
 [group('regression')]
 baseline-evidence:
@@ -65,26 +65,57 @@ baseline-evidence:
     cd {{ justfile_directory() }}
     bash Scripts/run-baseline-evidence.sh
 
-# run all tests (all configurations)
-[group('aggregates')]
-all: debug release debug-with-validation release-with-validation
+# verify that aggregate recipes retain their reviewed dependency contracts
+[group('check')]
+[group('validation')]
+recipe-contracts:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    cd {{ justfile_directory() }}
+    bash Scripts/verify-just-recipe-contracts.sh
 
-# run all tests (all configurations, standard)
+# run the complete suite under ThreadSanitizer
+[group('sanitizers')]
+[group('validation')]
+thread-sanitizer:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    cd {{ justfile_directory() }}
+    bash Scripts/run-sanitizer-tests.sh thread
+
+# run the complete suite under UndefinedBehaviorSanitizer
+[group('sanitizers')]
+[group('validation')]
+undefined-behavior-sanitizer:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    cd {{ justfile_directory() }}
+    bash Scripts/run-sanitizer-tests.sh undefined
+
+# run three deterministic same-host XPC request/reply iterations
+[group('transport')]
+[group('validation')]
+xpc-integration:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    cd {{ justfile_directory() }}
+    bash Scripts/run-xpc-integration.sh
+
+# run all bounded standard and validation targets
+[group('aggregates')]
+all: all-standard all-validation
+
+# run both standard unit-test configurations
 [group('aggregates')]
 [group('standard')]
 all-standard: debug release
 
-# run all tests (all configurations, standard)
+# run every sanitizer independently
+[group('aggregates')]
+[group('sanitizers')]
+all-sanitizers: address-sanitizer thread-sanitizer undefined-behavior-sanitizer
+
+# run the bounded local/CI validation set
 [group('aggregates')]
 [group('validation')]
-all-validation: debug release
-
-# run all tests (all configurations, standard)
-[group('aggregates')]
-[group('debug')]
-all-debug: debug debug-with-validation
-
-# run all tests (all configurations, standard)
-[group('aggregates')]
-[group('release')]
-all-release: release release-with-validation
+all-validation: recipe-contracts all-sanitizers fuzz-smoke hostile-input xpc-integration

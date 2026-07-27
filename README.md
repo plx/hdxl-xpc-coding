@@ -274,6 +274,7 @@ and the [changelog](CHANGELOG.md) before adopting a version.
 - [Migration guide](reference/MigrationGuide.md)
 - [Benchmarks and reproducible reports](Benchmarks/README.md)
 - [Sanitizer testing](reference/SanitizerTesting.md)
+- [Local and CI validation recipes](reference/ValidationRecipes.md)
 - [Release process](RELEASING.md)
 
 Report suspected vulnerabilities through the private route in
