@@ -2,9 +2,12 @@ import Foundation
 import XPCCoding
 
 @main
-struct XPCCodingPublicAPIConsumer {
+enum XPCCodingPublicAPIConsumer {
 
   static func main() async throws {
+    try verifyGreetingRoundTrip()
+    try verifyApplicationMessageRoundTrip()
+
     let message = ConsumerMessage(
       identifier: 29,
       metadata: ["route\u{0}%": "same-host\u{0}%"]
