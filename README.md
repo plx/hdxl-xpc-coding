@@ -61,6 +61,9 @@ The exact local AddressSanitizer, UndefinedBehaviorSanitizer, ThreadSanitizer,
 and subprocess-regression commands are documented in
 [Sanitizer Testing](reference/SanitizerTesting.md).
 
+The reproducible DocC command shared by local runs and CI is documented in
+[API Documentation](reference/ApiDocumentation.md).
+
 ## Security
 
 Report suspected vulnerabilities through the private route in

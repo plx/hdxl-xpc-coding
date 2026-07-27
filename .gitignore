@@ -65,3 +65,10 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 /.swiftpm
 .DS_Store
+
+# DocC
+#
+# API documentation is generated into a caller-supplied output directory by
+# Scripts/generate-api-documentation.sh and is never committed.
+
+*.doccarchive
