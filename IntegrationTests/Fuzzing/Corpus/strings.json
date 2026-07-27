@@ -1,0 +1,494 @@
+[
+  {
+    "id" : "strings/audit-corpus/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "percentEscape",
+          "strings" : [
+            "",
+            "plain",
+            "%",
+            "%0",
+            "%00",
+            "%25",
+            "%41",
+            "%GG",
+            "100%",
+            "a%20b",
+            "a%00b",
+            "a\u0000b",
+            "%́",
+            "x%́41"
+          ]
+        }
+      }
+    },
+    "seed" : 12910760274928738921
+  },
+  {
+    "id" : "strings/audit-corpus/dataUTF8",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF8",
+          "strings" : [
+            "",
+            "plain",
+            "%",
+            "%0",
+            "%00",
+            "%25",
+            "%41",
+            "%GG",
+            "100%",
+            "a%20b",
+            "a%00b",
+            "a\u0000b",
+            "%́",
+            "x%́41"
+          ]
+        }
+      }
+    },
+    "seed" : 13530949549277408334
+  },
+  {
+    "id" : "strings/audit-corpus/dataUTF16",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF16",
+          "strings" : [
+            "",
+            "plain",
+            "%",
+            "%0",
+            "%00",
+            "%25",
+            "%41",
+            "%GG",
+            "100%",
+            "a%20b",
+            "a%00b",
+            "a\u0000b",
+            "%́",
+            "x%́41"
+          ]
+        }
+      }
+    },
+    "seed" : 9041519834769047917
+  },
+  {
+    "id" : "strings/audit-corpus/dataUTF32",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF32",
+          "strings" : [
+            "",
+            "plain",
+            "%",
+            "%0",
+            "%00",
+            "%25",
+            "%41",
+            "%GG",
+            "100%",
+            "a%20b",
+            "a%00b",
+            "a\u0000b",
+            "%́",
+            "x%́41"
+          ]
+        }
+      }
+    },
+    "seed" : 9039668257187519043
+  },
+  {
+    "id" : "strings/literal-percent/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "percentEscape",
+          "strings" : [
+            "%",
+            "%%",
+            "%25",
+            "%2525",
+            "100%",
+            "%at%start",
+            "at%end%",
+            "a%20b",
+            "%41",
+            "%GG",
+            "%0",
+            "50%%50"
+          ]
+        }
+      }
+    },
+    "seed" : 15294152668940960568
+  },
+  {
+    "id" : "strings/literal-percent/dataUTF8",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF8",
+          "strings" : [
+            "%",
+            "%%",
+            "%25",
+            "%2525",
+            "100%",
+            "%at%start",
+            "at%end%",
+            "a%20b",
+            "%41",
+            "%GG",
+            "%0",
+            "50%%50"
+          ]
+        }
+      }
+    },
+    "seed" : 7512855820056652985
+  },
+  {
+    "id" : "strings/literal-percent/dataUTF16",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF16",
+          "strings" : [
+            "%",
+            "%%",
+            "%25",
+            "%2525",
+            "100%",
+            "%at%start",
+            "at%end%",
+            "a%20b",
+            "%41",
+            "%GG",
+            "%0",
+            "50%%50"
+          ]
+        }
+      }
+    },
+    "seed" : 6766856499073353080
+  },
+  {
+    "id" : "strings/literal-percent/dataUTF32",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF32",
+          "strings" : [
+            "%",
+            "%%",
+            "%25",
+            "%2525",
+            "100%",
+            "%at%start",
+            "at%end%",
+            "a%20b",
+            "%41",
+            "%GG",
+            "%0",
+            "50%%50"
+          ]
+        }
+      }
+    },
+    "seed" : 6764881776189464574
+  },
+  {
+    "id" : "strings/embedded-null/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "percentEscape",
+          "strings" : [
+            "\u0000",
+            "\u0000\u0000",
+            "\u0000lead",
+            "trail\u0000",
+            "a\u0000b",
+            "a\u0000\u0000b",
+            "a",
+            "",
+            "%00",
+            "a%00b"
+          ]
+        }
+      }
+    },
+    "seed" : 14731991837092995271
+  },
+  {
+    "id" : "strings/embedded-null/dataUTF8",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF8",
+          "strings" : [
+            "\u0000",
+            "\u0000\u0000",
+            "\u0000lead",
+            "trail\u0000",
+            "a\u0000b",
+            "a\u0000\u0000b",
+            "a",
+            "",
+            "%00",
+            "a%00b"
+          ]
+        }
+      }
+    },
+    "seed" : 6403538476468630216
+  },
+  {
+    "id" : "strings/embedded-null/dataUTF16",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF16",
+          "strings" : [
+            "\u0000",
+            "\u0000\u0000",
+            "\u0000lead",
+            "trail\u0000",
+            "a\u0000b",
+            "a\u0000\u0000b",
+            "a",
+            "",
+            "%00",
+            "a%00b"
+          ]
+        }
+      }
+    },
+    "seed" : 8537217266842713071
+  },
+  {
+    "id" : "strings/embedded-null/dataUTF32",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF32",
+          "strings" : [
+            "\u0000",
+            "\u0000\u0000",
+            "\u0000lead",
+            "trail\u0000",
+            "a\u0000b",
+            "a\u0000\u0000b",
+            "a",
+            "",
+            "%00",
+            "a%00b"
+          ]
+        }
+      }
+    },
+    "seed" : 8539200785819627265
+  },
+  {
+    "id" : "strings/combining-marks/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "percentEscape",
+          "strings" : [
+            "é",
+            "é",
+            "́",
+            "%́",
+            "x%́41",
+            "á̧",
+            "q̈̄",
+            "\u0000́"
+          ]
+        }
+      }
+    },
+    "seed" : 13048612019089116486
+  },
+  {
+    "id" : "strings/combining-marks/dataUTF8",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF8",
+          "strings" : [
+            "é",
+            "é",
+            "́",
+            "%́",
+            "x%́41",
+            "á̧",
+            "q̈̄",
+            "\u0000́"
+          ]
+        }
+      }
+    },
+    "seed" : 6598142161550655203
+  },
+  {
+    "id" : "strings/combining-marks/dataUTF16",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF16",
+          "strings" : [
+            "é",
+            "é",
+            "́",
+            "%́",
+            "x%́41",
+            "á̧",
+            "q̈̄",
+            "\u0000́"
+          ]
+        }
+      }
+    },
+    "seed" : 6431336862303022490
+  },
+  {
+    "id" : "strings/combining-marks/dataUTF32",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF32",
+          "strings" : [
+            "é",
+            "é",
+            "́",
+            "%́",
+            "x%́41",
+            "á̧",
+            "q̈̄",
+            "\u0000́"
+          ]
+        }
+      }
+    },
+    "seed" : 6433170847698499988
+  },
+  {
+    "id" : "strings/unicode-planes/percentEscape",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "percentEscape",
+          "strings" : [
+            "plain",
+            "ASCII~!@#",
+            "中文",
+            "Ωμέγα",
+            "🚀",
+            "𝄞",
+            "🇺🇳",
+            "é",
+            "é"
+          ]
+        }
+      }
+    },
+    "seed" : 1544242031929913206
+  },
+  {
+    "id" : "strings/unicode-planes/dataUTF8",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF8",
+          "strings" : [
+            "plain",
+            "ASCII~!@#",
+            "中文",
+            "Ωμέγα",
+            "🚀",
+            "𝄞",
+            "🇺🇳",
+            "é",
+            "é"
+          ]
+        }
+      }
+    },
+    "seed" : 5858056778367755027
+  },
+  {
+    "id" : "strings/unicode-planes/dataUTF16",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF16",
+          "strings" : [
+            "plain",
+            "ASCII~!@#",
+            "中文",
+            "Ωμέγα",
+            "🚀",
+            "𝄞",
+            "🇺🇳",
+            "é",
+            "é"
+          ]
+        }
+      }
+    },
+    "seed" : 15140545743377188874
+  },
+  {
+    "id" : "strings/unicode-planes/dataUTF32",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "distinctStrings" : {
+        "_0" : {
+          "strategy" : "dataUTF32",
+          "strings" : [
+            "plain",
+            "ASCII~!@#",
+            "中文",
+            "Ωμέγα",
+            "🚀",
+            "𝄞",
+            "🇺🇳",
+            "é",
+            "é"
+          ]
+        }
+      }
+    },
+    "seed" : 15142520466261077380
+  }
+]

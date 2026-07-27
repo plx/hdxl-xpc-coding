@@ -1,0 +1,93 @@
+[
+  {
+    "id" : "cycles/emptySelfArray",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "cycle" : {
+        "_0" : {
+          "expectation" : "reject",
+          "shape" : "emptySelfArray"
+        }
+      }
+    },
+    "seed" : 16399644028865596627
+  },
+  {
+    "id" : "cycles/valueBearingSelfArray",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "cycle" : {
+        "_0" : {
+          "expectation" : "reject",
+          "shape" : "valueBearingSelfArray"
+        }
+      }
+    },
+    "seed" : 127105549405293809
+  },
+  {
+    "id" : "cycles/mutualArrays",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "cycle" : {
+        "_0" : {
+          "expectation" : "reject",
+          "shape" : "mutualArrays"
+        }
+      }
+    },
+    "seed" : 7070569983096908365
+  },
+  {
+    "id" : "cycles/selfDictionary",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "cycle" : {
+        "_0" : {
+          "expectation" : "reject",
+          "shape" : "selfDictionary"
+        }
+      }
+    },
+    "seed" : 16000785506345660405
+  },
+  {
+    "id" : "cycles/mutualDictionaries",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "cycle" : {
+        "_0" : {
+          "expectation" : "reject",
+          "shape" : "mutualDictionaries"
+        }
+      }
+    },
+    "seed" : 13595963411792460847
+  },
+  {
+    "id" : "cycles/sharedAcyclicArray",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "cycle" : {
+        "_0" : {
+          "expectation" : "pass",
+          "shape" : "sharedAcyclicArray"
+        }
+      }
+    },
+    "seed" : 12854023994532582087
+  },
+  {
+    "id" : "cycles/sharedAcyclicDictionary",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "cycle" : {
+        "_0" : {
+          "expectation" : "pass",
+          "shape" : "sharedAcyclicDictionary"
+        }
+      }
+    },
+    "seed" : 2690354946746240274
+  }
+]

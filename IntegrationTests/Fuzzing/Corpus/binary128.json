@@ -1,0 +1,482 @@
+[
+  {
+    "id" : "binary128/signed/0-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 17449529485223726720
+  },
+  {
+    "id" : "binary128/signed/0-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 15710254389668407879
+  },
+  {
+    "id" : "binary128/signed/1-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "EQ==",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 6570408143732640539
+  },
+  {
+    "id" : "binary128/signed/1-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "EQ==",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 11337263964490093966
+  },
+  {
+    "id" : "binary128/signed/8-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4g=",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 7077570914404499656
+  },
+  {
+    "id" : "binary128/signed/8-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4g=",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 16251839045087848063
+  },
+  {
+    "id" : "binary128/signed/15-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 14595656646854544496
+  },
+  {
+    "id" : "binary128/signed/15-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 11907900148517219671
+  },
+  {
+    "id" : "binary128/signed/16-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/EA==",
+          "expectation" : "pass",
+          "type" : "signed",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 3138508144080974393
+  },
+  {
+    "id" : "binary128/signed/16-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/EA==",
+          "expectation" : "pass",
+          "type" : "signed",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 2843774782776986368
+  },
+  {
+    "id" : "binary128/signed/17-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECE=",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 15326282681303091294
+  },
+  {
+    "id" : "binary128/signed/17-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECE=",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 11652908721264101193
+  },
+  {
+    "id" : "binary128/signed/24-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECEyQ1RldoeY",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 10768206672947034468
+  },
+  {
+    "id" : "binary128/signed/24-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECEyQ1RldoeY",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 3095002372925758291
+  },
+  {
+    "id" : "binary128/signed/32-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECEyQ1RldoeYqbrL3O3+DyA=",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 7811599296553512851
+  },
+  {
+    "id" : "binary128/signed/32-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECEyQ1RldoeYqbrL3O3+DyA=",
+          "expectation" : "reject",
+          "type" : "signed",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 15921918319450182614
+  },
+  {
+    "id" : "binary128/unsigned/0-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 17749186782107534915
+  },
+  {
+    "id" : "binary128/unsigned/0-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 4784590673682719846
+  },
+  {
+    "id" : "binary128/unsigned/1-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "EQ==",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 16647751878339792584
+  },
+  {
+    "id" : "binary128/unsigned/1-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "EQ==",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 17478903072768794751
+  },
+  {
+    "id" : "binary128/unsigned/8-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4g=",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 16140589107667933467
+  },
+  {
+    "id" : "binary128/unsigned/8-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4g=",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 12564327992171040654
+  },
+  {
+    "id" : "binary128/unsigned/15-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 18148797836912105053
+  },
+  {
+    "id" : "binary128/unsigned/15-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 10190634000440438524
+  },
+  {
+    "id" : "binary128/unsigned/16-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/EA==",
+          "expectation" : "pass",
+          "type" : "unsigned",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 8940367453808929684
+  },
+  {
+    "id" : "binary128/unsigned/16-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/EA==",
+          "expectation" : "pass",
+          "type" : "unsigned",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 5387861881120556899
+  },
+  {
+    "id" : "binary128/unsigned/17-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECE=",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 7651482618839809519
+  },
+  {
+    "id" : "binary128/unsigned/17-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECE=",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 4727709141953744122
+  },
+  {
+    "id" : "binary128/unsigned/24-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECEyQ1RldoeY",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 7654055067464049717
+  },
+  {
+    "id" : "binary128/unsigned/24-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECEyQ1RldoeY",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 16729058167771051396
+  },
+  {
+    "id" : "binary128/unsigned/32-bytes/aligned",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECEyQ1RldoeYqbrL3O3+DyA=",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : false
+        }
+      }
+    },
+    "seed" : 9618952771836290862
+  },
+  {
+    "id" : "binary128/unsigned/32-bytes/offset",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "binary128" : {
+        "_0" : {
+          "bytes" : "ESIzRFVmd4iZqrvM3e7/ECEyQ1RldoeYqbrL3O3+DyA=",
+          "expectation" : "reject",
+          "type" : "unsigned",
+          "unaligned" : true
+        }
+      }
+    },
+    "seed" : 421590990364949689
+  }
+]

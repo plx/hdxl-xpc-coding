@@ -441,6 +441,8 @@ implementation state. A deviation is not a legacy input promise.
 | codec configuration ownership | mutable stored coder references can diverge | [#21](https://github.com/plx/hdxl-xpc-coding/issues/21) |
 | independent structural fixtures | bidirectional, deterministic fixtures inspect encoder output and construct decoder input without sharing codec implementation | [`RepresentationFixtureTests.swift`](../Tests/XPCCodingTests/Fixtures/RepresentationFixtureTests.swift) and [`XPCStructuralFixture.swift`](../Tests/XPCCodingTests/Fixtures/XPCStructuralFixture.swift) |
 | real local process-boundary validation | a co-built application and embedded service inspect physical peer-side shapes and complete bounded request/reply and remote-error exchanges | [`XPCProcessBoundary`](../IntegrationTests/XPCProcessBoundary/README.md) and [#26](https://github.com/plx/hdxl-xpc-coding/issues/26) |
+| deterministic property and hostile-input fuzzing | seeded generation, mutation of a reviewed corpus, and every historical reproducer run in a child process under wall-clock, CPU, and memory bounds | [`Fuzzing`](../IntegrationTests/Fuzzing/README.md) and [#43](https://github.com/plx/hdxl-xpc-coding/issues/43) |
+| regression-first baseline evidence | one probe, built unchanged against the audit revision `813c52e` and against the working tree, requires each historical defect to reproduce there and to be absent here | [`BaselineProbe`](../IntegrationTests/BaselineProbe/README.md) and [#43](https://github.com/plx/hdxl-xpc-coding/issues/43) |
 | library-owned versioned envelope | intentionally absent and out of scope | [#24](https://github.com/plx/hdxl-xpc-coding/issues/24) |
 
 ## Fixture derivation rules

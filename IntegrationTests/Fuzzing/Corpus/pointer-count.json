@@ -1,0 +1,770 @@
+[
+  {
+    "id" : "pointer-count/singleValue/immutable/nil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "singleValue",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 17632849045339001190
+  },
+  {
+    "id" : "pointer-count/singleValue/immutable/nil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "singleValue",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 466039953440614420
+  },
+  {
+    "id" : "pointer-count/singleValue/immutable/nil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "singleValue",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 466041052952242631
+  },
+  {
+    "id" : "pointer-count/singleValue/immutable/nil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "singleValue",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 466035555394101576
+  },
+  {
+    "id" : "pointer-count/singleValue/immutable/nonnil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "singleValue",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 357019374505860909
+  },
+  {
+    "id" : "pointer-count/singleValue/immutable/nonnil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "singleValue",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 6131547673115593573
+  },
+  {
+    "id" : "pointer-count/singleValue/immutable/nonnil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "singleValue",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 6131546573603965362
+  },
+  {
+    "id" : "pointer-count/singleValue/immutable/nonnil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "singleValue",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 6131543275069080729
+  },
+  {
+    "id" : "pointer-count/singleValue/mutable/nil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "singleValue",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 14795669665942750380
+  },
+  {
+    "id" : "pointer-count/singleValue/mutable/nil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "singleValue",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 4669686718183441534
+  },
+  {
+    "id" : "pointer-count/singleValue/mutable/nil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "singleValue",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 4669687817695069745
+  },
+  {
+    "id" : "pointer-count/singleValue/mutable/nil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "singleValue",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 4669691116229954378
+  },
+  {
+    "id" : "pointer-count/singleValue/mutable/nonnil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "singleValue",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 16341336613515614099
+  },
+  {
+    "id" : "pointer-count/singleValue/mutable/nonnil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "singleValue",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 8021190705361460599
+  },
+  {
+    "id" : "pointer-count/singleValue/mutable/nonnil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "singleValue",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 8021189605849832388
+  },
+  {
+    "id" : "pointer-count/singleValue/mutable/nonnil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "singleValue",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 8021186307314947755
+  },
+  {
+    "id" : "pointer-count/keyed/immutable/nil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "keyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 6881352907272087495
+  },
+  {
+    "id" : "pointer-count/keyed/immutable/nil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "keyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 7869095335041127259
+  },
+  {
+    "id" : "pointer-count/keyed/immutable/nil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "keyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 7869094235529499048
+  },
+  {
+    "id" : "pointer-count/keyed/immutable/nil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "keyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 7869099733087640103
+  },
+  {
+    "id" : "pointer-count/keyed/immutable/nonnil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "keyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 13486900319426065902
+  },
+  {
+    "id" : "pointer-count/keyed/immutable/nonnil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "keyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 8311604338312839708
+  },
+  {
+    "id" : "pointer-count/keyed/immutable/nonnil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "keyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 8311605437824467919
+  },
+  {
+    "id" : "pointer-count/keyed/immutable/nonnil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "keyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 8311599940266326864
+  },
+  {
+    "id" : "pointer-count/keyed/mutable/nil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "keyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 4153526057812267721
+  },
+  {
+    "id" : "pointer-count/keyed/mutable/nil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "keyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 12785511000937427185
+  },
+  {
+    "id" : "pointer-count/keyed/mutable/nil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "keyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 12785509901425798974
+  },
+  {
+    "id" : "pointer-count/keyed/mutable/nil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "keyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 12785515398983940029
+  },
+  {
+    "id" : "pointer-count/keyed/mutable/nonnil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "keyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 15326374455659739584
+  },
+  {
+    "id" : "pointer-count/keyed/mutable/nonnil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "keyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 16525915907107623458
+  },
+  {
+    "id" : "pointer-count/keyed/mutable/nonnil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "keyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 16525917006619251669
+  },
+  {
+    "id" : "pointer-count/keyed/mutable/nonnil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "keyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 16525911509061110614
+  },
+  {
+    "id" : "pointer-count/unkeyed/immutable/nil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "unkeyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 1351066230601201980
+  },
+  {
+    "id" : "pointer-count/unkeyed/immutable/nil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "unkeyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 9511594912513461294
+  },
+  {
+    "id" : "pointer-count/unkeyed/immutable/nil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "unkeyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 9511596012025089505
+  },
+  {
+    "id" : "pointer-count/unkeyed/immutable/nil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "unkeyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 9511599310559974138
+  },
+  {
+    "id" : "pointer-count/unkeyed/immutable/nonnil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : false,
+          "shape" : "unkeyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 4325699261941591555
+  },
+  {
+    "id" : "pointer-count/unkeyed/immutable/nonnil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "unkeyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 6094725780238207879
+  },
+  {
+    "id" : "pointer-count/unkeyed/immutable/nonnil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "unkeyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 6094724680726579668
+  },
+  {
+    "id" : "pointer-count/unkeyed/immutable/nonnil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "pass",
+          "mutable" : false,
+          "shape" : "unkeyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 6094721382191695035
+  },
+  {
+    "id" : "pointer-count/unkeyed/mutable/nil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "unkeyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 1180462480804729618
+  },
+  {
+    "id" : "pointer-count/unkeyed/mutable/nil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "unkeyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 1387400703820490928
+  },
+  {
+    "id" : "pointer-count/unkeyed/mutable/nil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "unkeyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 1387401803332119139
+  },
+  {
+    "id" : "pointer-count/unkeyed/mutable/nil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "unkeyed",
+          "suppliesPointer" : false
+        }
+      }
+    },
+    "seed" : 1387405101867003772
+  },
+  {
+    "id" : "pointer-count/unkeyed/mutable/nonnil/count--1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : -1,
+          "expectation" : "reject",
+          "mutable" : true,
+          "shape" : "unkeyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 7655094724145444553
+  },
+  {
+    "id" : "pointer-count/unkeyed/mutable/nonnil/count-0",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 0,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "unkeyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 2159674085309447409
+  },
+  {
+    "id" : "pointer-count/unkeyed/mutable/nonnil/count-1",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 1,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "unkeyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 2159672985797819198
+  },
+  {
+    "id" : "pointer-count/unkeyed/mutable/nonnil/count-4",
+    "origin" : "historical-corpus",
+    "probe" : {
+      "pointerCount" : {
+        "_0" : {
+          "count" : 4,
+          "expectation" : "pass",
+          "mutable" : true,
+          "shape" : "unkeyed",
+          "suppliesPointer" : true
+        }
+      }
+    },
+    "seed" : 2159678483355960253
+  }
+]
