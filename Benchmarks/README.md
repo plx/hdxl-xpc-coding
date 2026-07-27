@@ -9,9 +9,11 @@ Run release evidence with the repository's
 
 The suite measures primitive and nested model encoding/decoding, moderate
 nesting, large arrays and dictionaries, all string key/value strategies,
-percent- and null-heavy strings, and `Data` at 0 B, 1 KiB, 64 KiB, and 1 MiB.
-Each `Data` size covers top-level, keyed, and unkeyed encoding and decoding,
-plus the public direct-buffer encoding path.
+percent- and null-heavy strings, and string-key encode, known-key lookup, and
+full-decode costs for dictionaries with many short keys and fewer 4 KiB ASCII
+keys. It also measures `Data` at 0 B, 1 KiB, 64 KiB, and 1 MiB. Each `Data`
+size covers top-level, keyed, and unkeyed encoding and decoding, plus the
+public direct-buffer encoding path.
 
 ## Run
 

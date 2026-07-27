@@ -10,9 +10,9 @@ extension XPCEncoder {
 
     /// Assume no null bytes are present and encode directly.
     ///
-    /// This has the lowest performance overhead but will silently truncate
-    /// strings at the first null byte. Use only when you're certain your
-    /// keys won't contain null bytes.
+    /// This bypasses XPCCoding's null/percent scans and escaped-copy allocation,
+    /// but will silently truncate strings at the first null byte. Use only when
+    /// you're certain your keys won't contain null bytes.
     case assumeAbsent
 
     /// Apply XPCCoding's reversible percent-escape grammar before encoding.
