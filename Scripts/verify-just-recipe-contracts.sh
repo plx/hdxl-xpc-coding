@@ -128,7 +128,18 @@ assert_dependencies \
   fuzz-smoke \
   hostile-input \
   recipe-contracts \
-  xpc-integration
+  xpc-integration \
+  zero-known-issue-controls
+
+# The standard unit-test recipes must go through the canonical zero-known-issue
+# wrapper, not a bare `swift test`: that wrapper is what CI runs, and sharing it
+# is what keeps the release policy from drifting between local and CI runs.
+assert_body_mentions "${test_dump}" debug 'run-tests-with-zero-known-issues.sh debug'
+assert_body_mentions "${test_dump}" release 'run-tests-with-zero-known-issues.sh release'
+assert_body_mentions \
+  "${test_dump}" \
+  zero-known-issue-controls \
+  'run-tests-with-zero-known-issues.sh self-test'
 
 assert_body_mentions "${test_dump}" address-sanitizer 'run-sanitizer-tests.sh address'
 assert_body_mentions "${test_dump}" thread-sanitizer 'run-sanitizer-tests.sh thread'

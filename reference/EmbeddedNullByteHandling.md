@@ -75,6 +75,48 @@ As such, providing a `.throwsOnDiscovery` strategy for keys would be making prom
 
 That's why there's no `.throwOnDiscovery` strategy for keys.
 
+### The Exact Behavior of `.assumeAbsent`
+
+`.assumeAbsent` is deliberately retained, and deliberately lossy: it is the
+minimum-overhead path for callers who know their strings and keys are null-free.
+Because it is retained, its behavior is *asserted exactly* rather than tolerated
+as a known issue (see [Validation Recipes](ValidationRecipes.md) for the
+zero-known-issue policy this supports).
+
+For string **values**, encoding hands the `String` to `xpc_string_create` as a C
+string, so the representation ends at the first null byte:
+
+| probe | decoded under `.assumeAbsent` |
+| --- | --- |
+| `"\0"` | `""` |
+| `"Hello\0world"` | `"Hello"` |
+| `"bar\0"` | `"bar"` |
+| `"\0baz"` | `""` |
+| `"q\0u\0u\0x"` | `"q"` |
+
+This holds identically for a bare `String` and for single-value-, unkeyed-, and
+keyed-container-wrapped strings, and the tests additionally assert that the
+result is *not* equal to the source — `.assumeAbsent` must stay observably
+distinct from the safe strategies, which round-trip these probes exactly.
+
+For string **keys**, the same truncation applies, and distinct source keys can
+therefore collide. Encoding `{"\0": 1, "bar\0": 2, "\0baz": 3, "q\0u\0u\0x": 4}`
+in that order yields a three-entry dictionary, because `"\0"` and `"\0baz"` both
+truncate to the empty key and the later write wins:
+
+```text
+{"": 3, "bar": 2, "q": 4}
+```
+
+Decoding that back into the original four fields reads `3` for both the first and
+third field. The test fixture writes its keys in an explicit order so this
+collision is a property of the fixture rather than of synthesized encoding order.
+
+Because raw null bytes in a test transcript are unreadable and hostile to log
+tooling, the embedded-null test probes carry a null-free label for test-case
+names and compare UTF-8 byte arrays in their assertions; the canonical test
+runner fails the run if a raw NUL byte reaches the output at all.
+
 ### Percent-Escape Grammar and Pre-1.0 Compatibility
 
 The `.percentEscape` transform is shared by string keys and string values. It

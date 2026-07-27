@@ -42,14 +42,34 @@ jobs:
       - name: Build in debug with warnings as errors
         run: swift build -Xswiftc -warnings-as-errors
 
-      - name: Test in debug with warnings as errors
-        run: swift test -Xswiftc -warnings-as-errors
+      - name: Prove the zero-known-issue gate rejects what it claims to reject
+        run: bash Scripts/run-tests-with-zero-known-issues.sh self-test
+
+      - name: Test in debug, requiring zero known issues
+        run: |
+          set -o pipefail
+          bash Scripts/run-tests-with-zero-known-issues.sh debug \
+            2>&1 | tee "${RUNNER_TEMP}/tests-debug.log"
 
       - name: Build in release
         run: swift build --configuration release -Xswiftc -warnings-as-errors
 
-      - name: Test in release
-        run: swift test --configuration release -Xswiftc -warnings-as-errors
+      - name: Test in release, requiring zero known issues
+        run: |
+          set -o pipefail
+          bash Scripts/run-tests-with-zero-known-issues.sh release \
+            2>&1 | tee "${RUNNER_TEMP}/tests-release.log"
+
+      - name: Upload the zero-known-issue test transcripts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: zero-known-issue-tests-xcode-26.6
+          path: |
+            ${{ runner.temp }}/tests-debug.log
+            ${{ runner.temp }}/tests-release.log
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Verify the external public API boundary
         run: bash Scripts/verify-public-api.sh

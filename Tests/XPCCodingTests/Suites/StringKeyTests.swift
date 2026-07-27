@@ -90,24 +90,47 @@ struct `String-Key Tests` {
 
   // MARK: Embedded Null-Byte Cases
 
-  /// Verify we encode/decode "ok" for keys with embedded nulls, but get unexpected values as a result.
+  /// Verify the exact truncation-and-collision outcome for embedded-null keys
+  /// under `.assumeAbsent`.
+  ///
+  /// The four source keys truncate at their first null byte to `""`, `"bar"`,
+  /// `""`, and `"q"`. Two of them collide on the empty key, and the later
+  /// `.baz` write wins, so the encoded dictionary holds three entries and the
+  /// decoded value differs from the original in exactly one field.
   @Test(
     .tags(.roundTrip, .keyed),
     arguments: XPCCodec.StringValueStrategy.allCases
   )
-  func `assume absent (fails)`(stringValueStrategy: XPCCodec.StringValueStrategy) throws {
-    let configuration = XPCCodec.Configuration(
-      stringKeyStrategy: .assumeAbsent,
-      stringValueStrategy: stringValueStrategy
+  func `assume absent truncates and collides (lossy)`(
+    stringValueStrategy: XPCCodec.StringValueStrategy
+  ) throws {
+    let codec = XPCCodec(
+      configuration: XPCCodec.Configuration(
+        stringKeyStrategy: .assumeAbsent,
+        stringValueStrategy: stringValueStrategy
+      )
     )
     let value = KeysWithEmbeddedNullStruct.exampleValue
+    let expected = KeysWithEmbeddedNullStruct.assumeAbsentDecodedValue
 
-    withKnownIssue("`assume absent` will encode/decode, but won't round trip for keys with null bytes") {
-      try verifyRoundTrip(
-        ofValueAndWrappers: value,
-        configuration: configuration
-      )
-    }
+    // `.assumeAbsent` is intentionally lossy; it must not become a round trip.
+    #expect(value != expected)
+
+    let encoded = try codec.encode(value)
+    #expect(xpc_get_type(encoded) == XPC_TYPE_DICTIONARY)
+    #expect(xpc_dictionary_get_count(encoded) == 3)
+    #expect(
+      try codec.decode([String: Int].self, from: encoded) == [
+        "": 3,
+        "bar": 2,
+        "q": 4,
+      ]
+    )
+
+    #expect(try transcodedValue(value, using: codec) == expected)
+    #expect(try transcodedValue(SingleValueWrapper(value), using: codec).value == expected)
+    #expect(try transcodedValue(UnkeyedValueWrapper(value), using: codec).value == expected)
+    #expect(try transcodedValue(KeyedValueWrapper(value), using: codec).value == expected)
   }
 
   /// Verify in `.percentEscape` mode we successfully round-trip.

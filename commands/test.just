@@ -4,23 +4,32 @@ set quiet
 default:
     @just --list test --unsorted
 
-# run the complete unit suite in debug
+# run the complete unit suite in debug, requiring zero known issues
 [group('debug')]
 [group('standard')]
 debug:
     #!/usr/bin/env bash
     set -euxo pipefail
     cd {{ justfile_directory() }}
-    swift test -q
+    bash Scripts/run-tests-with-zero-known-issues.sh debug
 
-# run the complete unit suite in release
+# run the complete unit suite in release, requiring zero known issues
 [group('release')]
 [group('standard')]
 release:
     #!/usr/bin/env bash
     set -euxo pipefail
     cd {{ justfile_directory() }}
-    swift test -q -c release
+    bash Scripts/run-tests-with-zero-known-issues.sh release
+
+# prove the zero-known-issue gate rejects what it claims to reject
+[group('check')]
+[group('validation')]
+zero-known-issue-controls:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    cd {{ justfile_directory() }}
+    bash Scripts/run-tests-with-zero-known-issues.sh self-test
 
 # run the complete suite under AddressSanitizer
 [group('sanitizers')]
@@ -118,4 +127,4 @@ all-sanitizers: address-sanitizer thread-sanitizer undefined-behavior-sanitizer
 # run the bounded local/CI validation set
 [group('aggregates')]
 [group('validation')]
-all-validation: recipe-contracts all-sanitizers fuzz-smoke hostile-input xpc-integration
+all-validation: recipe-contracts zero-known-issue-controls all-sanitizers fuzz-smoke hostile-input xpc-integration

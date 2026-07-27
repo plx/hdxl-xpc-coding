@@ -1,3 +1,6 @@
+// Embedded-null probes deliberately live in `EmbeddedNullStringProbe.swift`,
+// not here: they carry expected-truncation data and a null-free label, which a
+// bare `[String]` cannot.
 extension String {
 
   static let unicodeExamples: [Self] = [
@@ -41,14 +44,6 @@ extension String {
     "Line1\nLine2",
     "Line1\r\nLine2",
     "Tab\there",
-  ]
-
-  static let embeddedNullByteExamples: [Self] = [
-    "\0",
-    "Hello\0world",
-    "bar\0",
-    "\0baz",
-    "q\0u\0u\0x",
   ]
 
 }
