@@ -173,6 +173,10 @@ jobs:
           set -o pipefail
           bash Scripts/generate-api-documentation.sh "${RUNNER_TEMP}/documentation" \
             2>&1 | tee "${RUNNER_TEMP}/documentation.log"
+          tar \
+            -czf "${RUNNER_TEMP}/XPCCoding.doccarchive.tar.gz" \
+            -C "${RUNNER_TEMP}/documentation" \
+            XPCCoding.doccarchive
 
       - name: Upload the documentation archive and transcript
         if: ${{ always() }}
@@ -181,7 +185,7 @@ jobs:
           name: api-documentation-xcode-26.6
           path: |
             ${{ runner.temp }}/documentation.log
-            ${{ runner.temp }}/documentation
+            ${{ runner.temp }}/XPCCoding.doccarchive.tar.gz
           if-no-files-found: warn
           retention-days: 14
 
