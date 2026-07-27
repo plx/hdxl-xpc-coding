@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "scope": "Sources/XPCCoding",
+  "baseline": {
+    "revision": "47f04faf94ff566faf9a5667e646d63d6055cc3f",
+    "tree": "423d06f7aeb3b9757ef6bc30344bac708013dc60",
+    "xcode": "26.6 (17F113)",
+    "swift": "6.3.3",
+    "metrics": {
+      "lines": {
+        "count": 4077,
+        "covered": 3844
+      },
+      "regions": {
+        "count": 1216,
+        "covered": 1140
+      },
+      "functions": {
+        "count": 531,
+        "covered": 493
+      }
+    }
+  }
+}

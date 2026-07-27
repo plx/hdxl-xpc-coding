@@ -31,6 +31,15 @@ zero-known-issue-controls:
     cd {{ justfile_directory() }}
     bash Scripts/run-tests-with-zero-known-issues.sh self-test
 
+# run the debug suite with coverage and enforce the reviewed source baseline
+[group('coverage')]
+[group('validation')]
+coverage destination=".build/coverage":
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    cd {{ justfile_directory() }}
+    bash Scripts/generate-source-coverage.sh {{ quote(destination) }}
+
 # run the complete suite under AddressSanitizer
 [group('sanitizers')]
 [group('validation')]
@@ -127,4 +136,4 @@ all-sanitizers: address-sanitizer thread-sanitizer undefined-behavior-sanitizer
 # run the bounded local/CI validation set
 [group('aggregates')]
 [group('validation')]
-all-validation: recipe-contracts zero-known-issue-controls all-sanitizers fuzz-smoke hostile-input xpc-integration
+all-validation: recipe-contracts zero-known-issue-controls coverage all-sanitizers fuzz-smoke hostile-input xpc-integration

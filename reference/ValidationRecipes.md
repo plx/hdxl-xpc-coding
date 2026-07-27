@@ -77,14 +77,18 @@ The bounded validation leaves perform distinct work:
 - `hostile-input` runs subprocess-isolated invalid-input and expected-crash
   regressions from a fresh scratch build;
 - `xpc-integration` performs three deterministic request/reply exchanges
-  across a real application/service process boundary; and
-- `recipe-contracts` verifies the machine-readable `just` dependency graph; and
+  across a real application/service process boundary;
+- `recipe-contracts` verifies the machine-readable `just` dependency graph;
+- `coverage` runs the complete debug suite under the zero-known-issue policy,
+  retains llvm-cov's source report, and enforces the reviewed line, region, and
+  function ratios in `Scripts/source-coverage-policy.json`; and
 - `zero-known-issue-controls` verifies the zero-known-issue gate itself.
 
 `just test all-sanitizers` runs exactly the three sanitizer leaves.
 `just test all-validation` runs the recipe contract, the zero-known-issue
-controls, all sanitizers, fuzz smoke, hostile-input regressions, and XPC
-integration. `just test all` combines `all-standard` and `all-validation`.
+controls, source coverage, all sanitizers, fuzz smoke, hostile-input
+regressions, and XPC integration. `just test all` combines `all-standard` and
+`all-validation`.
 
 The long fuzz campaign and historical baseline reproduction remain explicit,
 separate commands because they are not part of the bounded aggregate:
@@ -104,6 +108,7 @@ leaf:
 | debug unit tests | `Scripts/run-tests-with-zero-known-issues.sh debug` | Supported tests |
 | release unit tests | `Scripts/run-tests-with-zero-known-issues.sh release` | Supported tests |
 | zero-known-issue controls | `Scripts/run-tests-with-zero-known-issues.sh self-test` | Supported tests |
+| source coverage | `Scripts/generate-source-coverage.sh <output-directory>` | Source coverage |
 | address sanitizer | `Scripts/run-sanitizer-tests.sh address` | Address Sanitizer |
 | thread sanitizer | `Scripts/run-sanitizer-tests.sh thread` | Thread Sanitizer |
 | undefined-behavior sanitizer | `Scripts/run-sanitizer-tests.sh undefined` | Undefined Behavior Sanitizer |
@@ -118,3 +123,30 @@ above.
 It is the local preflight for aggregate wiring; final CI quality-gate assembly
 owns installing its `just`, `jq`, and ripgrep prerequisites and adding the
 preflight as a required check.
+
+## Source-coverage policy
+
+Run the canonical coverage gate with:
+
+```sh
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
+  just test coverage .build/coverage
+```
+
+`Scripts/generate-source-coverage.sh` verifies the support policy, runs the
+debug suite through the same zero-known-issue wrapper used elsewhere, copies
+SwiftPM's raw llvm-cov JSON, writes a compact aggregate summary, and compares
+production files under `Sources/XPCCoding` with the reviewed baseline in
+`Scripts/source-coverage-policy.json`.
+
+The baseline is commit `47f04faf94ff566faf9a5667e646d63d6055cc3f`
+under Xcode 26.6 / Swift 6.3.3: 3,844 of 4,077 lines, 1,140 of 1,216 regions,
+and 493 of 531 functions. Each ratio is a non-regression floor. A changed
+source surface must retain or improve every ratio. Deliberately revising a
+floor requires updating the policy file with a new reviewed revision, counts,
+and rationale; CI does not auto-accept a lower measurement.
+
+The `Source coverage (Xcode 26.6)` job retains the raw report, aggregate
+summary, test transcript, and policy transcript for 14 days. The verifier's
+self-test proves that an equal report passes, a line-ratio regression fails,
+and a report with no production source files fails closed.
