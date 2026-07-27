@@ -136,4 +136,4 @@ all-sanitizers: address-sanitizer thread-sanitizer undefined-behavior-sanitizer
 # run the bounded local/CI validation set
 [group('aggregates')]
 [group('validation')]
-all-validation: recipe-contracts zero-known-issue-controls all-sanitizers fuzz-smoke hostile-input xpc-integration
+all-validation: recipe-contracts zero-known-issue-controls coverage all-sanitizers fuzz-smoke hostile-input xpc-integration
