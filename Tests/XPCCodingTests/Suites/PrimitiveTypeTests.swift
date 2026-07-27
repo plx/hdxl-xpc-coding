@@ -10,7 +10,7 @@ import XPC
 struct PrimitiveTypeTests {
 
   // MARK: - Ints
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `Int8 round-trip`(configuration: XPCCodec.Configuration) throws {
     for probe in Int8.exampleValues {
@@ -20,7 +20,7 @@ struct PrimitiveTypeTests {
       )
     }
   }
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `Int16 round-trip`(configuration: XPCCodec.Configuration) throws {
     for probe in Int16.exampleValues {
@@ -30,7 +30,7 @@ struct PrimitiveTypeTests {
       )
     }
   }
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `Int32 round-trip`(configuration: XPCCodec.Configuration) throws {
     for probe in Int32.exampleValues {
@@ -40,7 +40,7 @@ struct PrimitiveTypeTests {
       )
     }
   }
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `Int64 round-trip`(configuration: XPCCodec.Configuration) throws {
     for probe in Int64.exampleValues {
@@ -50,7 +50,7 @@ struct PrimitiveTypeTests {
       )
     }
   }
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `Int128 round-trip`(configuration: XPCCodec.Configuration) throws {
     for probe in Int128.exampleValues {
@@ -60,7 +60,7 @@ struct PrimitiveTypeTests {
       )
     }
   }
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `Int round-trip`(configuration: XPCCodec.Configuration) throws {
     for probe in Int.exampleValues {
@@ -72,7 +72,7 @@ struct PrimitiveTypeTests {
   }
 
   // MARK: - UInts
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `UInt8 round-trip`(configuration: XPCCodec.Configuration) throws {
     for probe in UInt8.exampleValues {
@@ -132,7 +132,7 @@ struct PrimitiveTypeTests {
       )
     }
   }
-  
+
   // MARK: - Floating-Point
 
   @Test(arguments: XPCCodec.Configuration.allCases)
@@ -169,7 +169,7 @@ struct PrimitiveTypeTests {
   }
 
   // MARK: - Others
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `Bool round-trip`(configuration: XPCCodec.Configuration) throws {
     for probe in Bool.exampleValues {
@@ -179,7 +179,7 @@ struct PrimitiveTypeTests {
       )
     }
   }
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `Data round-trip`(configuration: XPCCodec.Configuration) throws {
     for probe in Data.exampleValues {
@@ -189,7 +189,7 @@ struct PrimitiveTypeTests {
       )
     }
   }
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `String round-trip`(configuration: XPCCodec.Configuration) throws {
     for probe in String.exampleValues {

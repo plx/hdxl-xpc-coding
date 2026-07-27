@@ -39,10 +39,10 @@ extension XPCDecoder {
 
 // MARK: - Synthesized Conformances
 
-extension XPCDecoder.StringValueStrategy: Sendable { }
-extension XPCDecoder.StringValueStrategy: Equatable { }
-extension XPCDecoder.StringValueStrategy: Hashable { }
-extension XPCDecoder.StringValueStrategy: Codable { }
+extension XPCDecoder.StringValueStrategy: Sendable {}
+extension XPCDecoder.StringValueStrategy: Equatable {}
+extension XPCDecoder.StringValueStrategy: Hashable {}
+extension XPCDecoder.StringValueStrategy: Codable {}
 
 // MARK: - CaseIterable
 
@@ -58,10 +58,11 @@ extension XPCDecoder.StringValueStrategy: CaseIterable {
   static public let allCases: [Self] = {
     [
       .passthrough,
-      .percentEscape
-    ] + XPCCodec.StringValueDataRepresentation.allCases.map {
-      Self.useDataRepresentation($0)
-    }
+      .percentEscape,
+    ]
+      + XPCCodec.StringValueDataRepresentation.allCases.map {
+        Self.useDataRepresentation($0)
+      }
   }()
 
 }
@@ -103,7 +104,7 @@ extension XPCDecoder.StringValueStrategy: CustomDebugStringConvertible {
       "\(Self.self).useDataRepresentation(\(String(reflecting: representation)))"
     }
   }
-  
+
 }
 
 // MARK: - Well-Known Values
@@ -118,7 +119,7 @@ extension XPCDecoder.StringValueStrategy {
 // MARK: - From XPCCodec.StringValueStrategy
 
 extension XPCCodec.StringValueStrategy {
-  
+
   internal var decodingStrategy: XPCDecoder.StringValueStrategy {
     switch self {
     case .assumeAbsent:
@@ -131,5 +132,5 @@ extension XPCCodec.StringValueStrategy {
       .useDataRepresentation(representation)
     }
   }
-  
+
 }

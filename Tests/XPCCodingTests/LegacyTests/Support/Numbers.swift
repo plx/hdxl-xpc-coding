@@ -3,11 +3,11 @@
 // See LICENSE and THIRD_PARTY_NOTICES.md for details.
 
 /// A type which encodes as an array directly through a single value container.
-struct Numbers : Codable, Equatable {
+struct Numbers: Codable, Equatable {
   let values = [4, 8, 15, 16, 23, 42]
-  
+
   init() {}
-  
+
   init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
     let decodedValues = try container.decode([Int].self)
@@ -20,15 +20,15 @@ struct Numbers : Codable, Equatable {
       )
     }
   }
-  
+
   func encode(to encoder: Encoder) throws {
     var container = encoder.singleValueContainer()
     try container.encode(values)
   }
-  
+
   static var testValue: Numbers {
     Numbers()
   }
-  
+
   static let testValues: [Self] = [testValue]
 }

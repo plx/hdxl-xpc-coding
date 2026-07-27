@@ -11,36 +11,36 @@
 # Retained annotations are limited to measured hot leaves and their
 # compiler-required ABI closure. See reference/InliningPolicy.md.
 
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:103:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:108:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:113:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:118:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:123:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:128:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:133:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:138:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:143:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:148:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:153:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:158:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:104:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:109:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:114:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:119:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:124:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:129:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:134:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:139:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:144:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:149:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:154:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:159:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
 Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:15:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:163:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:179:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:164:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:180:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
 Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:18:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
 Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:213:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:244:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:256:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:243:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:255:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
 Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:26:@inlinable	Measured per-key strategy-read leaf in the keyed dictionary benchmark.
 Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:26:@inline(__always)	Measured per-key strategy-read leaf in the keyed dictionary benchmark.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:287:@inlinable	Measured lossless-value leaf joining keyed Int conversion to the XPC setter.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:285:@inlinable	Measured lossless-value leaf joining keyed Int conversion to the XPC setter.
 Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:33:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
 Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:39:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
 Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:42:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:74:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:82:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:88:@inlinable	Measured keyed Int specialization in the large-dictionary benchmark.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:93:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
-Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:98:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:75:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:83:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:89:@inlinable	Measured keyed Int specialization in the large-dictionary benchmark.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:94:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
+Sources/XPCCoding/Encoding/Details/XPCKeyedEncodingContainer.swift:99:@usableFromInline	Compiler-required ABI dependency or protocol witness for the measured keyed-encoding leaves.
 Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift:114:@usableFromInline	Compiler-required ABI dependency or Encoder witness for the measured generic entry point.
 Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift:138:@usableFromInline	Compiler-required ABI dependency or Encoder witness for the measured generic entry point.
 Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift:15:@usableFromInline	Compiler-required ABI dependency or Encoder witness for the measured generic entry point.

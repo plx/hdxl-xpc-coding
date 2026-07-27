@@ -1068,7 +1068,7 @@ private func generatedInlineArrayPayloads() -> [InlineArrayProbe<8>] {
       bytes[4],
       bytes[5],
       bytes[6],
-      bytes[7]
+      bytes[7],
     ]
     return InlineArrayProbe(
       inlineArray: inlineArray,

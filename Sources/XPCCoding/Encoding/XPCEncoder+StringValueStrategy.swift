@@ -42,11 +42,10 @@ extension XPCEncoder {
 
 // MARK: - Synthesized Conformances
 
-extension XPCEncoder.StringValueStrategy: Sendable { }
-extension XPCEncoder.StringValueStrategy: Equatable { }
-extension XPCEncoder.StringValueStrategy: Hashable { }
-extension XPCEncoder.StringValueStrategy: Codable { }
-
+extension XPCEncoder.StringValueStrategy: Sendable {}
+extension XPCEncoder.StringValueStrategy: Equatable {}
+extension XPCEncoder.StringValueStrategy: Hashable {}
+extension XPCEncoder.StringValueStrategy: Codable {}
 
 // MARK: - CaseIterable
 
@@ -63,12 +62,13 @@ extension XPCEncoder.StringValueStrategy: CaseIterable {
     [
       .assumeAbsent,
       .throwOnDiscovery,
-      .percentEscape
-    ] + XPCCodec.StringValueDataRepresentation.allCases.map {
-      Self.useDataRepresentation($0)
-    }
+      .percentEscape,
+    ]
+      + XPCCodec.StringValueDataRepresentation.allCases.map {
+        Self.useDataRepresentation($0)
+      }
   }()
-  
+
 }
 
 // MARK: - CustomStringConvertible
@@ -127,7 +127,7 @@ extension XPCEncoder.StringValueStrategy {
 // MARK: - From XPCCodec
 
 extension XPCCodec.StringValueStrategy {
-  
+
   internal var encodingStrategy: XPCEncoder.StringValueStrategy {
     switch self {
     case .assumeAbsent:
@@ -140,5 +140,5 @@ extension XPCCodec.StringValueStrategy {
       .useDataRepresentation(representation)
     }
   }
-  
+
 }

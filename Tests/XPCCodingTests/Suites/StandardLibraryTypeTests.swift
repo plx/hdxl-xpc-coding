@@ -63,7 +63,6 @@ struct StandardLibraryTypeTests {
       configuration: configuration
     )
   }
-  
 
   @Test(
     .tags(.roundTrip, .dates),

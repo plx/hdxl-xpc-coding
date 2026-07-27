@@ -11,23 +11,23 @@ import XPC
 internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContainerProtocol {
 
   internal typealias StringKeyStrategy = XPCDecoder.StringKeyStrategy
-  
+
   internal typealias StringValueStrategy = XPCDecoder.StringValueStrategy
-  
+
   /// We always read the string key strategy from the decoder.
   internal var stringKeyStrategy: XPCDecoder.StringKeyStrategy { decoder.stringKeyStrategy }
-  
+
   /// We always read the string value strategy from the decoder.
   internal var stringValueStrategy: XPCDecoder.StringValueStrategy { decoder.stringValueStrategy }
-  
+
   // MARK: - Properties
-  
+
   /// A reference to the decoder we're reading from.
   internal let decoder: _XPCDecoder
-  
+
   /// The path of coding keys taken to get to this point in decoding.
   internal var codingPath: [CodingKey]
-  
+
   /// The underlying XPC dictionary from which we're decoding.
   internal let underlyingXPCDictionary: xpc_object_t
 
@@ -36,11 +36,11 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
 
   /// The recursive decoding depth of this dictionary below the root object.
   internal let depth: Int
-  
+
   // MARK: - Initialization
-  
+
   /// Initializes `self` by referencing the given decoder and container.
-  /// 
+  ///
   /// - Parameters:
   ///   - decoder: The decoder to reference.
   ///   - underlyingXPCDictionary: The underlying XPC dictionary to wrap.
@@ -91,7 +91,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
     self.codingPath = codingPath
     self.depth = depth
   }
-  
+
   // MARK: - KeyedDecodingContainerProtocol
 
   /// The strictly-decoded keys representable by this container's `CodingKey`.
@@ -104,11 +104,11 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
       Key(stringValue: $0)
     }
   }
-  
+
   internal func contains(_ key: Key) -> Bool {
     possibleXPCObject(for: key) != nil
   }
-  
+
   internal func decodeNil(forKey key: Key) throws -> Bool {
     let value = try requiredXPCObject(for: key)
     return try withTransientCodingKey(key) { codingPath in
@@ -119,27 +119,27 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
       return value.isNull
     }
   }
-  
+
   internal func decode(_ type: Bool.Type, forKey key: Key) throws -> Bool {
     try extractValue(ofType: type, forKey: key)
   }
-    
+
   internal func decode(_ type: Int.Type, forKey key: Key) throws -> Int {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
   internal func decode(_ type: Int8.Type, forKey key: Key) throws -> Int8 {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
   internal func decode(_ type: Int16.Type, forKey key: Key) throws -> Int16 {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
   internal func decode(_ type: Int32.Type, forKey key: Key) throws -> Int32 {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
   internal func decode(_ type: Int64.Type, forKey key: Key) throws -> Int64 {
     try extractValue(ofType: type, forKey: key)
   }
@@ -151,19 +151,19 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   internal func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
   internal func decode(_ type: UInt8.Type, forKey key: Key) throws -> UInt8 {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
   internal func decode(_ type: UInt16.Type, forKey key: Key) throws -> UInt16 {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
   internal func decode(_ type: UInt32.Type, forKey key: Key) throws -> UInt32 {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
   internal func decode(_ type: UInt64.Type, forKey key: Key) throws -> UInt64 {
     try extractValue(ofType: type, forKey: key)
   }
@@ -175,15 +175,15 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   internal func decode(_ type: Float.Type, forKey key: Key) throws -> Float {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
   internal func decode(_ type: Double.Type, forKey key: Key) throws -> Double {
     try extractValue(ofType: type, forKey: key)
   }
-  
+
   internal func decode(_ type: String.Type, forKey key: Key) throws -> String {
     try extractString(forKey: key)
   }
-  
+
   internal func decode<T: Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
     let xpcObject = try requiredXPCObject(for: key)
     return try withTransientCodingKey(key) { codingPath in
@@ -195,7 +195,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
       )
     }
   }
-  
+
   internal func nestedContainer<NestedKey>(
     keyedBy type: NestedKey.Type,
     forKey key: Key
@@ -207,18 +207,18 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
         at: codingPath,
         depth: childDepth
       )
-      
+
       let container = try XPCKeyedDecodingContainer<NestedKey>(
         referencing: decoder,
         wrapping: xpcObject,
         codingPath: codingPath,
         depth: childDepth
       )
-      
+
       return KeyedDecodingContainer<NestedKey>(container)
     }
   }
-  
+
   internal func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
     let xpcObject = try requiredXPCObject(for: key)
     return try withTransientCodingKey(key) { codingPath in
@@ -235,7 +235,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
       )
     }
   }
-  
+
   internal func superDecoder() throws -> Decoder {
     let xpcObject = try requiredXPCObject(for: XPCCodingKey.superKey)
     return try withTransientCodingKey(XPCCodingKey.superKey) { codingPath in
@@ -255,7 +255,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
       )
     }
   }
-  
+
   internal func superDecoder(forKey key: Key) throws -> Decoder {
     let xpcObject = try requiredXPCObject(for: key)
     return try withTransientCodingKey(key) { codingPath in
@@ -300,7 +300,7 @@ extension XPCKeyedDecodingContainer {
         )
       )
     }
-    
+
     return value
   }
 
@@ -311,19 +311,19 @@ extension XPCKeyedDecodingContainer {
   ) throws -> R {
     codingPath.append(key)
     defer {
-#if DEBUG
-      let poppedKey = codingPath.removeLast()
-      assert(poppedKey.stringValue == key.stringValue)
-      assert(poppedKey.intValue == key.intValue)
-#else
-      _ = codingPath.removeLast()
-#endif
+      #if DEBUG
+        let poppedKey = codingPath.removeLast()
+        assert(poppedKey.stringValue == key.stringValue)
+        assert(poppedKey.intValue == key.intValue)
+      #else
+        _ = codingPath.removeLast()
+      #endif
     }
     return try closure(codingPath)
   }
-  
+
   /// Special-case transient-coding-key helper for `XPCCodingKey`.
-  /// 
+  ///
   /// - Note: used for encoding superclasses (etc.).
   internal func withTransientCodingKey<R>(
     _ key: XPCCodingKey,
@@ -331,17 +331,17 @@ extension XPCKeyedDecodingContainer {
   ) throws -> R {
     codingPath.append(key)
     defer {
-#if DEBUG
-      let poppedKey = codingPath.removeLast()
-      assert(poppedKey.stringValue == key.stringValue)
-      assert(poppedKey.intValue == key.intValue)
-#else
-      _ = codingPath.removeLast()
-#endif
+      #if DEBUG
+        let poppedKey = codingPath.removeLast()
+        assert(poppedKey.stringValue == key.stringValue)
+        assert(poppedKey.intValue == key.intValue)
+      #else
+        _ = codingPath.removeLast()
+      #endif
     }
     return try closure(codingPath)
   }
-  
+
   /// General-purpose extraction for a value of a specific type.
   internal func extractValue<Value>(
     ofType valueType: Value.Type,
@@ -357,7 +357,7 @@ extension XPCKeyedDecodingContainer {
       )
     }
   }
-  
+
   /// Special-case extraction for `String`, respecting our string key and value strategies.
   internal func extractString(
     forKey key: Key

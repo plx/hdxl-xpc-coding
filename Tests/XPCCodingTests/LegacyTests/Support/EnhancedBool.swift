@@ -3,11 +3,11 @@
 // See LICENSE and THIRD_PARTY_NOTICES.md for details.
 
 /// An enum type which decodes from Bool?.
-enum EnhancedBool : Codable, CaseIterable {
+enum EnhancedBool: Codable, CaseIterable {
   case `true`
   case `false`
   case fileNotFound
-  
+
   init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
     if container.decodeNil() {
@@ -17,7 +17,7 @@ enum EnhancedBool : Codable, CaseIterable {
       self = value ? .true : .false
     }
   }
-  
+
   func encode(to encoder: Encoder) throws {
     var container = encoder.singleValueContainer()
     switch self {

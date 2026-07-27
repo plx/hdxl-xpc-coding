@@ -32,16 +32,16 @@ extension XPCCodec {
       }
     }
   }
-  
+
 }
 
 // MARK: - Synthesized Conformances
 
-extension XPCCodec.StringValueDataRepresentation: Sendable { }
-extension XPCCodec.StringValueDataRepresentation: Equatable { }
-extension XPCCodec.StringValueDataRepresentation: Hashable { }
-extension XPCCodec.StringValueDataRepresentation: Codable { }
-extension XPCCodec.StringValueDataRepresentation: CaseIterable { }
+extension XPCCodec.StringValueDataRepresentation: Sendable {}
+extension XPCCodec.StringValueDataRepresentation: Equatable {}
+extension XPCCodec.StringValueDataRepresentation: Hashable {}
+extension XPCCodec.StringValueDataRepresentation: Codable {}
+extension XPCCodec.StringValueDataRepresentation: CaseIterable {}
 
 // MARK: - CustomStringConvertible
 
@@ -58,7 +58,7 @@ extension XPCCodec.StringValueDataRepresentation: CustomStringConvertible {
     case .utf32: "UTF-32"
     }
   }
-  
+
 }
 
 // MARK: - CustomDebugStringConvertible
@@ -76,5 +76,5 @@ extension XPCCodec.StringValueDataRepresentation: CustomDebugStringConvertible {
     case .utf32: ".utf32"
     }
   }
-  
+
 }

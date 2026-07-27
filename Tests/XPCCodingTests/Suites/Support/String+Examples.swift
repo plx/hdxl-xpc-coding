@@ -1,6 +1,5 @@
-
 extension String {
-  
+
   static let unicodeExamples: [Self] = [
     "Hello 🌍",
     "🎉🎊🎈🎁",
@@ -8,49 +7,48 @@ extension String {
     "👋🏻👋🏽👋🏿",
     "\u{1F468}\u{200D}\u{1F469}\u{200D}\u{1F467}",
   ]
-  
+
   static let rtlExamples: [Self] = [
     // Arabic
     "مرحبا",
-    
+
     // Hebrew
     "שלום",
-    
+
     // Mixed RTL and LTR
-    "Hello مرحبا World"
+    "Hello مرحبا World",
   ]
-  
+
   static let cjkExamples: [Self] = [
     "你好",
     "こんにちは",
-    "안녕하세요"
+    "안녕하세요",
   ]
-  
+
   static let combiningExamples: [Self] = [
     // é (e + combining acute accent)
     "e\u{0301}",
-    
+
     // Multiple combining marks
     "e\u{0301}\u{0302}\u{0308}",
-    
+
     // Decomposed text
     "café",
-    "cafe\u{0301}"
+    "cafe\u{0301}",
   ]
-  
+
   static let newlineAndTabExamples: [Self] = [
     "Line1\nLine2",
     "Line1\r\nLine2",
-    "Tab\there"
+    "Tab\there",
   ]
-  
+
   static let embeddedNullByteExamples: [Self] = [
     "\0",
     "Hello\0world",
     "bar\0",
     "\0baz",
-    "q\0u\0u\0x"
+    "q\0u\0u\0x",
   ]
-  
-}
 
+}

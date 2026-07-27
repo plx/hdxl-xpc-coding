@@ -90,7 +90,8 @@ extension xpc_object_t {
       }
       let cString = infalliblyUnwrap(
         xpc_string_get_string_ptr(self),
-        explanation: "`xpc_string_get_string_ptr` returns NULL only for non-string xpc objects, but `self` was just verified to be `XPC_TYPE_STRING`."
+        explanation:
+          "`xpc_string_get_string_ptr` returns NULL only for non-string xpc objects, but `self` was just verified to be `XPC_TYPE_STRING`."
       )
 
       guard
@@ -122,7 +123,8 @@ extension xpc_object_t {
       let copiedOK = data.withUnsafeMutableBytes { (unsafeMutableBytesPtr: UnsafeMutableRawBufferPointer) in
         let baseAddress = infalliblyUnwrap(
           unsafeMutableBytesPtr.baseAddress,
-          explanation: "`UnsafeMutableRawBufferPointer.baseAddress` is nil only for empty buffers, but we already early-returned for `expectedLength == 0`."
+          explanation:
+            "`UnsafeMutableRawBufferPointer.baseAddress` is nil only for empty buffers, but we already early-returned for `expectedLength == 0`."
         )
 
         let copiedCount = xpc_data_get_bytes(
@@ -136,7 +138,7 @@ extension xpc_object_t {
       guard copiedOK else {
         throw .unableToCopyStringContent("Unable to copy \(expectedLength) bytes from xpc data.")
       }
-      
+
       guard
         let decodedString = String(
           bytes: data,
@@ -147,7 +149,7 @@ extension xpc_object_t {
           "Unable to decode \(data.count) bytes as \(representation)"
         )
       }
-      
+
       return decodedString
     }
   }

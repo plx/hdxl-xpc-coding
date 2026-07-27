@@ -5,9 +5,9 @@ import Testing
 
 @Suite("StringKeyStrategy Tests")
 private struct StringKeyStrategyTests {
-  
+
   // MARK: - No Embedded Null Bytes
-  
+
   @Test(
     arguments: String.nullFreeExampleValues
   )
@@ -17,7 +17,7 @@ private struct StringKeyStrategyTests {
       stringValueStrategy: .assumeAbsent
     )
   }
-  
+
   @Test(
     arguments: String.nullFreeExampleValues
   )
@@ -69,7 +69,7 @@ private struct StringKeyStrategyTests {
   }
 
   // MARK: - Embedded Null Bytes
-  
+
   @Test(
     arguments: String.embeddedNullByteExamples
   )
@@ -81,7 +81,7 @@ private struct StringKeyStrategyTests {
       )
     }
   }
-  
+
   @Test(
     arguments: String.embeddedNullByteExamples
   )
@@ -93,7 +93,7 @@ private struct StringKeyStrategyTests {
       )
     }
   }
-  
+
   @Test(
     arguments: String.embeddedNullByteExamples
   )
@@ -103,7 +103,7 @@ private struct StringKeyStrategyTests {
       stringValueStrategy: .percentEscape
     )
   }
-  
+
   @Test(
     arguments: String.embeddedNullByteExamples
   )
@@ -113,7 +113,7 @@ private struct StringKeyStrategyTests {
       stringValueStrategy: .useDataRepresentation(.utf8)
     )
   }
-  
+
   @Test(
     arguments: String.embeddedNullByteExamples
   )
@@ -123,7 +123,7 @@ private struct StringKeyStrategyTests {
       stringValueStrategy: .useDataRepresentation(.utf16)
     )
   }
-  
+
   @Test(
     arguments: String.embeddedNullByteExamples
   )
@@ -145,7 +145,7 @@ func verifyStringRoundTrip(
   let extractedString = try xpc._extractStringValue(stringValueStrategy: stringValueStrategy.decodingStrategy)
   #expect(
     probe == extractedString,
-      "Failed for strategy: \(stringValueStrategy): `\(probe)` => `\(extractedString) (instead-of round-tripping)",
+    "Failed for strategy: \(stringValueStrategy): `\(probe)` => `\(extractedString) (instead-of round-tripping)",
     sourceLocation: sourceLocation
   )
 

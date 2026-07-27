@@ -1,4 +1,3 @@
-
 /// An empty struct for testing empty keyed containers.
 struct EmptyStruct: Codable, Equatable {}
 

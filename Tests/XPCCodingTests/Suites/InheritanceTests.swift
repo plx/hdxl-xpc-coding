@@ -7,9 +7,9 @@ import XPC
 
 @Suite("Inheritance", .tags(.inheritance))
 struct InheritanceTests {
-  
+
   // MARK: - Hierarchy Depth
-  
+
   @Test(
     .tags(.roundTrip),
     arguments: XPCCodec.Configuration.allCases, exampleLevel0s()
@@ -137,7 +137,7 @@ struct InheritanceTests {
       configuration: configuration
     )
   }
-  
+
   // MARK: - Custom "Super" Key
 
   @Test(
@@ -153,7 +153,7 @@ struct InheritanceTests {
       configuration: configuration
     )
   }
-  
+
   // MARK: - Inheritance w/Optionals
 
   @Test(
@@ -183,7 +183,7 @@ struct InheritanceTests {
       configuration: configuration
     )
   }
-  
+
   // MARK: - Inheritance w/Mixed Types
 
   @Test(

@@ -85,10 +85,15 @@ struct SupportAndErrorCoverageTests {
     #expect(dictionary.decodeNil(at: [], forKey: lossyKey, strategy: .percentEscape))
     #expect(dictionary.decodeNil(at: [], forKey: SupportCoverageKey("concreteNil"), strategy: .percentEscape))
     #expect(try dictionary.extractValue(ofType: Int64.self, at: [], forKey: anyKey, stringKeyStrategy: .percentEscape) == 42)
-    #expect(try dictionary.extractValue(ofType: UInt16.self, at: [], forKey: SupportCoverageKey(stringValue: "number")!, stringKeyStrategy: .percentEscape) == 7)
+    #expect(
+      try dictionary.extractValue(
+        ofType: UInt16.self, at: [], forKey: SupportCoverageKey(stringValue: "number")!, stringKeyStrategy: .percentEscape) == 7)
     #expect(try dictionary.extractValue(ofType: Bool.self, at: [], forKey: SupportCoverageKey.flag, stringKeyStrategy: .percentEscape))
-    #expect(try dictionary.extractValue(ofType: Int64.self, at: [], forKey: SupportCoverageKey("existential"), stringKeyStrategy: .percentEscape) == 99)
-    #expect(try !dictionary.extractValue(ofType: Bool.self, at: [], forKey: SupportCoverageKey("direct"), stringKeyStrategy: .percentEscape))
+    #expect(
+      try dictionary.extractValue(ofType: Int64.self, at: [], forKey: SupportCoverageKey("existential"), stringKeyStrategy: .percentEscape)
+        == 99)
+    #expect(
+      try !dictionary.extractValue(ofType: Bool.self, at: [], forKey: SupportCoverageKey("direct"), stringKeyStrategy: .percentEscape))
 
     let array = xpc_array_create(nil, 0)
     array.appendValue(UInt8(9))
@@ -762,8 +767,8 @@ private func generatedSupportFragment(using generator: inout SupportSeededGenera
   return result
 }
 
-private extension Int {
-  func isMultiple(of divisor: Int, remainder: Int) -> Bool {
+extension Int {
+  fileprivate func isMultiple(of divisor: Int, remainder: Int) -> Bool {
     self % divisor == remainder
   }
 }

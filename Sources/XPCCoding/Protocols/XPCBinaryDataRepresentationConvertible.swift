@@ -11,12 +11,12 @@ import Foundation
 /// This is used only for the 128-bit integer types for which XPC has no scalar representation.
 /// Their bytes are the target-native bitwise representation shared by co-built local peers.
 protocol XPCBinaryDataRepresentationConvertible: BitwiseCopyable {
-  
+
   /// Provides access to a raw buffer pointer our binary data representation.
   ///
   /// - Note: this is the primary API method to avoid *needing* to create a `Data` just to encode a value like an `Int8`.
   func withUnsafeXPCBinaryDataRepresentationRawBufferPointer<R>(_ closure: (UnsafeRawBufferPointer) throws -> R) rethrows -> R
-  
+
   /// Constructs a value from a raw buffer pointer pointing-to our binary-data representation.
   ///
   /// - Note: the buffer's base address is *not* required to satisfy `Self`'s alignment.
@@ -26,7 +26,7 @@ protocol XPCBinaryDataRepresentationConvertible: BitwiseCopyable {
 // MARK: - Defaults
 
 extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
-  
+
   internal func withUnsafeXPCBinaryDataRepresentationRawBufferPointer<R>(_ closure: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
     try withUnsafePointer(to: self) { pointerToSelf in
       try closure(
@@ -37,7 +37,7 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
       )
     }
   }
-  
+
   /// Constructs a value from a raw buffer pointer pointing-to our binary-data representation.
   ///
   /// - Note: the size check *must* stay ahead of the load; we never read from a buffer of the wrong size.
@@ -57,15 +57,16 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
     guard xpcBinaryDataRepresentation.count == MemoryLayout<Self>.size else {
       return nil
     }
-    
+
     self = xpcBinaryDataRepresentation.withUnsafeBytes { (pointerToData: UnsafeRawBufferPointer) in
       infalliblyUnwrap(
         Self(unsafeXPCBinaryDataRepresentationRawBufferPointer: pointerToData),
-        explanation: "The size of `xpcBinaryDataRepresentation` was just verified to equal `MemoryLayout<Self>.size`, which is the only condition under which the unsafe initializer can fail for a `Numeric` type."
+        explanation:
+          "The size of `xpcBinaryDataRepresentation` was just verified to equal `MemoryLayout<Self>.size`, which is the only condition under which the unsafe initializer can fail for a `Numeric` type."
       )
     }
   }
-  
+
 }
 
 // MARK: - Conveniences
@@ -81,12 +82,11 @@ extension XPCBinaryDataRepresentationConvertible {
       )
     }
   }
-  
 
 }
 
 // MARK: - Synthesized Conformances
 
-extension Int128: XPCBinaryDataRepresentationConvertible { }
+extension Int128: XPCBinaryDataRepresentationConvertible {}
 
-extension UInt128: XPCBinaryDataRepresentationConvertible { }
+extension UInt128: XPCBinaryDataRepresentationConvertible {}

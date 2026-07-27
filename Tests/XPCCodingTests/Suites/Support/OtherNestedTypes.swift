@@ -1,4 +1,3 @@
-
 struct DoubleNestedEmpty: Codable, Equatable {
   let emptyDict: [String: Int]
   let emptyArray: [Int]
@@ -14,7 +13,7 @@ struct EmptyContainerStruct: Codable, Equatable {
   let emptyDict: [String: Int]
   let emptyArray: [Int]
   let nestedEmpty: NestedEmptyContainers
-  
+
   static let testValues: [Self] = [testValue]
   static let testValue: Self = EmptyContainerStruct(
     emptyDict: [:],

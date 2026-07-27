@@ -8,9 +8,9 @@ import Foundation
 
 @Suite(.tags(.original))
 private struct `Original CodableXPC Tests` {
-  
+
   // MARK: - Empty Aggregates
-  
+
   /// ``EmptyStruct`` is a `Codable` struct with no fields.
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `EmptyStruct (top level)`(configuration: XPCCodec.Configuration) throws {
@@ -19,7 +19,7 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   /// ``EmptyClass`` is a `Codable` class with no fields.
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `EmptyClass (top level)`(configuration: XPCCodec.Configuration) throws {
@@ -30,7 +30,7 @@ private struct `Original CodableXPC Tests` {
   }
 
   // MARK: - Top-Level Single Values
-  
+
   /// ``Switch`` is a simple enum with two cases and synthesized `Codable` conformance.
   @Test(arguments: XPCCodec.Configuration.allCases, Switch.allCases)
   func `enum (top level)`(
@@ -42,16 +42,16 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   /// ``Timestamp`` is a simple struct with a single field, encoding itself using a single-value container.
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `struct (top level)`(configuration: XPCCodec.Configuration) throws {
     try verifyRoundTrip(
-      of: Timestamp(3141592653),
+      of: Timestamp(3_141_592_653),
       configuration: configuration
     )
   }
-  
+
   /// ``Counter`` is a simple class with a single field, encoding itself using a single-value container.
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `class (top level)`(configuration: XPCCodec.Configuration) throws {
@@ -60,9 +60,9 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   // MARK: - Top-Level Complex Types
-  
+
   /// ``Address`` is a struct type with multiple fields.
   @Test(arguments: XPCCodec.Configuration.allCases, Address.testValues)
   func `Address (top level)`(configuration: XPCCodec.Configuration, probe: Address) throws {
@@ -71,7 +71,7 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   /// ``Person`` is a class with multiple fields.
   @Test(arguments: XPCCodec.Configuration.allCases, testPersons())
   func `Person (top level)`(configuration: XPCCodec.Configuration, probe: Person) throws {
@@ -80,7 +80,7 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   /// ``Numbers`` is a struct which encodes as an array through a single value container.
   @Test(arguments: XPCCodec.Configuration.allCases, Numbers.testValues)
   func `Numbers (top level)`(configuration: XPCCodec.Configuration, probe: Numbers) throws {
@@ -89,7 +89,7 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   /// ``Mapping`` is a class which encodes as a dictionary through a single value container.
   @Test(arguments: XPCCodec.Configuration.allCases, Mapping.testValues)
   func `Mapping (top level)`(configuration: XPCCodec.Configuration, probe: Mapping) throws {
@@ -98,7 +98,7 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   /// ``Programmer`` is a type which vends a "super encoder/decoder" to its superclass, ``Person``.
   @Test(arguments: XPCCodec.Configuration.allCases, testProgrammers())
   func `Programmer (top level)`(configuration: XPCCodec.Configuration, probe: Programmer) throws {
@@ -107,7 +107,7 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   /// ``Employee`` is a type which shares its encoder & decoder with its superclass, ``Person``.
   @Test(arguments: XPCCodec.Configuration.allCases, testEmployees())
   func `Employee (top level)`(configuration: XPCCodec.Configuration, probe: Employee) throws {
@@ -116,7 +116,7 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   /// ``Company`` is a type with fields which are Codable themselves.
   @Test(arguments: XPCCodec.Configuration.allCases, Company.testValues)
   func `Company (top level)`(configuration: XPCCodec.Configuration, probe: Company) throws {
@@ -125,7 +125,7 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   /// ``EnhancedBool`` is a type that encodes and decodes via an optional representation.
   @Test(arguments: XPCCodec.Configuration.allCases, EnhancedBool.allCases)
   func `EnhancedBool (top level)`(configuration: XPCCodec.Configuration, probe: EnhancedBool) throws {
@@ -134,27 +134,29 @@ private struct `Original CodableXPC Tests` {
       configuration: configuration
     )
   }
-  
+
   // MARK: - Test KeyPath during failure
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `codingPath (dictionary, encoding, root key)`(configuration: XPCCodec.Configuration) throws {
     let toEncode: [String: EncodeFailure] = ["key": EncodeFailure(someValue: 3.14)]
     let codec = XPCCodec(configuration: configuration)
-    
+
     let encodingError = try #require(throws: EncodingError.self) {
       try codec.encode(toEncode)
     }
-    
+
     try verifyCodingPath(
       of: encodingError,
       matches: ["key"]
     )
   }
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `codingPath (dictionary, encoding, nested key)`(configuration: XPCCodec.Configuration) throws {
-    let toEncode: [String: [String: EncodeFailureNested]] = ["key": ["sub_key": EncodeFailureNested(nestedValue: EncodeFailure(someValue: 3.14))]]
+    let toEncode: [String: [String: EncodeFailureNested]] = [
+      "key": ["sub_key": EncodeFailureNested(nestedValue: EncodeFailure(someValue: 3.14))]
+    ]
     let codec = XPCCodec(configuration: configuration)
 
     let encodingError = try #require(throws: EncodingError.self) {
@@ -166,30 +168,30 @@ private struct `Original CodableXPC Tests` {
       matches: [
         "key",
         "sub_key",
-        "nestedValue"
+        "nestedValue",
       ]
     )
   }
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `codingPath (dictionary, decoding, root key)`(configuration: XPCCodec.Configuration) throws {
     let input = createXPCDictionary(
       key: "intValue",
       value: createXPCString("not an integer")
     )
-    
+
     let codec = XPCCodec(configuration: configuration)
-    
+
     let decodingError = try #require(throws: DecodingError.self) {
       try codec.decode(DecodeFailure.self, from: input)
     }
-    
+
     try verifyCodingPath(
       of: decodingError,
       matches: ["intValue"]
     )
   }
-  
+
   @Test(arguments: XPCCodec.Configuration.allCases)
   func `codingPath (dictionary, decoding, nested key)`(configuration: XPCCodec.Configuration) throws {
     let input = createXPCDictionary(
@@ -199,18 +201,18 @@ private struct `Original CodableXPC Tests` {
         value: createXPCString("not an integer")
       )
     )
-    
+
     let codec = XPCCodec(configuration: configuration)
-    
+
     let decodingError = try #require(throws: DecodingError.self) {
       try codec.decode(DecodeFailureNested.self, from: input)
     }
-    
+
     try verifyCodingPath(
       of: decodingError,
       matches: [
         "nestedValue",
-        "intValue"
+        "intValue",
       ]
     )
   }
@@ -218,12 +220,11 @@ private struct `Original CodableXPC Tests` {
 
 // MARK: - Support Types
 
-
-private struct EncodeFailure : Encodable {
+private struct EncodeFailure: Encodable {
   enum Failure: Error {
     case Failure
   }
-  
+
   var someValue: Double
   func encode(to encoder: Encoder) throws {
     throw EncodingError.invalidValue(
@@ -237,14 +238,14 @@ private struct EncodeFailure : Encodable {
   }
 }
 
-private struct EncodeFailureNested : Encodable {
+private struct EncodeFailureNested: Encodable {
   var nestedValue: EncodeFailure
 }
 
-private struct DecodeFailure : Decodable {
+private struct DecodeFailure: Decodable {
   var intValue: Int
 }
 
-private struct DecodeFailureNested : Decodable {
+private struct DecodeFailureNested: Decodable {
   var nestedValue: DecodeFailure
 }

@@ -126,7 +126,7 @@ struct FacadeAndStateCoverageTests {
       .keyed(dictionary),
       .unkeyed(array),
       .pendingSingleValue,
-      .completedSingleValue(singleValue)
+      .completedSingleValue(singleValue),
     ]
 
     #expect(states[0].canBeginContainer)

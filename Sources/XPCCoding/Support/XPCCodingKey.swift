@@ -9,24 +9,24 @@ import XPC
 /// A `CodingKey` type for use with `XPCCoding`; primarily exists to represent the `super` key.
 internal struct XPCCodingKey: CodingKey {
   internal let stringValue: String
-  
+
   internal let intValue: Int?
 
   internal init?(stringValue: String) {
     self.intValue = nil
     self.stringValue = stringValue
   }
-  
+
   internal init(intValue: Int) {
     self.intValue = intValue
     self.stringValue = String(intValue)
   }
-  
+
   internal init(intValue: Int, stringValue: String) {
     self.intValue = intValue
     self.stringValue = stringValue
   }
-  
+
   /// The key used to represent the `super` element in an archive.
   internal static let superKey = XPCCodingKey(
     intValue: 0,
@@ -36,5 +36,5 @@ internal struct XPCCodingKey: CodingKey {
 
 // MARK: - Synthesized Conformances
 
-extension XPCCodingKey: Equatable { }
-extension XPCCodingKey: Hashable { }
+extension XPCCodingKey: Equatable {}
+extension XPCCodingKey: Hashable {}

@@ -8,14 +8,14 @@ import XPC
 
 /// The `UnkeyedDecodingContainer` implementation for `XPCDecoder`.
 internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
-  
+
   internal typealias StringKeyStrategy = XPCDecoder.StringKeyStrategy
-  
+
   internal typealias StringValueStrategy = XPCDecoder.StringValueStrategy
-  
+
   /// Always read the string key strategy from the decoder.
   internal var stringKeyStrategy: XPCDecoder.StringKeyStrategy { decoder.stringKeyStrategy }
-  
+
   /// Always read the string value strategy from the decoder.
   internal var stringValueStrategy: XPCDecoder.StringValueStrategy { decoder.stringValueStrategy }
 
@@ -24,12 +24,12 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
   /// The index of the next element to decode.
   internal var currentIndex: Int
-  
+
   /// The underlying XPC array.
   internal let underlyingXPCArray: xpc_object_t
-  
+
   /// The parent decoder.
-  internal let decoder: _XPCDecoder  
+  internal let decoder: _XPCDecoder
 
   /// The recursive decoding depth of this array below the root object.
   internal let depth: Int
@@ -78,7 +78,7 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       xpc_array_get_count(xpcObject),
       codingPath: codingPath
     )
-    
+
     self.underlyingXPCArray = xpcObject
     self.decoder = decoder
     self.codingPath = codingPath
@@ -87,11 +87,11 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
   }
 
   // MARK: - UnkeyedDecodingContainer
-  
+
   internal var count: Int? {
     _count
   }
-  
+
   internal mutating func decodeNil() throws -> Bool {
     guard !isAtEnd else {
       throw DecodingError.dataCorrupted(
@@ -101,87 +101,87 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         )
       )
     }
-    
+
     return try withCurrentCodingKey { codingPath in
       let foundValue = xpc_array_get_value(underlyingXPCArray, currentIndex)
       try decoder.prepareToVisitChild(
         at: codingPath,
         depth: depth + 1
       )
-      
+
       if foundValue.decodeNil(at: codingPath) {
         currentIndex += 1
         return true
       }
       return false
-      
+
     }
   }
-  
+
   internal mutating func decode(_ type: Bool.Type) throws -> Bool {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: String.Type) throws -> String {
     try decodeNextStringValue()
   }
-  
+
   internal mutating func decode(_ type: Double.Type) throws -> Double {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: Float.Type) throws -> Float {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: Int.Type) throws -> Int {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: Int8.Type) throws -> Int8 {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: Int16.Type) throws -> Int16 {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: Int32.Type) throws -> Int32 {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: Int64.Type) throws -> Int64 {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: Int128.Type) throws -> Int128 {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: UInt.Type) throws -> UInt {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: UInt8.Type) throws -> UInt8 {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: UInt16.Type) throws -> UInt16 {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: UInt32.Type) throws -> UInt32 {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: UInt64.Type) throws -> UInt64 {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode(_ type: UInt128.Type) throws -> UInt128 {
     try decodeNextValue(as: type)
   }
-  
+
   internal mutating func decode<T: Decodable>(_ type: T.Type) throws -> T {
     let decoder = decoder
     let childDepth = depth + 1
@@ -194,10 +194,10 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       )
     }
   }
-  
+
   internal mutating func nestedContainer<NestedKey>(
     keyedBy type: NestedKey.Type
-  ) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
+  ) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
     let decoder = decoder
     let childDepth = depth + 1
     return try handleNextDecodingKeyValue { xpcValue, codingPath in
@@ -211,11 +211,11 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       )
     }
   }
-  
+
   internal mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
     let decoder = decoder
     let childDepth = depth + 1
-    
+
     return try handleNextDecodingKeyValue { xpcValue, codingPath in
       try XPCUnkeyedDecodingContainer(
         referencing: decoder,
@@ -225,14 +225,14 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       )
     }
   }
-  
+
   internal mutating func superDecoder() throws -> Decoder {
     let stringKeyStrategy = stringKeyStrategy
     let stringValueStrategy = stringValueStrategy
     let decodingState = decoder.decodingState
     let userInfo = decoder.userInfo
     let childDepth = depth + 1
-    
+
     return try handleNextDecodingKeyValue { xpcValue, codingPath in
       _XPCDecoder(
         stringKeyStrategy: stringKeyStrategy,
@@ -245,23 +245,23 @@ internal struct XPCUnkeyedDecodingContainer: UnkeyedDecodingContainer {
       )
     }
   }
-  
+
 }
 
 // MARK: - Support API
 
 extension XPCUnkeyedDecodingContainer {
-  
+
   /// The number of elements in the container.
   internal var _count: Int {
     xpc_array_get_count(underlyingXPCArray)
   }
-  
+
   /// True if we have reached the end of the container.
   internal var isAtEnd: Bool {
     currentIndex >= _count
   }
-  
+
   internal var currentCodingKey: XPCCodingKey {
     XPCCodingKey(intValue: currentIndex)
   }
@@ -272,7 +272,7 @@ extension XPCUnkeyedDecodingContainer {
     codingPath.append(currentCodingKey)
     return try closure(codingPath)
   }
-  
+
   /// Decode the next value in the container, with proper coding-path management.
   internal mutating func handleNextDecodingKeyValue<R>(_ closure: (xpc_object_t, [any CodingKey]) throws -> R) throws -> R {
     guard !isAtEnd else {
@@ -283,9 +283,9 @@ extension XPCUnkeyedDecodingContainer {
         )
       )
     }
-    
+
     let foundValue = xpc_array_get_value(underlyingXPCArray, currentIndex)
-    
+
     let interpretedValue = try withCurrentCodingKey { codingPath in
       try decoder.prepareToVisitChild(
         at: codingPath,
@@ -293,11 +293,11 @@ extension XPCUnkeyedDecodingContainer {
       )
       return try closure(foundValue, codingPath)
     }
-    
+
     currentIndex += 1
     return interpretedValue
   }
-  
+
   /// Decode the next value in the container, with proper coding-path management.
   internal mutating func decodeNextValue<Value>(
     as valueType: Value.Type
@@ -322,5 +322,5 @@ extension XPCUnkeyedDecodingContainer {
       )
     }
   }
-  
+
 }

@@ -12,16 +12,16 @@ import XPC
 /// `Data` conversion leaves. Other witness bodies are not inlinable.
 @usableFromInline
 internal protocol LosslessXPCObjectConvertible {
-  
+
   /// Provides an `xpc_object_t` that's an exact representation of `self`.
   var xpcObjectRepresentation: xpc_object_t { get }
-  
+
 }
 
 // MARK: - XPCBinaryDataRepresentationConvertible Interop
 
 extension LosslessXPCObjectConvertible where Self: XPCBinaryDataRepresentationConvertible {
-  
+
   @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     withUnsafeXPCBinaryDataRepresentationRawBufferPointer { unsafeBufferPointer in
@@ -31,7 +31,7 @@ extension LosslessXPCObjectConvertible where Self: XPCBinaryDataRepresentationCo
       )
     }
   }
-  
+
 }
 
 // MARK: - Specialized Conformances
@@ -42,7 +42,7 @@ extension Double: LosslessXPCObjectConvertible {
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_double_create(self)
   }
-  
+
 }
 
 extension Float: LosslessXPCObjectConvertible {
@@ -64,12 +64,12 @@ extension Float16: LosslessXPCObjectConvertible {
 }
 
 extension Int64: LosslessXPCObjectConvertible {
-  
+
   @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_int64_create(self)
   }
-  
+
 }
 
 extension Int32: LosslessXPCObjectConvertible {
@@ -100,12 +100,12 @@ extension Int8: LosslessXPCObjectConvertible {
 }
 
 extension UInt64: LosslessXPCObjectConvertible {
-  
+
   @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_uint64_create(self)
   }
-  
+
 }
 
 extension UInt32: LosslessXPCObjectConvertible {
@@ -136,7 +136,7 @@ extension UInt8: LosslessXPCObjectConvertible {
 }
 
 extension Int: LosslessXPCObjectConvertible {
-  
+
   /// Measured hot conversion for keyed integer encoding.
   @inlinable
   internal var xpcObjectRepresentation: xpc_object_t {
@@ -166,11 +166,11 @@ extension Data: LosslessXPCObjectConvertible {
       )
     }
   }
-  
+
 }
 
 extension Bool: LosslessXPCObjectConvertible {
-  
+
   @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_bool_create(self)
@@ -180,6 +180,6 @@ extension Bool: LosslessXPCObjectConvertible {
 
 // MARK: - Synthesized Conformances
 
-extension Int128: LosslessXPCObjectConvertible { }
+extension Int128: LosslessXPCObjectConvertible {}
 
-extension UInt128: LosslessXPCObjectConvertible { }
+extension UInt128: LosslessXPCObjectConvertible {}

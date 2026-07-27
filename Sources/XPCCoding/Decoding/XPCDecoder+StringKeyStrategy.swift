@@ -27,14 +27,14 @@ extension XPCDecoder {
 
 // MARK: - Synthesized Conformances
 
-extension XPCDecoder.StringKeyStrategy: Sendable { }
-extension XPCDecoder.StringKeyStrategy: Equatable { }
-extension XPCDecoder.StringKeyStrategy: Hashable { }
-extension XPCDecoder.StringKeyStrategy: Codable { }
+extension XPCDecoder.StringKeyStrategy: Sendable {}
+extension XPCDecoder.StringKeyStrategy: Equatable {}
+extension XPCDecoder.StringKeyStrategy: Hashable {}
+extension XPCDecoder.StringKeyStrategy: Codable {}
 
 // MARK: - CaseIterable
 
-extension XPCDecoder.StringKeyStrategy: CaseIterable { }
+extension XPCDecoder.StringKeyStrategy: CaseIterable {}
 
 // MARK: - CustomStringConvertible
 
@@ -78,7 +78,7 @@ extension XPCDecoder.StringKeyStrategy {
 
   /// The standard (default) strategy for decoding string keys.
   public static let standard: Self = XPCCodec.StringKeyStrategy.standard.decodingStrategy
-  
+
   internal var embeddedNullByteRepresentation: String.EmbeddedNullByteRepresentation {
     switch self {
     case .passthrough:
@@ -87,13 +87,13 @@ extension XPCDecoder.StringKeyStrategy {
       .percentEscaped
     }
   }
-  
+
 }
 
 // MARK: - From XPCCodec
 
 extension XPCCodec.StringKeyStrategy {
-  
+
   internal var decodingStrategy: XPCDecoder.StringKeyStrategy {
     switch self {
     case .assumeAbsent:
@@ -102,5 +102,5 @@ extension XPCCodec.StringKeyStrategy {
       .percentEscape
     }
   }
-  
+
 }

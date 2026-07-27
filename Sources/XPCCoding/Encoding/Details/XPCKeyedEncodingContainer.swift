@@ -17,15 +17,15 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
 
   @usableFromInline
   internal typealias StringKeyStrategy = XPCEncoder.StringKeyStrategy
-  
+
   internal typealias StringValueStrategy = XPCEncoder.StringValueStrategy
-  
+
   /// Always read the string-key strategy from the encoder.
   ///
   /// This paired annotation is retained for the measured per-key strategy read.
   @inlinable @inline(__always)
   internal var stringKeyStrategy: StringKeyStrategy { encoder.stringKeyStrategy }
-  
+
   /// Always read the string-value strategy from the encoder.
   internal var stringValueStrategy: StringValueStrategy { encoder.stringValueStrategy }
 
@@ -34,22 +34,23 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   internal let codingPath: [any CodingKey]
 
   // MARK: - Properties
-  
+
   /// A reference to the encoder we're writing to.
   @usableFromInline
   internal let encoder: _XPCEncoder
-  
+
   @usableFromInline
   internal let underlyingXPCDictionary: xpc_object_t
-  
+
   // MARK: - Initialization
-  
+
   /// Initializes `self` with the given references.
   ///
   /// - Parameters:
   ///   - encoder: The encoder whose configuration this container uses.
   ///   - dictionary: The XPC dictionary into which this container encodes.
   ///   - codingPath: The immutable path at which the container was created.
+  /// - Throws: `EncodingError.invalidValue` when `dictionary` is not an XPC dictionary.
   internal init(
     referencing encoder: _XPCEncoder,
     wrapping dictionary: xpc_object_t,
@@ -68,9 +69,9 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
     }
     self.underlyingXPCDictionary = dictionary
   }
- 
+
   // MARK: - KeyedEncodingContainerProtocol
-  
+
   @usableFromInline
   internal mutating func encodeNil(forKey key: Key) throws {
     underlyingXPCDictionary.setNil(
@@ -78,33 +79,33 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
       strategy: stringKeyStrategy
     )
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: Bool, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   /// Measured hot specialization for keyed `Int` values.
   @inlinable
   internal mutating func encode(_ value: Int, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: Int8, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: Int16, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: Int32, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: Int64, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
@@ -119,22 +120,22 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   internal mutating func encode(_ value: UInt, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: UInt8, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: UInt16, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: UInt32, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: UInt64, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
@@ -149,19 +150,19 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
   internal mutating func encode(_ value: String, forKey key: Key) throws {
     try actuallyEncodeStringValue(value, forKey: key)
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: Float, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   @usableFromInline
   internal mutating func encode(_ value: Double, forKey key: Key) throws {
     try actuallyEncodeLosslesslyConvertibleValue(value, forKey: key)
   }
-  
+
   @usableFromInline
-  internal mutating func encode<T : Encodable>(_ value: T, forKey key: Key) throws {
+  internal mutating func encode<T: Encodable>(_ value: T, forKey key: Key) throws {
     let codingPath = codingPath(appending: key)
     underlyingXPCDictionary.setValue(
       try _XPCEncoder.encode(
@@ -175,7 +176,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
       strategy: stringKeyStrategy
     )
   }
-  
+
   @usableFromInline
   internal mutating func nestedContainer<NestedKey>(
     keyedBy keyType: NestedKey.Type,
@@ -196,8 +197,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
         codingPath: codingPath
       )
       return KeyedEncodingContainer(container)
-    }
-    catch let error {
+    } catch let error {
       fatalError(
         """
         Encountered unrecoverable error preparing nested keyed container (due to API limitations requiring non-throwing construction here).
@@ -228,8 +228,7 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
         wrapping: xpcArray,
         codingPath: codingPath
       )
-    }
-    catch let error {
+    } catch let error {
       fatalError(
         """
         Encountered unrecoverable error preparing nested unkeyed container (due to API limitations requiring non-throwing construction here).
@@ -265,7 +264,6 @@ internal struct XPCKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContaine
     )
   }
 }
-
 
 // MARK: - Support API
 
