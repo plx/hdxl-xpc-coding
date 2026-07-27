@@ -9,7 +9,7 @@
     "metrics": {
       "lines": {
         "count": 4077,
-        "covered": 4077
+        "covered": 3844
       },
       "regions": {
         "count": 1216,
