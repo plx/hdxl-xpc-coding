@@ -25,17 +25,32 @@ extension XPCCodec {
     /// Creates a new configuration with the specified strategies.
     ///
     /// - Parameters:
-    ///   - stringKeyStrategy: The strategy for handling null bytes in string keys.
-    ///   - stringValueStrategy: The strategy for handling null bytes in string values.
+    ///   - stringKeyStrategy: The strategy for handling null bytes in string
+    ///     keys. Defaults to ``XPCCodec/StringKeyStrategy/standard``.
+    ///   - stringValueStrategy: The strategy for handling null bytes in string
+    ///     values. Defaults to ``XPCCodec/StringValueStrategy/standard``.
     public init(
-      stringKeyStrategy: StringKeyStrategy,
-      stringValueStrategy: StringValueStrategy
+      stringKeyStrategy: StringKeyStrategy = .standard,
+      stringValueStrategy: StringValueStrategy = .standard
     ) {
       self.stringKeyStrategy = stringKeyStrategy
       self.stringValueStrategy = stringValueStrategy
     }
 
   }
+
+}
+
+// MARK: - Well-Known Values
+
+extension XPCCodec.Configuration {
+
+  /// The standard safe configuration used by zero-argument codec and coder
+  /// construction.
+  ///
+  /// Both string keys and string values use the reversible percent-escape
+  /// strategy, preserving embedded null and literal percent scalars.
+  public static let standard: Self = Self()
 
 }
 

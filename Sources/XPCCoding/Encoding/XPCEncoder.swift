@@ -54,9 +54,9 @@ public final class XPCEncoder: TopLevelEncoder {
   ///
   /// - Parameters:
   ///   - stringKeyStrategy: The strategy for handling null bytes in string keys.
-  ///     Defaults to the standard strategy, ``StringKeyStrategy/percentEscape``.
+  ///     Defaults to ``StringKeyStrategy/standard``.
   ///   - stringValueStrategy: The strategy for handling null bytes in string values.
-  ///     Defaults to the standard strategy, ``StringValueStrategy/percentEscape``.
+  ///     Defaults to ``StringValueStrategy/standard``.
   public init(
     stringKeyStrategy: StringKeyStrategy = .standard,
     stringValueStrategy: StringValueStrategy = .standard

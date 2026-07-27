@@ -64,8 +64,7 @@ extension XPCEncoder.StringKeyStrategy: CustomDebugStringConvertible {
 extension XPCEncoder.StringKeyStrategy {
 
   /// The standard (default) strategy for encoding string keys.
-  @usableFromInline
-  static let standard: Self = XPCCodec.StringKeyStrategy.standard.encodingStrategy
+  public static let standard: Self = XPCCodec.StringKeyStrategy.standard.encodingStrategy
 
 }
 

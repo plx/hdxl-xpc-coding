@@ -103,8 +103,7 @@ extension XPCEncoder.StringValueStrategy: CustomDebugStringConvertible {
 extension XPCEncoder.StringValueStrategy {
 
   /// The standard (default) strategy for encoding string values.
-  @usableFromInline
-  static let standard: Self = XPCCodec.StringValueStrategy.standard.encodingStrategy
+  public static let standard: Self = XPCCodec.StringValueStrategy.standard.encodingStrategy
 
 }
 
