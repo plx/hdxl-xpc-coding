@@ -12,6 +12,6 @@ extension Decimal {
     Decimal(string: "-0.00000123")!
   ]
   
-  static let optionalTestExamples: [Self?] = [nil] + testExamples.map { $0 }
+  static let optionalTestExamples: [Self?] = [nil] + testExamples.map(Optional.some)
 
 }

@@ -11,6 +11,6 @@ extension Date {
     Date(timeIntervalSince1970: 1705322445.0)
   ]
   
-  static let optionalTestExamples: [Self?] = [nil] + testExamples.map { $0 }
+  static let optionalTestExamples: [Self?] = [nil] + testExamples.map(Optional.some)
 
 }

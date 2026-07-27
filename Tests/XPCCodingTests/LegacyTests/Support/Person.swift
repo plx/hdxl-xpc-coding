@@ -22,7 +22,7 @@ class Person : Codable, Equatable, @unchecked Sendable {
     case website
   }
   
-  // FIXME: Remove when subclasses (Employee) are able to override synthesized conformance.
+  // Explicit conformance is intentional: subclasses exercise superclass coder sharing.
   required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     name = try container.decode(String.self, forKey: .name)
@@ -38,7 +38,7 @@ class Person : Codable, Equatable, @unchecked Sendable {
   }
   
   func isEqual(_ other: Person) -> Bool {
-    return name == other.name &&
+    name == other.name &&
     email == other.email &&
     website == other.website
   }

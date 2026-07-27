@@ -6,7 +6,7 @@ set quiet
 default:
     @just --list todos --unsorted
 
-# invokes todo-check command
+# invokes a blocking TODO/FIXME check
 [private]
 invoke-todo-checker reporter target: (_swiftlint-single-rule 'todo' reporter target)
 
@@ -26,22 +26,22 @@ check-tests reporter=EMOJI_REPORTER: (invoke-todo-checker reporter justfile_dire
 [group('check')]
 check-all reporter=EMOJI_REPORTER: (check-sources reporter) (check-tests reporter)
 
-# invokes todo-check command
+# invokes a nonblocking TODO/FIXME summary
 [private]
-invoke-todo-summarizer target: (_swiftlint-single-rule 'todo' SUMMARY_REPORTER target)
+invoke-todo-summarizer target: (_swiftlint-single-rule-summary 'todo' SUMMARY_REPORTER target)
 
 # summarizes/counts TODOs and FIXMEs (specific file)
 [group('summarize')]
 summarize-file file: (invoke-todo-summarizer file)
 
-# checks for TODOs and FIXMEs (sources)
+# summarizes TODOs and FIXMEs (sources; findings do not fail)
 [group('summarize')]
 summarize-sources: (invoke-todo-summarizer justfile_directory() / 'Sources')
 
-# checks for TODOs and FIXMEs (tests)
+# summarizes TODOs and FIXMEs (tests; findings do not fail)
 [group('summarize')]
 summarize-tests: (invoke-todo-summarizer justfile_directory() / 'Tests')
 
-# checks for TODOs and FIXMEs (all)
+# summarizes TODOs and FIXMEs (all; findings do not fail)
 [group('summarize')]
 summarize-all: summarize-sources summarize-tests

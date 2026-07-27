@@ -13,7 +13,7 @@ struct Company : Sendable, Codable, Equatable {
   }
   
   static var testValue: Company {
-    return Company(
+    Company(
       address: Address.testValue,
       employees: testEmployees()
     )

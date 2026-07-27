@@ -81,8 +81,7 @@ extension xpc_object_t {
     stringValueStrategy: XPCDecoder.StringValueStrategy
   ) throws(XPCStringExtractionError) -> String {
     switch stringValueStrategy {
-    case .passthrough: fallthrough
-    case .percentEscape:
+    case .passthrough, .percentEscape:
       guard hasType(XPC_TYPE_STRING) else {
         throw XPCStringExtractionError.typeMismatch(
           "Expected xpc string object, but got: \(typeDescription)."

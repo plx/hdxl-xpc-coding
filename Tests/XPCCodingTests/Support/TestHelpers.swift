@@ -268,9 +268,7 @@ func createXPCDictionary(_ pairs: [(String, xpc_object_t)]) -> xpc_object_t {
 }
 
 func createXPCString(_ value: String) -> xpc_object_t {
-  value.withCString { cString in
-    xpc_string_create(value)
-  }
+  value.withCString { xpc_string_create($0) }
 }
 
 func createXPCDictionary(key: String, value: LosslessXPCObjectConvertible) -> xpc_object_t {
@@ -346,7 +344,7 @@ func xpcData(_ value: Data) -> xpc_object_t {
 
 /// Creates an XPC null object.
 func xpcNull() -> xpc_object_t {
-  return xpc_null_create()
+  xpc_null_create()
 }
 
 func allCodecs() -> [XPCCodec] {

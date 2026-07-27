@@ -15,7 +15,7 @@ extension xpc_type_t {
   
 }
 
-// MARK - Typechecks
+// MARK: - Typechecks
 
 extension xpc_object_t {
   
@@ -51,7 +51,7 @@ extension xpc_object_t {
 
 }
 
-// MARK - Setters - Nil
+// MARK: - Setters - Nil
 
 extension xpc_object_t {
   

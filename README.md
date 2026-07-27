@@ -64,6 +64,9 @@ and subprocess-regression commands are documented in
 The reproducible DocC command shared by local runs and CI is documented in
 [API Documentation](reference/ApiDocumentation.md).
 
+The pinned strict-lint policy and blocking-versus-summary command semantics are
+documented in [SwiftLint](reference/SwiftLint.md).
+
 ## Security
 
 Report suspected vulnerabilities through the private route in

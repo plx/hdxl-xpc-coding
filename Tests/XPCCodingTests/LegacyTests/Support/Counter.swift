@@ -19,6 +19,6 @@ final class Counter : Codable, Equatable {
   }
   
   static func ==(_ lhs: Counter, _ rhs: Counter) -> Bool {
-    return lhs === rhs || lhs.count == rhs.count
+    lhs === rhs || lhs.count == rhs.count
   }
 }

@@ -218,7 +218,7 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
   internal func decode<T: Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
     let xpcObject = try requiredXPCObject(for: key)
     return try withTransientCodingKey(key) { codingPath in
-      return try decoder.decodeChildValue(
+      try decoder.decodeChildValue(
         type,
         from: xpcObject,
         at: codingPath,
@@ -354,7 +354,7 @@ extension XPCKeyedDecodingContainer {
       assert(poppedKey.stringValue == key.stringValue)
       assert(poppedKey.intValue == key.intValue)
 #else
-      let _ = codingPath.removeLast()
+      _ = codingPath.removeLast()
 #endif
     }
     return try closure(codingPath)
@@ -375,7 +375,7 @@ extension XPCKeyedDecodingContainer {
       assert(poppedKey.stringValue == key.stringValue)
       assert(poppedKey.intValue == key.intValue)
 #else
-      let _ = codingPath.removeLast()
+      _ = codingPath.removeLast()
 #endif
     }
     return try closure(codingPath)

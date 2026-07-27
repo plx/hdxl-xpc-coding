@@ -12,6 +12,6 @@ extension URL {
     URL(string: "https://user:pass@example.com:8080/path/to/resource?query=value&foo=bar#fragment")!
   ]
 
-  static let optionalTestExamples: [Self?] = [nil] + testExamples.map { $0 }
+  static let optionalTestExamples: [Self?] = [nil] + testExamples.map(Optional.some)
 
 }

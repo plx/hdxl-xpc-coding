@@ -37,6 +37,8 @@ internal func infalliblyUnwrap<T>(
   }
   return value
   #else
+  // This helper is the documented, centralized release fast path.
+  // swiftlint:disable:next force_unwrapping
   return value!
   #endif
 }
