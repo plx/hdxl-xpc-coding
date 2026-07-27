@@ -439,7 +439,7 @@ implementation state. A deviation is not a legacy input promise.
 | decoder error taxonomy | absent keys, explicit nulls, wrong kinds, and malformed correct-kind content use the documented standard `DecodingError` cases at exact paths | implemented and covered by [#18](https://github.com/plx/hdxl-xpc-coding/issues/18) |
 | referencing/super encoders | repeated-container reuse can lose data | [#10](https://github.com/plx/hdxl-xpc-coding/issues/10) |
 | codec configuration ownership | mutable stored coder references can diverge | [#21](https://github.com/plx/hdxl-xpc-coding/issues/21) |
-| independent structural fixtures | absent | [#25](https://github.com/plx/hdxl-xpc-coding/issues/25) |
+| independent structural fixtures | bidirectional, deterministic fixtures inspect encoder output and construct decoder input without sharing codec implementation | [`RepresentationFixtureTests.swift`](../Tests/XPCCodingTests/Fixtures/RepresentationFixtureTests.swift) and [`XPCStructuralFixture.swift`](../Tests/XPCCodingTests/Fixtures/XPCStructuralFixture.swift) |
 | real local process-boundary validation | absent | [#26](https://github.com/plx/hdxl-xpc-coding/issues/26) |
 | library-owned versioned envelope | intentionally absent and out of scope | [#24](https://github.com/plx/hdxl-xpc-coding/issues/24) |
 
@@ -463,6 +463,16 @@ Same-build fixture work can derive every expectation from this document:
 10. Do not load fixtures from another package release or treat fixture files as
     persistent payloads.
 
+The executable inventory lives in
+[`RepresentationFixtureTests.swift`](../Tests/XPCCodingTests/Fixtures/RepresentationFixtureTests.swift).
+Its expected trees are typed, review-visible Swift source. The test-only
+[`XPCStructuralFixture`](../Tests/XPCCodingTests/Fixtures/XPCStructuralFixture.swift)
+walks complete encoder-produced XPC trees directly and constructs fresh
+decoder inputs with XPC creation APIs. It sorts dictionary keys for comparison,
+compares data exactly, preserves non-NaN floating-point bit patterns, and
+compares NaNs by classification. It is deliberately not a `Codable` fixture
+schema, a generated snapshot, a persisted format, or a library API.
+
 ## Contribution rule
 
 Every change that affects an emitted or accepted XPC object kind, scalar value,
@@ -470,7 +480,8 @@ data bytes, string transform, container shape, standard-library schema,
 configuration requirement, or malformed-input classification must update:
 
 1. this document;
-2. the bidirectional same-build structural fixtures;
+2. the
+   [bidirectional same-build structural fixtures](../Tests/XPCCodingTests/Fixtures/RepresentationFixtureTests.swift);
 3. affected public API or README documentation; and
 4. the change log or migration notes when the change ships.
 
