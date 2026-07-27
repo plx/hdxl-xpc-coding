@@ -4,7 +4,6 @@ extension UnkeyedEncodingContainer {
   
   // MARK: - Data Elements
   
-  @inlinable
   public mutating func efficientlyEncodeBinaryData<let N: Int>(
     _ inlineArray: InlineArray<N, UInt8>
   ) throws {
@@ -24,7 +23,6 @@ extension UnkeyedEncodingContainer {
   ///
   /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
   ///   pointer.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawPointer: UnsafeRawPointer?,
     count: Int
@@ -73,7 +71,6 @@ extension UnkeyedEncodingContainer {
   ///
   /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
   ///   pointer.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawPointer: UnsafeMutableRawPointer?,
     count: Int
@@ -114,7 +111,6 @@ extension UnkeyedEncodingContainer {
   }
   
   /// Convenience by-which external types can take advantage of "fewer-copy" XPC APIs without inlining the type-introspection checks at each call site.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawBufferPointer: UnsafeRawBufferPointer
   ) throws {
@@ -146,7 +142,6 @@ extension UnkeyedEncodingContainer {
   }
   
   /// Convenience by-which external types can take advantage of "fewer-copy" XPC APIs without inlining the type-introspection checks at each call site.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawBufferPointer: UnsafeMutableRawBufferPointer
   ) throws {
@@ -188,7 +183,6 @@ extension UnkeyedEncodingContainer {
   ///
   /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
   ///   pointer.
-  @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafePointer: UnsafePointer<T>?,
     count: Int
@@ -221,7 +215,6 @@ extension UnkeyedEncodingContainer {
   ///
   /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
   ///   pointer.
-  @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeMutablePointer: UnsafeMutablePointer<T>?,
     count: Int
@@ -246,7 +239,6 @@ extension UnkeyedEncodingContainer {
   }
   
   /// Convenience by-which external types can take advantage of "fewer-copy" XPC APIs without inlining the type-introspection checks at each call site.
-  @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeBufferPointer: UnsafeBufferPointer<T>
   ) throws {
@@ -256,7 +248,6 @@ extension UnkeyedEncodingContainer {
   }
   
   /// Convenience by-which external types can take advantage of "fewer-copy" XPC APIs without inlining the type-introspection checks at each call site.
-  @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeMutableBufferPointer: UnsafeMutableBufferPointer<T>
   ) throws {

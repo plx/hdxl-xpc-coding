@@ -10,7 +10,6 @@ import Foundation
 ///
 /// This is used only for the 128-bit integer types for which XPC has no scalar representation.
 /// Their bytes are the target-native bitwise representation shared by co-built local peers.
-@usableFromInline
 protocol XPCBinaryDataRepresentationConvertible: BitwiseCopyable {
   
   /// Provides access to a raw buffer pointer our binary data representation.
@@ -28,7 +27,6 @@ protocol XPCBinaryDataRepresentationConvertible: BitwiseCopyable {
 
 extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
   
-  @inlinable
   internal func withUnsafeXPCBinaryDataRepresentationRawBufferPointer<R>(_ closure: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
     try withUnsafePointer(to: self) { pointerToSelf in
       try closure(
@@ -44,7 +42,6 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
   ///
   /// - Note: the size check *must* stay ahead of the load; we never read from a buffer of the wrong size.
   /// - Note: we use `loadUnaligned(as:)` b/c XPC doesn't promise that e.g. `xpc_data_get_bytes_ptr` satisfies `Self`'s alignment.
-  @inlinable
   internal init?(unsafeXPCBinaryDataRepresentationRawBufferPointer unsafeRawBufferPointer: UnsafeRawBufferPointer) {
     guard
       let baseAddress = unsafeRawBufferPointer.baseAddress,
@@ -55,7 +52,6 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
     self = baseAddress.loadUnaligned(as: Self.self)
   }
 
-  @inlinable
   internal init?(xpcBinaryDataRepresentation: Data) {
     self = .zero
     guard xpcBinaryDataRepresentation.count == MemoryLayout<Self>.size else {
@@ -77,7 +73,6 @@ extension XPCBinaryDataRepresentationConvertible where Self: Numeric {
 extension XPCBinaryDataRepresentationConvertible {
 
   /// Convenience to provide a `Data` holding our binary-data representation.
-  @inlinable
   internal var xpcBinaryDataRepresentation: Data {
     withUnsafePointer(to: self) { pointerToSelf in
       Data(

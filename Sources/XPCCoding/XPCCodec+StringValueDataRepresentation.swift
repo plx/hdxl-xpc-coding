@@ -21,7 +21,6 @@ extension XPCCodec {
     case utf32
 
     /// The `String.Encoding` value corresponding to this data representation.
-    @usableFromInline
     internal var stringEncoding: String.Encoding {
       switch self {
       case .utf8:

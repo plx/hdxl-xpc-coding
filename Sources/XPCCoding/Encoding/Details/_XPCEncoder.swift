@@ -8,6 +8,10 @@ import XPC
 // MARK: _XPCEncoder
 
 /// The internal encoder implementation behind the facade (and the actual `Encoder` conformance).
+///
+/// Inlining audit rationale: this type is the compiler-required ABI closure for
+/// the measured generic entry point below. Its error and container-orchestration
+/// implementations deliberately remain non-inlinable.
 @usableFromInline
 internal class _XPCEncoder: Encoder {
   
@@ -22,43 +26,38 @@ internal class _XPCEncoder: Encoder {
   internal let stringKeyStrategy: XPCEncoder.StringKeyStrategy
   
   /// The string value strategy to use (locked at construction).
-  @usableFromInline
   internal let stringValueStrategy: XPCEncoder.StringValueStrategy
 
   /// Backing storage for the coding path.
-  @usableFromInline
   internal let _codingPath: [CodingKey]
   
   /// Read-only access to the coding path (protocol requirement).
-  @inlinable @inline(__always)
+  @usableFromInline
   internal var codingPath: [any CodingKey] { _codingPath }
   
   /// Backing storage for the user info.
-  @usableFromInline
   internal let _userInfo: [CodingUserInfoKey : Any]
   
   /// Read-only access to the user info (protocol requirement).
-  @inlinable
+  @usableFromInline
   internal var userInfo: [CodingUserInfoKey : Any] { _userInfo}
   
   /// Our internal state vis-a-vis our top-level container.
-  @usableFromInline
   internal var topLevelContainerState: ContainerState = .noContainerYet
   
   /// The active kind of our top-level container (if any).
-  @inlinable
   internal var topLevelContainerKind: ContainerKind? {
     topLevelContainerState.containerKind
   }
   
   /// The underlying top-level container (if any).
-  @inlinable
+  @usableFromInline
   internal var topLevelContainer: xpc_object_t? {
     topLevelContainerState.containerObject
   }
   
   /// Memberwise initializer.
-  @inlinable
+  @usableFromInline
   internal init(
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy,
@@ -76,7 +75,6 @@ internal class _XPCEncoder: Encoder {
   /// Root encoders retain their value solely in `topLevelContainerState`, so
   /// their implementation is intentionally a no-op. Referencing encoders
   /// override only this insertion hook; all container state remains shared.
-  @usableFromInline
   internal func insertIntoOutputDestination(
     _ topLevelObject: xpc_object_t
   ) throws {
@@ -166,7 +164,6 @@ extension _XPCEncoder {
   ///
   /// `Encoder` requires container construction to be non-throwing. Destination
   /// failures therefore indicate an invalid internal referencing-encoder setup.
-  @usableFromInline
   internal final func infalliblyInstallTopLevelObject(
     _ topLevelObject: xpc_object_t,
     file: StaticString = #file,
@@ -188,7 +185,6 @@ extension _XPCEncoder {
   }
 
   /// Completes a single-value encoding and installs it exactly once.
-  @usableFromInline
   internal final func completeSingleValueEncoding(
     with singleValueXPCObject: xpc_object_t
   ) throws {
@@ -215,6 +211,9 @@ extension _XPCEncoder {
   ///   - userInfo: The operation-local user information to expose.
   /// - Returns: The encoded value.
   /// - Throws: An error if encoding fails.
+  ///
+  /// Retained to specialize the generic facade-to-`Encodable` call across the
+  /// package boundary; the release benchmark measures this complete hot path.
   @inlinable
   internal static func encode<T: Encodable>(
     _ value: T,
@@ -253,7 +252,6 @@ extension _XPCEncoder {
 extension _XPCEncoder {
 
   /// Used to represent how we should proceed after being asked to create a container.
-  @usableFromInline
   internal enum ContainerRequestDisposition {
     /// We can't continue a single-value container.
     case unableToContinueSingleValueContainer
@@ -294,7 +292,6 @@ extension _XPCEncoder {
   }
 
   /// Used to "crash out" when we're asked to create a container of a different kind from the active one (e.g. single-value -> keyed, or keyed -> unkeyed, etc.).
-  @inlinable
   internal func abortDueToImpossibleContainerKindSwitch(
     currentKind: ContainerKind,
     requestedKind: ContainerKind,
@@ -311,7 +308,6 @@ extension _XPCEncoder {
   }
 
   /// Used to "crash out" when we're asked to *continue* a single-value container (e.g. to vend another single-value container after already vending one).
-  @inlinable
   internal func abortDueToImpossibleSingleValueContainerContinuation(
     file: StaticString = #file,
     line: UInt = #line
@@ -326,7 +322,6 @@ extension _XPCEncoder {
   }
 
   /// Determine how we should proceed after being asked to create a container of a given kind.
-  @inlinable
   internal func containerRequestDisposition(
     containerKind: ContainerKind
   ) -> ContainerRequestDisposition {
@@ -358,7 +353,6 @@ extension _XPCEncoder {
   /// Internal helper to create-or-continue a keyed container.
   ///
   /// - Note: the associated `Encoder` API doesn't support failure here, so we just "crash out" upon improper usage.
-  @usableFromInline
   internal final func prepareKeyedEncodingContainer<Key>(
     keyedBy type: Key.Type,
     wrapping xpcDictionary: xpc_object_t,
@@ -396,7 +390,6 @@ extension _XPCEncoder {
   /// Internal helper to create-or-continue an unkeyed container.
   ///
   /// - Note: the associated `Encoder` API doesn't support failure here, so we just "crash out" upon improper usage.
-  @usableFromInline
   internal final func prepareUnkeyedEncodingContainer(
     wrapping xpcArray: xpc_object_t,
     file: StaticString = #file,
@@ -429,7 +422,6 @@ extension _XPCEncoder {
   }
 
   /// Internal helper to create a single-value container.
-  @usableFromInline
   internal final func prepareSingleValueEncodingContainer(
     file: StaticString = #file,
     line: UInt = #line
@@ -454,7 +446,6 @@ extension _XPCEncoder {
 
 extension _XPCEncoder {
   /// The types of container we can have already created.
-  @usableFromInline
   internal enum ContainerKind {
     /// We have created a keyed container.
     case keyed
@@ -481,7 +472,6 @@ extension _XPCEncoder.ContainerKind: CaseIterable {}
 
 extension _XPCEncoder.ContainerKind: CustomStringConvertible {
 
-  @usableFromInline
   internal var description: String {
     switch self {
     case .keyed:
@@ -500,7 +490,6 @@ extension _XPCEncoder.ContainerKind: CustomStringConvertible {
 
 extension _XPCEncoder.ContainerKind: CustomDebugStringConvertible {
 
-  @usableFromInline
   internal var debugDescription: String {
     switch self {
     case .keyed:
@@ -527,7 +516,6 @@ extension _XPCEncoder {
   /// - we can't make our container until we know the type of container we need
   /// - users aren't allowed to create multiple containers for a given encoder—we need to protect that invariant
   /// 
-  @usableFromInline
   internal enum ContainerState {
 
     /// We have not yet created a container.
@@ -546,7 +534,6 @@ extension _XPCEncoder {
     case completedSingleValue(xpc_object_t)
     
     /// Access the active container object, if any.
-    @inlinable
     internal var containerObject: xpc_object_t? {
       switch self {
       case .keyed(let containerObject):
@@ -563,7 +550,6 @@ extension _XPCEncoder {
     }
 
     /// Access the active container kind, or `nil` if no container has been created.
-    @inlinable
     internal var containerKind: ContainerKind? {
       switch self {
       case .noContainerYet:
@@ -580,7 +566,6 @@ extension _XPCEncoder {
     }
 
     /// `true` iff we're in a state from-which we can begin a container.
-    @inlinable
     internal var canBeginContainer: Bool {
       switch self {
       case .noContainerYet:
@@ -598,7 +583,6 @@ extension _XPCEncoder {
 
 extension _XPCEncoder.ContainerState: CustomStringConvertible {
 
-  @usableFromInline
   internal var description: String {
     switch self {
     case .noContainerYet:
@@ -619,7 +603,6 @@ extension _XPCEncoder.ContainerState: CustomStringConvertible {
 // MARK: - CustomStringConvertible
 
 extension _XPCEncoder.ContainerState: CustomDebugStringConvertible {  
-  @usableFromInline
   internal var debugDescription: String {
     switch self {
     case .noContainerYet:

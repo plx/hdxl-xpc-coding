@@ -4,7 +4,6 @@ import XPC
 // MARK: XPCObjectCompatibilityError
 
 /// Error used to explain *why* a specific value wasn't convertible to an equivalent `xpc_object_t`.
-@usableFromInline
 internal enum XPCObjectCompatibilityError: Error {
   /// Case for when strings contain content that won't work with XPC (e.g. interior null bytes, etc.).
   ///
@@ -16,7 +15,6 @@ internal enum XPCObjectCompatibilityError: Error {
 
 extension XPCObjectCompatibilityError: CustomStringConvertible {
   
-  @usableFromInline
   internal var description: String {
     switch self {
     case .incompatibleStringContent(let explanation, _):
@@ -30,7 +28,6 @@ extension XPCObjectCompatibilityError: CustomStringConvertible {
 
 extension XPCObjectCompatibilityError: CustomDebugStringConvertible {
   
-  @usableFromInline
   internal var debugDescription: String {
     switch self {
     case .incompatibleStringContent(let explanation, _):

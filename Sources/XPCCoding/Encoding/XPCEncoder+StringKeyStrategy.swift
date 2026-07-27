@@ -72,7 +72,6 @@ extension XPCEncoder.StringKeyStrategy {
 
 extension XPCEncoder.StringKeyStrategy {
 
-  @usableFromInline
   internal var embeddedNullByteRepresentation: String.EmbeddedNullByteRepresentation {
     switch self {
     case .assumeAbsent:
@@ -88,7 +87,6 @@ extension XPCEncoder.StringKeyStrategy {
 
 extension XPCCodec.StringKeyStrategy {
   
-  @usableFromInline
   internal var encodingStrategy: XPCEncoder.StringKeyStrategy {
     switch self {
     case .assumeAbsent:

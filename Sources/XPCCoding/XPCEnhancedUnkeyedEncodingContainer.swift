@@ -55,7 +55,6 @@ extension XPCEnhancedUnkeyedEncodingContainer {
   
   // MARK: - Individual Data Elements
   
-  @inlinable
   public mutating func directlyEncodeXPCData(
     _ unsafePointer: UnsafeRawPointer?,
     count: Int
@@ -71,7 +70,6 @@ extension XPCEnhancedUnkeyedEncodingContainer {
     )
   }
   
-  @inlinable
   public mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeRawBufferPointer) throws {
     try directlyEncodeXPCData(
       unsafeBufferPointer.baseAddress,
@@ -79,7 +77,6 @@ extension XPCEnhancedUnkeyedEncodingContainer {
     )
   }
 
-  @inlinable
   public mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeMutableRawBufferPointer) throws {
     try directlyEncodeXPCData(
       unsafeBufferPointer.baseAddress,

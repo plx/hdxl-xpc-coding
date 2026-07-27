@@ -111,7 +111,6 @@ public final class XPCDecoder: TopLevelDecoder {
   /// - Throws: XPCCoding-originated representation failures use the standard
   ///   `DecodingError` taxonomy documented on ``XPCDecoder``. Errors thrown
   ///   directly by `T` propagate unchanged.
-  @inlinable
   public func decode<T>(
     _ type: T.Type,
     from input: Input

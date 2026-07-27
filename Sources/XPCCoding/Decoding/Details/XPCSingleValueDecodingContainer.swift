@@ -8,43 +8,33 @@ import XPC
 // MARK: XPCSingleValueDecodingContainer
 
 /// Internal single-value decoding container.
-@usableFromInline
 internal struct XPCSingleValueDecodingContainer: SingleValueDecodingContainer {
   
-  @usableFromInline
   internal typealias StringKeyStrategy = XPCDecoder.StringKeyStrategy
   
-  @usableFromInline
   internal typealias StringValueStrategy = XPCDecoder.StringValueStrategy
   
   /// We always source the string key strategy from the parent decoder.
-  @inlinable @inline(__always)
   internal var stringKeyStrategy: XPCDecoder.StringKeyStrategy { decoder.stringKeyStrategy }
   
   /// We always source the string value strategy from the parent decoder.
-  @inlinable @inline(__always)
   internal var stringValueStrategy: XPCDecoder.StringValueStrategy { decoder.stringValueStrategy }
 
   /// The parent decoder.
-  @usableFromInline
   internal let decoder: _XPCDecoder
   
   /// The underlying XPC message from-which we're' decoding.
-  @usableFromInline
   internal let underlyingMessage: xpc_object_t
 
   /// The coding path for this container.
-  @usableFromInline
   internal let codingPath: [any CodingKey]
 
   /// The recursive decoding depth of this value below the root object.
-  @usableFromInline
   internal let depth: Int
   
   // MARK: - Initialization
 
   /// Memberwise initializer.
-  @usableFromInline
   internal init(
     referencing decoder: _XPCDecoder,
     wrapping xpcObject: xpc_object_t,

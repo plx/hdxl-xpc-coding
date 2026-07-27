@@ -76,6 +76,8 @@ public final class XPCEncoder: TopLevelEncoder {
     )
   }
 
+  // Inlining audit rationale: retained for measured cross-module
+  // specialization of the generic public encoding entry point.
   /// Encodes an encodable value into an `xpc_object_t`.
   ///
   /// An error deliberately thrown by the value's `Encodable` implementation
@@ -115,7 +117,6 @@ public final class XPCEncoder: TopLevelEncoder {
   /// - Throws: ``TransientEncoderError/noEncodingOccurred`` if the closure doesn't encode anything,
   ///   an error thrown by the closure unchanged, or an `EncodingError` for an
   ///   XPCCoding-originated representation failure.
-  @inlinable
   public func withTransientEncoder(_ closure: (any Encoder) throws -> Void) throws -> Output {
     let stringKeyStrategy = stringKeyStrategy
     let stringValueStrategy = stringValueStrategy

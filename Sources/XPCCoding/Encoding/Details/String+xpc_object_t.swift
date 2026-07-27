@@ -8,14 +8,12 @@ import XPC
 extension String {
   
   /// Represents errors that can occur when converting a string to an `xpc_object_t`.
-  @usableFromInline
   internal enum XPCObjectConversionError: Error {
     /// The string contains null bytes (relevant for the `.throwOnDiscovery` strategy).
     case containsNullBytes(String)
   }
   
   /// Converts the string to an `xpc_object_t` representation, as per `stringKeyStrategy`.
-  @inlinable
   internal func makeXPCObjectRepresentation(
     stringKeyStrategy: XPCEncoder.StringKeyStrategy
   ) -> xpc_object_t {
@@ -25,7 +23,6 @@ extension String {
   }
 
   /// Converts the string to an `xpc_object_t` representation, as per `stringValueStrategy`.
-  @inlinable
   internal func makeXPCObjectRepresentation(
     stringValueStrategy: XPCEncoder.StringValueStrategy
   ) throws(XPCObjectConversionError) -> xpc_object_t {
@@ -62,7 +59,6 @@ extension String {
 
   /// Converts this string into its XPC representation and normalizes any
   /// codec-originated conversion failure at the exact value path.
-  @inlinable
   internal func makeXPCObjectRepresentation(
     stringValueStrategy: XPCEncoder.StringValueStrategy,
     codingPath: [any CodingKey]

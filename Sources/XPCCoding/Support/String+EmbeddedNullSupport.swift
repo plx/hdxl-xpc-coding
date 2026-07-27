@@ -4,7 +4,6 @@ import XPC
 extension String {
 
   /// Represents the way we want to handle embedded null bytes.
-  @usableFromInline
   enum EmbeddedNullByteRepresentation {
     /// Ignore the possibility of embedded null bytes.
     case passthrough
@@ -16,6 +15,9 @@ extension String {
   /// Access the c-string representation of the string, handling null bytes as per the `stringKeyStrategy`.
   /// 
   /// - seealso: `withUTF8CString(embeddedNullByteRepresentation:_:)`
+  ///
+  /// Inlining audit rationale: compiler-required ABI dependency of the measured
+  /// direct XPC dictionary setter; this helper itself is not inlinable.
   @usableFromInline
   internal func withUTF8CString<R>(
     stringKeyStrategy: XPCEncoder.StringKeyStrategy,
@@ -30,7 +32,6 @@ extension String {
   /// Access the c-string representation of the string, handling null bytes as per the `stringKeyStrategy`.
   /// 
   /// - seealso: `withUTF8CString(embeddedNullByteRepresentation:_:)`
-  @usableFromInline
   internal func withUTF8CString<R>(
     stringKeyStrategy: XPCDecoder.StringKeyStrategy,
     _ closure: (UnsafePointer<CChar>) throws -> R
@@ -42,7 +43,6 @@ extension String {
   }
 
   /// Access the c-string representation of the string, handling null bytes as per the `embeddedNullByteRepresentation`.
-  @usableFromInline
   internal func withUTF8CString<R>(
     embeddedNullByteRepresentation: EmbeddedNullByteRepresentation,
     _ closure: (UnsafePointer<CChar>) throws -> R
@@ -55,7 +55,6 @@ extension String {
     }
   }
 
-  @usableFromInline
   internal func withXPCCodingPercentEscapedCString<R>(
     _ closure: (UnsafePointer<CChar>) throws -> R
   ) rethrows -> R {
@@ -63,7 +62,6 @@ extension String {
   }
 
   /// Strictly decodes exactly `byteCount` UTF-8 bytes from a C pointer.
-  @usableFromInline
   internal init?(
     validatingUTF8CString cString: UnsafePointer<CChar>,
     byteCount: Int
@@ -82,7 +80,6 @@ extension String {
   ///
   /// This transform is total over `String`: U+0000 becomes `%00`, U+0025
   /// (`%`) becomes `%25`, and every other Unicode scalar is preserved.
-  @usableFromInline
   internal func addingXPCCodingPercentEscapes() -> Self {
     var result = String()
     result.reserveCapacity(
@@ -108,7 +105,6 @@ extension String {
   /// Literal, dangling, malformed, and unsupported percent sequences are
   /// rejected. In particular, `%2500` becomes the literal string `%00`; the
   /// output is not scanned recursively.
-  @usableFromInline
   internal func removingXPCCodingPercentEscapes() -> Self? {
     var result = String()
     result.reserveCapacity(utf8.count)

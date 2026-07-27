@@ -8,18 +8,14 @@ import XPC
 // MARK: _XPCArrayReferencingEncoder
 
 /// Installs a superclass encoder's XPC object into a reserved array element.
-@usableFromInline
 internal final class _XPCArrayReferencingEncoder: _XPCEncoder {
 
   /// The array in which we replace a reserved element.
-  @usableFromInline
   internal let xpcArray: xpc_object_t
 
   /// The index of the reserved element.
-  @usableFromInline
   internal let index: Int
 
-  @usableFromInline
   internal init(
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy,
@@ -38,7 +34,6 @@ internal final class _XPCArrayReferencingEncoder: _XPCEncoder {
     )
   }
 
-  @usableFromInline
   internal override func insertIntoOutputDestination(
     _ topLevelObject: xpc_object_t
   ) throws {

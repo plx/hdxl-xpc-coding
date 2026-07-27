@@ -93,7 +93,6 @@ extension XPCCodec {
   ///   implementation is propagated unchanged. XPCCoding-originated
   ///   representation failures use `EncodingError` at the most-specific
   ///   available coding path.
-  @inlinable
   public func encode<T>(_ value: T) throws -> xpc_object_t where T: Encodable {
     let configuration = configuration
     return try _XPCEncoder.encode(
@@ -114,7 +113,6 @@ extension XPCCodec {
   ///   ``XPCDecoder``'s documented absent-key, explicit-null, wrong-kind, and
   ///   malformed-content taxonomy. Errors thrown directly by `T` propagate
   ///   unchanged.
-  @inlinable
   public func decode<T>(
     _ valueType: T.Type,
     from object: xpc_object_t

@@ -2,24 +2,19 @@ import Darwin
 import XPC
 
 /// Shared, operation-local accounting for one top-level decode.
-@usableFromInline
 internal final class _XPCDecodingState {
 
   /// The immutable resource-limit snapshot for this operation.
-  @usableFromInline
   internal let limits: XPCDecoder.ResourceLimits
 
   /// The number of XPC-object traversal attempts consumed so far.
   ///
   /// Repeated traversal of one object consumes another visit.
-  @usableFromInline
   internal var visitedNodeCount: Int
 
   /// The cumulative string/data/key byte count consumed so far.
-  @usableFromInline
   internal var cumulativeByteCount: Int
 
-  @usableFromInline
   internal init(limits: XPCDecoder.ResourceLimits) {
     self.limits = limits
     self.visitedNodeCount = 0
@@ -27,7 +22,6 @@ internal final class _XPCDecodingState {
   }
 
   /// Validates a traversal depth and consumes one XPC-object visit.
-  @usableFromInline
   internal func prepareToVisit(
     atDepth depth: Int,
     codingPath: [any CodingKey]
@@ -51,7 +45,6 @@ internal final class _XPCDecodingState {
   }
 
   /// Checks a container's count before XPCCoding enumerates or decodes its entries.
-  @usableFromInline
   internal func validateContainerElementCount(
     _ elementCount: Int,
     codingPath: [any CodingKey]
@@ -66,7 +59,6 @@ internal final class _XPCDecodingState {
   }
 
   /// Checks and caches every dictionary key before `allKeys` is exposed.
-  @usableFromInline
   internal func validateDictionary(
     _ dictionary: xpc_object_t,
     stringKeyStrategy: XPCDecoder.StringKeyStrategy,
@@ -166,7 +158,6 @@ internal final class _XPCDecodingState {
   }
 
   /// Checks an XPC string or data-backed string before its bytes are copied.
-  @usableFromInline
   internal func validateStringValue(
     _ object: xpc_object_t,
     strategy: XPCDecoder.StringValueStrategy,
@@ -193,7 +184,6 @@ internal final class _XPCDecodingState {
   }
 
   /// Checks an XPC data value before its bytes are copied or read.
-  @usableFromInline
   internal func validateDataValue(
     _ object: xpc_object_t,
     codingPath: [any CodingKey]
@@ -217,7 +207,6 @@ internal final class _XPCDecodingState {
   }
 
   /// Consumes bytes belonging to an XPC string, data-backed string, or dictionary key.
-  @usableFromInline
   internal func consumeStringByteCount(
     _ byteCount: Int,
     codingPath: [any CodingKey]
@@ -236,7 +225,6 @@ internal final class _XPCDecodingState {
   }
 
   /// Consumes bytes without overflowing while computing the cumulative total.
-  @usableFromInline
   internal func consumeCumulativeByteCount(
     _ byteCount: Int,
     codingPath: [any CodingKey]
@@ -256,7 +244,6 @@ internal final class _XPCDecodingState {
   }
 
   /// Builds a bounded error that never asks libxpc to describe the hostile graph.
-  @usableFromInline
   internal func resourceLimitError(
     named limitName: StaticString,
     maximum: Int,
