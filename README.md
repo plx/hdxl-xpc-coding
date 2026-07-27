@@ -80,6 +80,15 @@ The reproducible DocC command shared by local runs and CI is documented in
 The pinned strict-lint policy and blocking-versus-summary command semantics are
 documented in [SwiftLint](reference/SwiftLint.md).
 
+## Releases
+
+Material changes, including every intentional pre-1.0 API break and its
+migration, are recorded in [CHANGELOG.md](CHANGELOG.md). The source-API
+stability policy — kept deliberately separate from the
+[XPC representation contract](reference/WireFormat.md) — is in
+[API Stability Policy](reference/ApiStabilityPolicy.md), and the release
+mechanics are in [RELEASING.md](RELEASING.md).
+
 ## Security
 
 Report suspected vulnerabilities through the private route in
