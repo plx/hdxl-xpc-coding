@@ -41,8 +41,10 @@ XPCCoding follows semantic versioning. It is currently **pre-1.0**; the
 pre-hardening lightweight tags `0.0.1`/`0.0.2`/`0.0.3` are retained, immutable,
 and are **not** a supported release line. See
 [reference/ApiStabilityPolicy.md](reference/ApiStabilityPolicy.md) for the
-pre-1.0 and 1.0 source-stability rules. Documentation here uses `<version>` as a
-placeholder; the concrete first-release version is chosen at release time.
+pre-1.0 and 1.0 source-stability rules. The first supported-release candidate is
+`0.1.0`. Generic commands below use `<version>` as a placeholder; for this
+candidate it must resolve to `0.1.0`. Selecting a different first-release
+version requires a reviewed repository change and a new audit candidate.
 
 ## Release process
 
@@ -53,7 +55,9 @@ placeholder; the concrete first-release version is chosen at release time.
   [main-branch protection policy](reference/MainBranchProtection.md). Do not
   weaken or bypass a required check to prepare or merge a release.
 - Choose the proposed `<version>` and tag name `<version>` (bare semver, no `v`
-  prefix — matching the existing `0.0.x` tags).
+  prefix — matching the existing `0.0.x` tags). The first supported candidate
+  has already selected `0.1.0`; verify that value rather than deferring the
+  choice until post-audit publication.
 
 ### 2. Update the changelog and, if needed, the API baseline
 
@@ -97,8 +101,8 @@ configuration and service limitations.
 bash Scripts/verify-api-stability.sh
 ```
 
-This fails closed against the pinned baseline. See the stability policy for how a
-deliberate break is recorded rather than merely allowed to pass.
+This fails closed against the pinned baseline. See the stability policy for how
+a deliberate break is recorded rather than merely allowed to pass.
 
 ### 5. Run the clean-clone release rehearsal
 

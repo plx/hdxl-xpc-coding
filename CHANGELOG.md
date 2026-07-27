@@ -29,13 +29,16 @@ Changelog dates use `YYYY-MM-DD`.
 
 ## [Unreleased]
 
-The first supported release will move these entries into a new `[<version>] -
-<date>` section and retain an empty **Unreleased** section once a version is
-chosen and the
-[production-readiness audit](reference/PostRemediationProductionReadinessAudit.md)
-reaches a GO decision. The entries below record every material change since the
+No changes yet.
+
+## [0.1.0] - 2026-07-27
+
+The first supported-release candidate records every material change since the
 pre-hardening lightweight tag `0.0.3`
 (`8e95faadf8dfcb5297433a98d36a4f3c38f1b4fb`).
+It remains unpublished until the
+[production-readiness audit](reference/PostRemediationProductionReadinessAudit.md)
+records `GO` and the maintainer approves the separate publication checkpoint.
 
 The pinned source-API baseline for the going-forward stability gate is the
 audited hardened surface `5f6480ec450eb6a1067d183d62d47476f2ca5b4b`
@@ -223,4 +226,5 @@ immutable, and never moved, but they are **not** a supported release line and ar
 not the source-API baseline. See
 [reference/ApiStabilityPolicy.md](reference/ApiStabilityPolicy.md).
 
-[Unreleased]: https://github.com/plx/hdxl-xpc-coding/compare/0.0.3...HEAD
+[Unreleased]: https://github.com/plx/hdxl-xpc-coding/compare/0.1.0...HEAD
+[0.1.0]: https://github.com/plx/hdxl-xpc-coding/compare/0.0.3...0.1.0
