@@ -110,6 +110,49 @@ jobs:
       - name: Run the canonical strict swift-format check
         run: bash Scripts/check-swift-format.sh
 
+  quality-contracts:
+    name: Strict SwiftLint and recipe contracts (Xcode 26.6)
+    runs-on: macos-26
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          clean: true
+          persist-credentials: false
+
+      - name: Verify the supported toolchain and manifest
+        run: bash Scripts/verify-support-policy.sh
+
+      - name: Install checksum-verified quality tools
+        run: |
+          bash Scripts/install-ci-quality-tools.sh "${RUNNER_TEMP}/quality-tools"
+          printf '%s\n' "${RUNNER_TEMP}/quality-tools" >>"${GITHUB_PATH}"
+
+      - name: Run canonical strict SwiftLint
+        run: |
+          set -o pipefail
+          just lint check-all github-actions-logging \
+            2>&1 | tee "${RUNNER_TEMP}/swiftlint.log"
+
+      - name: Verify aggregate recipe dependency contracts
+        run: |
+          set -o pipefail
+          bash Scripts/verify-just-recipe-contracts.sh \
+            2>&1 | tee "${RUNNER_TEMP}/recipe-contracts.log"
+
+      - name: Upload quality-gate transcripts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: quality-contracts-xcode-26.6
+          path: |
+            ${{ runner.temp }}/swiftlint.log
+            ${{ runner.temp }}/recipe-contracts.log
+          if-no-files-found: warn
+          retention-days: 14
+
   documentation:
     name: API documentation (Xcode 26.6)
     runs-on: macos-26
@@ -126,7 +169,49 @@ jobs:
         run: bash Scripts/verify-support-policy.sh
 
       - name: Generate the XPCCoding documentation, gating public-doc completeness and DocC warnings
-        run: bash Scripts/generate-api-documentation.sh "${RUNNER_TEMP}/documentation"
+        run: |
+          set -o pipefail
+          bash Scripts/generate-api-documentation.sh "${RUNNER_TEMP}/documentation" \
+            2>&1 | tee "${RUNNER_TEMP}/documentation.log"
+          tar \
+            -czf "${RUNNER_TEMP}/XPCCoding.doccarchive.tar.gz" \
+            -C "${RUNNER_TEMP}/documentation" \
+            XPCCoding.doccarchive
+
+      - name: Upload the documentation archive and transcript
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: api-documentation-xcode-26.6
+          path: |
+            ${{ runner.temp }}/documentation.log
+            ${{ runner.temp }}/XPCCoding.doccarchive.tar.gz
+          if-no-files-found: warn
+          retention-days: 14
+
+  coverage:
+    name: Source coverage (Xcode 26.6)
+    runs-on: macos-26
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          clean: true
+          persist-credentials: false
+
+      - name: Generate and enforce source coverage
+        run: bash Scripts/generate-source-coverage.sh "${RUNNER_TEMP}/coverage"
+
+      - name: Upload the raw report, summary, and complete transcripts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: source-coverage-xcode-26.6
+          path: ${{ runner.temp }}/coverage
+          if-no-files-found: warn
+          retention-days: 14
 
   xpc-process-boundary:
     name: Same-host XPC request/reply (Xcode 26.6)

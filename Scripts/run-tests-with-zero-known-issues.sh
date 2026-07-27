@@ -23,6 +23,7 @@
 # Usage:
 #   Scripts/run-tests-with-zero-known-issues.sh debug
 #   Scripts/run-tests-with-zero-known-issues.sh release
+#   Scripts/run-tests-with-zero-known-issues.sh coverage
 #   Scripts/run-tests-with-zero-known-issues.sh self-test
 
 set -euo pipefail
@@ -40,7 +41,7 @@ readonly SUMMARY_PATTERN='Test run with [0-9][0-9]* tests in [0-9][0-9]* suites 
 readonly SOURCE_DIRECTORIES=(Sources Tests IntegrationTests Benchmarks)
 
 usage() {
-  printf 'usage: %s {debug|release|self-test}\n' "${0##*/}" >&2
+  printf 'usage: %s {debug|release|coverage|self-test}\n' "${0##*/}" >&2
   exit 64
 }
 
@@ -174,6 +175,8 @@ check_passing_summary() {
 run_tests() {
   local configuration="$1"
   local root="$2"
+  local run_name="$3"
+  shift 3
 
   scratch_directory="$(mktemp -d \
     "${TMPDIR:-/tmp}/hdxl-xpc-zero-known-issues.XXXXXX")"
@@ -183,7 +186,7 @@ run_tests() {
   check_source_markers "${root}" \
     || fail "first-party sources must not contain withKnownIssue or XCTExpectFailure"
 
-  printf 'Running the %s unit suite under the zero-known-issue policy.\n' "${configuration}"
+  printf 'Running the %s unit suite under the zero-known-issue policy.\n' "${run_name}"
 
   # `set -o pipefail` is already in effect, so a failing `swift test` still
   # fails the script even though its output flows through `tee`.
@@ -192,18 +195,19 @@ run_tests() {
     swift test \
       --configuration "${configuration}" \
       -Xswiftc -warnings-as-errors \
+      "$@" \
       2>&1
   ) | tee "${log_file}"
 
   check_passing_summary "${log_file}" \
-    || fail "the ${configuration} run produced no passing summary"
+    || fail "the ${run_name} run produced no passing summary"
   check_output_markers "${log_file}" \
-    || fail "the ${configuration} run reported known issues"
+    || fail "the ${run_name} run reported known issues"
   check_output_null_bytes "${log_file}" \
-    || fail "the ${configuration} run emitted raw NUL bytes"
+    || fail "the ${run_name} run emitted raw NUL bytes"
 
   printf '\nVerified: %s run passed with zero known issues and no raw NUL bytes in its output.\n' \
-    "${configuration}"
+    "${run_name}"
 }
 
 # MARK: - Self-Test
@@ -325,7 +329,10 @@ readonly repository_root
 
 case "$1" in
   debug | release)
-    run_tests "$1" "${repository_root}"
+    run_tests "$1" "${repository_root}" "$1"
+    ;;
+  coverage)
+    run_tests debug "${repository_root}" coverage --enable-code-coverage
     ;;
   self-test)
     run_self_test "${repository_root}"

@@ -125,6 +125,7 @@ assert_dependencies \
   "${test_dump}" \
   all-validation \
   all-sanitizers \
+  coverage \
   fuzz-smoke \
   hostile-input \
   recipe-contracts \
@@ -140,6 +141,7 @@ assert_body_mentions \
   "${test_dump}" \
   zero-known-issue-controls \
   'run-tests-with-zero-known-issues.sh self-test'
+assert_body_mentions "${test_dump}" coverage 'generate-source-coverage.sh'
 
 assert_body_mentions "${test_dump}" address-sanitizer 'run-sanitizer-tests.sh address'
 assert_body_mentions "${test_dump}" thread-sanitizer 'run-sanitizer-tests.sh thread'
