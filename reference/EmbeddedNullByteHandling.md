@@ -117,6 +117,47 @@ tooling, the embedded-null test probes carry a null-free label for test-case
 names and compare UTF-8 byte arrays in their assertions; the canonical test
 runner fails the run if a raw NUL byte reaches the output at all.
 
+### Key-Strategy Performance
+
+The key passthrough implementation switches on the representation before it
+invokes the percent-escape transform. Consequently, `.assumeAbsent` encoding
+and paired `.passthrough` lookup do not evaluate the null or percent count
+helpers and do not allocate an escaped copy.
+
+The release benchmark suite covers 1,024 short ASCII keys and sixteen 4 KiB
+ASCII keys. Each fixture measures encoding, a known-key decode (including
+keyed-container construction), and a complete dictionary decode under both
+strategy pairs.
+
+On a Mac16,5 using Xcode 26.6 and Apple Swift 6.3.3, 31 samples with 5 warmup
+batches and a 200 ms target produced the following comparison against a
+source-only synthetic legacy variant that performed the null-count scan before
+strategy dispatch:
+
+| fixture | encode | known-key lookup | full decode |
+| --- | ---: | ---: | ---: |
+| 1,024 short keys | 5.06% faster | 0.47% slower (noise) | 3.38% faster |
+| sixteen 4 KiB keys | 50.79% faster | 30.86% faster | 47.40% faster |
+
+The repository comparator accepted all six changed-path scenarios at its 10%
+threshold. The clean reports identify candidate
+`6820f8f04eaceb371fdf6ff477972e224c8399cf`, synthetic legacy commit
+`81fce74513eb151fccf2100a9af287c954296ad8`, and shared benchmark-harness tree
+`b27be7312ee7ab9996af20ca94a547b290f6b2c3`.
+
+A same-revision comparison also quantifies the extra work performed by the safe
+strategy rather than presenting `.assumeAbsent` as an unbounded performance
+claim:
+
+| fixture | direct encode lower than safe encode | passthrough lookup lower than safe lookup | passthrough decode lower than safe decode |
+| --- | ---: | ---: | ---: |
+| 1,024 short keys | 25.49% | 70.05% | 29.32% |
+| sixteen 4 KiB keys | 94.87% | 99.15% | 96.64% |
+
+These results do not change the safety recommendation: `.percentEscape`
+remains the standard strategy, while `.assumeAbsent` is appropriate only when
+the application can uphold its null-free precondition.
+
 ### Percent-Escape Grammar and Pre-1.0 Compatibility
 
 The `.percentEscape` transform is shared by string keys and string values. It
