@@ -36,6 +36,9 @@ jobs:
       - name: Verify the supported toolchain and manifest
         run: bash Scripts/verify-support-policy.sh
 
+      - name: Verify reviewed inlining annotations
+        run: bash Scripts/verify-inlining-annotations.sh
+
       - name: Build in debug with warnings as errors
         run: swift build -Xswiftc -warnings-as-errors
 

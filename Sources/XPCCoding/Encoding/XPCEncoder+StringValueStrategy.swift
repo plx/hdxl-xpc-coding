@@ -111,7 +111,6 @@ extension XPCEncoder.StringValueStrategy {
 
 extension XPCCodec.StringValueStrategy {
   
-  @usableFromInline
   internal var encodingStrategy: XPCEncoder.StringValueStrategy {
     switch self {
     case .assumeAbsent:

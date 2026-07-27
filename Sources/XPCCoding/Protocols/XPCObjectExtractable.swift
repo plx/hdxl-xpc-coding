@@ -14,7 +14,6 @@ import XPC
 ///
 /// - SeeAlso: ``XPCObjectConvertible``
 /// - SeeAlso: ``LosslessXPCObjectConvertible``
-@usableFromInline
 internal protocol XPCObjectExtractable {
   
   /// The "XPC object type" from-which we're able to extract a value.
@@ -34,7 +33,6 @@ internal protocol XPCObjectExtractable {
 extension XPCObjectExtractable {
 
   /// Wrapper around `_extracting(from:)` that checks the object type on our behalf.
-  @usableFromInline
   static func extracting(from object: xpc_object_t) -> Self? {
     guard object.hasType(associatedXPCObjectType) else {
       return nil
@@ -48,14 +46,12 @@ extension XPCObjectExtractable {
 
 extension XPCObjectExtractable where Self: XPCBinaryDataRepresentationConvertible {
   
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DATA }
   
   /// Extracts a value from the *exact* bytes of an xpc data object.
   ///
   /// - Note: the length check comes first, so we never read from an xpc data object of the wrong length.
   /// - Note: `xpc_data_get_bytes_ptr` makes no alignment promise, so the extraction must be alignment-agnostic.
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
 
@@ -83,10 +79,8 @@ extension XPCObjectExtractable where Self: XPCBinaryDataRepresentationConvertibl
 
 extension Double: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DOUBLE }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return xpc_double_get_value(object)
@@ -98,10 +92,8 @@ extension Double: XPCObjectExtractable {
 
 extension Float: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DOUBLE }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     let value = xpc_double_get_value(object)
@@ -115,10 +107,8 @@ extension Float: XPCObjectExtractable {
 
 extension Float16: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DOUBLE }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     let value = xpc_double_get_value(object)
@@ -134,10 +124,8 @@ extension Float16: XPCObjectExtractable {
 
 extension Int64: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_INT64 }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return xpc_int64_get_value(object)
@@ -149,10 +137,8 @@ extension Int64: XPCObjectExtractable {
 
 extension Int32: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_INT64 }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return Self(exactly: xpc_int64_get_value(object))
@@ -162,10 +148,8 @@ extension Int32: XPCObjectExtractable {
 
 extension Int16: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_INT64 }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return Self(exactly: xpc_int64_get_value(object))
@@ -175,10 +159,8 @@ extension Int16: XPCObjectExtractable {
 
 extension Int8: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_INT64 }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return Self(exactly: xpc_int64_get_value(object))
@@ -190,10 +172,8 @@ extension Int8: XPCObjectExtractable {
 
 extension UInt64: XPCObjectExtractable {
   
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_UINT64 }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return xpc_uint64_get_value(object)
@@ -205,10 +185,8 @@ extension UInt64: XPCObjectExtractable {
 
 extension UInt32: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_UINT64 }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return Self(exactly: xpc_uint64_get_value(object))
@@ -218,10 +196,8 @@ extension UInt32: XPCObjectExtractable {
 
 extension UInt16: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_UINT64 }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return Self(exactly: xpc_uint64_get_value(object))
@@ -231,10 +207,8 @@ extension UInt16: XPCObjectExtractable {
 
 extension UInt8: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_UINT64 }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return Self(exactly: xpc_uint64_get_value(object))
@@ -246,10 +220,8 @@ extension UInt8: XPCObjectExtractable {
 
 extension Int: XPCObjectExtractable {
 
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_INT64 }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     guard let value = Int64.extracting(from: object) else {
       return nil
@@ -263,10 +235,8 @@ extension Int: XPCObjectExtractable {
 
 extension UInt: XPCObjectExtractable {
   
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_UINT64 }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     guard let value = UInt64.extracting(from: object) else {
       return nil
@@ -280,10 +250,8 @@ extension UInt: XPCObjectExtractable {
 
 extension Data: XPCObjectExtractable {
   
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_DATA }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     let length = xpc_data_get_length(object)
@@ -318,10 +286,8 @@ extension Data: XPCObjectExtractable {
 
 extension Bool: XPCObjectExtractable {
   
-  @usableFromInline
   static var associatedXPCObjectType: xpc_type_t { XPC_TYPE_BOOL }
 
-  @usableFromInline
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
     return xpc_bool_get_value(object)

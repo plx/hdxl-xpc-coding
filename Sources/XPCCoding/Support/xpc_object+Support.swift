@@ -8,7 +8,6 @@ import Foundation
 extension xpc_type_t {
   
   /// Shorthand for `xpc_type_get_name(self)`
-  @inlinable @inline(__always)
   internal var typeDescription: String {
     String(cString: xpc_type_get_name(self))
   }
@@ -20,31 +19,26 @@ extension xpc_type_t {
 extension xpc_object_t {
   
   /// `true` if `self` is of type `xpcType`
-  @inlinable @inline(__always)
   internal func hasType(_ xpcType: xpc_type_t) -> Bool {
     xpc_get_type(self) == xpcType
   }
 
   /// `true` if `self` is `XPC_TYPE_NULL`
-  @inlinable @inline(__always)
   internal var isNull: Bool {
     hasType(XPC_TYPE_NULL)
   }
 
   /// `true` if `self` is `XPC_TYPE_ARRAY`
-  @inlinable @inline(__always)
   internal var isArray: Bool {
     hasType(XPC_TYPE_ARRAY)
   }
 
   /// `true` if `self` is `XPC_TYPE_DICTIONARY`
-  @inlinable @inline(__always)
   internal var isDictionary: Bool {
     hasType(XPC_TYPE_DICTIONARY)
   }
   
   /// Shorthand for `xpc_get_type(self).typeDescription`
-  @inlinable @inline(__always)
   internal var typeDescription: String {
     xpc_get_type(self).typeDescription
   }
@@ -56,7 +50,6 @@ extension xpc_object_t {
 extension xpc_object_t {
   
   /// Sets `nil` for `key`, using the indicated `strategy` for the `key`'s string representation.
-  @inlinable @inline(__always)
   internal func setNil(
     forKey key: some CodingKey,
     strategy: XPCEncoder.StringKeyStrategy
@@ -68,7 +61,6 @@ extension xpc_object_t {
   }
 
   /// Sets `nil` for `key`, using the indicated `strategy` for the `key`.
-  @inlinable @inline(__always)
   internal func setNil(
     forKey key: String,
     strategy: XPCEncoder.StringKeyStrategy
@@ -89,7 +81,10 @@ extension xpc_object_t {
 extension xpc_object_t {
 
   /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
-  @inlinable @inline(__always)
+  ///
+  /// Inlining audit rationale: compiler-required ABI dependency of the measured
+  /// keyed lossless-conversion helper; the setter body is not inlinable.
+  @usableFromInline
   internal func setValue(
     _ value: some LosslessXPCObjectConvertible,
     forKey key: some CodingKey,
@@ -103,7 +98,6 @@ extension xpc_object_t {
   }
 
   /// Sets `value` for `key`, using the indicated `strategy` for the `key`.
-  @inlinable @inline(__always)
   internal func setValue(
     _ value: some LosslessXPCObjectConvertible,
     forKey key: String,
@@ -128,7 +122,6 @@ extension xpc_object_t {
   ///   specializes for the common case where a concrete generic key type is known at the call
   ///   site (e.g. inside `XPCKeyedEncodingContainer`), and an `any CodingKey` variant that handles
   ///   the existential case used by `_XPCDictionaryReferencingEncoder.codingKey`.
-  @inlinable @inline(__always)
   internal func setValue(
     _ value: xpc_object_t,
     forKey key: some CodingKey,
@@ -142,6 +135,9 @@ extension xpc_object_t {
   }
 
   /// Sets `value` for `key`, using the indicated `strategy` for the `key`'s string representation.
+  ///
+  /// Retained with the string overload below as the measured direct XPC
+  /// dictionary-setting leaf for existential keys.
   @inlinable @inline(__always)
   internal func setValue(
     _ value: xpc_object_t,
@@ -156,6 +152,9 @@ extension xpc_object_t {
   }
 
   /// Sets `value` for `key`, using the indicated `strategy` for the `key`.
+  ///
+  /// Retained with the existential-key overload above as the measured C-string
+  /// bridge and dictionary-write leaf.
   @inlinable @inline(__always)
   internal func setValue(
     _ value: xpc_object_t,
@@ -178,7 +177,6 @@ extension xpc_object_t {
 extension xpc_object_t {
   
   /// Appends `value` to `self`.
-  @inlinable @inline(__always)
   internal func appendValue(_ value: some LosslessXPCObjectConvertible) {
     assert(xpc_get_type(self) == XPC_TYPE_ARRAY)
     xpc_array_append_value(self, value.xpcObjectRepresentation)
@@ -193,7 +191,6 @@ extension xpc_object_t {
   /// `true` if `self` is actually an `XPC_TYPE_NULL`.
   /// 
   /// - Note: `codingPath` is supplied for diagnostics.
-  @inlinable @inline(__always)
   func decodeNil(at codingPath: [CodingKey]) -> Bool {
     isNull
   }
@@ -201,7 +198,6 @@ extension xpc_object_t {
   /// `true` if an explicit `nil` value is encoded into this object under `key` (using `strategy`).
   /// 
   /// - Note: `codingPath` is supplied for diagnostics.
-  @usableFromInline
   func decodeNil(
     at codingPath: [CodingKey],
     forKey key: any CodingKey,

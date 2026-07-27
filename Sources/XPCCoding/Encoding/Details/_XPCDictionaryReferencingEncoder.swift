@@ -6,18 +6,14 @@ import Foundation
 import XPC
 
 /// This is used for encoding super classes into an existing dictionary managed by an existing keyed container.
-@usableFromInline
 internal final class _XPCDictionaryReferencingEncoder: _XPCEncoder {
 
   /// The dictionary in which we store the encoded value.
-  @usableFromInline
   internal let xpcDictionary: xpc_object_t
 
   /// The key under which we store the encoded value.
-  @usableFromInline
   internal let codingKey: any CodingKey
 
-  @usableFromInline
   internal init(
     stringKeyStrategy: StringKeyStrategy,
     stringValueStrategy: StringValueStrategy,
@@ -36,7 +32,6 @@ internal final class _XPCDictionaryReferencingEncoder: _XPCEncoder {
     )
   }
 
-  @usableFromInline
   internal override func insertIntoOutputDestination(
     _ topLevelObject: xpc_object_t
   ) throws {

@@ -104,7 +104,6 @@ extension XPCDecoder.StringValueStrategy {
 
 extension XPCCodec.StringValueStrategy {
   
-  @usableFromInline
   internal var decodingStrategy: XPCDecoder.StringValueStrategy {
     switch self {
     case .assumeAbsent:

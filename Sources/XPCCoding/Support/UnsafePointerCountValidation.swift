@@ -4,7 +4,6 @@ import Foundation
 ///
 /// A zero count is valid for both nil and non-nil pointers. A positive count requires a non-nil
 /// pointer, and all counts must be nonnegative.
-@inlinable
 internal func validateUnsafePointerCount<Pointer>(
   _ unsafePointer: Pointer?,
   count: Int,

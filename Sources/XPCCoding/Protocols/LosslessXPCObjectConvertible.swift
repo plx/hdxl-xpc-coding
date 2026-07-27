@@ -7,6 +7,9 @@ import XPC
 
 /// Protocol for values that can *infallibly* be converted to `xpc_object_t` representations.
 ///
+/// Inlining audit rationale: this protocol and its `@usableFromInline`
+/// witnesses are the compiler-required ABI closure for the measured `Int` and
+/// `Data` conversion leaves. Other witness bodies are not inlinable.
 @usableFromInline
 internal protocol LosslessXPCObjectConvertible {
   
@@ -19,7 +22,7 @@ internal protocol LosslessXPCObjectConvertible {
 
 extension LosslessXPCObjectConvertible where Self: XPCBinaryDataRepresentationConvertible {
   
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     withUnsafeXPCBinaryDataRepresentationRawBufferPointer { unsafeBufferPointer in
       xpc_data_create(
@@ -35,7 +38,7 @@ extension LosslessXPCObjectConvertible where Self: XPCBinaryDataRepresentationCo
 
 extension Double: LosslessXPCObjectConvertible {
 
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_double_create(self)
   }
@@ -44,7 +47,7 @@ extension Double: LosslessXPCObjectConvertible {
 
 extension Float: LosslessXPCObjectConvertible {
 
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_double_create(Double(self))
   }
@@ -53,7 +56,7 @@ extension Float: LosslessXPCObjectConvertible {
 
 extension Float16: LosslessXPCObjectConvertible {
 
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_double_create(Double(self))
   }
@@ -62,7 +65,7 @@ extension Float16: LosslessXPCObjectConvertible {
 
 extension Int64: LosslessXPCObjectConvertible {
   
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_int64_create(self)
   }
@@ -71,7 +74,7 @@ extension Int64: LosslessXPCObjectConvertible {
 
 extension Int32: LosslessXPCObjectConvertible {
 
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_int64_create(Int64(self))
   }
@@ -80,7 +83,7 @@ extension Int32: LosslessXPCObjectConvertible {
 
 extension Int16: LosslessXPCObjectConvertible {
 
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_int64_create(Int64(self))
   }
@@ -89,7 +92,7 @@ extension Int16: LosslessXPCObjectConvertible {
 
 extension Int8: LosslessXPCObjectConvertible {
 
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_int64_create(Int64(self))
   }
@@ -98,7 +101,7 @@ extension Int8: LosslessXPCObjectConvertible {
 
 extension UInt64: LosslessXPCObjectConvertible {
   
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_uint64_create(self)
   }
@@ -107,7 +110,7 @@ extension UInt64: LosslessXPCObjectConvertible {
 
 extension UInt32: LosslessXPCObjectConvertible {
 
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_uint64_create(UInt64(self))
   }
@@ -116,7 +119,7 @@ extension UInt32: LosslessXPCObjectConvertible {
 
 extension UInt16: LosslessXPCObjectConvertible {
 
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_uint64_create(UInt64(self))
   }
@@ -125,7 +128,7 @@ extension UInt16: LosslessXPCObjectConvertible {
 
 extension UInt8: LosslessXPCObjectConvertible {
 
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_uint64_create(UInt64(self))
   }
@@ -134,6 +137,7 @@ extension UInt8: LosslessXPCObjectConvertible {
 
 extension Int: LosslessXPCObjectConvertible {
   
+  /// Measured hot conversion for keyed integer encoding.
   @inlinable
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_int64_create(Int64(self))
@@ -143,7 +147,7 @@ extension Int: LosslessXPCObjectConvertible {
 
 extension UInt: LosslessXPCObjectConvertible {
 
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_uint64_create(UInt64(self))
   }
@@ -152,6 +156,7 @@ extension UInt: LosslessXPCObjectConvertible {
 
 extension Data: LosslessXPCObjectConvertible {
 
+  /// Measured direct-buffer conversion for the public-client data benchmarks.
   @inlinable
   internal var xpcObjectRepresentation: xpc_object_t {
     withUnsafeBytes { (unsafeRawBufferPointer: UnsafeRawBufferPointer) in
@@ -166,7 +171,7 @@ extension Data: LosslessXPCObjectConvertible {
 
 extension Bool: LosslessXPCObjectConvertible {
   
-  @inlinable
+  @usableFromInline
   internal var xpcObjectRepresentation: xpc_object_t {
     xpc_bool_create(self)
   }

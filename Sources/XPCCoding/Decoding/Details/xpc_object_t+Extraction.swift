@@ -8,7 +8,6 @@ import XPC
 // MARK: XPCStringExtractionError
 
 /// Errors that can occur when extracting a string from an `xpc_object_t`.
-@usableFromInline
 internal enum XPCStringExtractionError: Error {
 
   /// The xpc object is not of the expected type.
@@ -29,7 +28,6 @@ internal enum XPCStringExtractionError: Error {
 extension xpc_object_t {
 
   /// Entry point for string-value extraction.
-  @usableFromInline
   internal func extractStringValue(
     stringValueStrategy: XPCDecoder.StringValueStrategy,
     at codingPath: [any CodingKey]
@@ -76,7 +74,6 @@ extension xpc_object_t {
   }
 
   /// Underlying logic for string extraction from an `xpc_object_t`.
-  @usableFromInline
   internal func _extractStringValue(
     stringValueStrategy: XPCDecoder.StringValueStrategy
   ) throws(XPCStringExtractionError) -> String {
@@ -156,7 +153,6 @@ extension xpc_object_t {
   }
 
   /// Extract a value of type `Value` directly from the receiving `xpc_object_t`, reporting errors as having occurred at the given `codingPath`.
-  @usableFromInline
   func extractValue<Value>(
     ofType valueType: Value.Type,
     at codingPath: [any CodingKey]
@@ -206,7 +202,6 @@ extension xpc_object_t {
   }
 
   /// Extract a value of type `Value` from an `xpc_object_t` at the given `key`, reporting errors as having occurred at the given `codingPath`.
-  @usableFromInline
   func extractValue<Value>(
     ofType valueType: Value.Type,
     at codingPath: [any CodingKey],
@@ -255,7 +250,6 @@ extension xpc_object_t {
   }
 
   /// Extract a `String` from an `xpc_object_t` at the given `key`, reporting errors as having occurred at the given `codingPath`.
-  @usableFromInline
   func extractString(
     at codingPath: [any CodingKey],
     forKey key: any CodingKey,

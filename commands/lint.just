@@ -18,9 +18,14 @@ check-sources reporter=EMOJI_REPORTER: (_swiftlint reporter justfile_directory()
 [group('check')]
 check-tests reporter=EMOJI_REPORTER: (_swiftlint reporter justfile_directory() / "Tests")
 
+# check (inlining annotations)
+[group('check')]
+check-inlining:
+    bash {{ quote(justfile_directory() / "Scripts/verify-inlining-annotations.sh") }}
+
 # check (all)
 [group('check')]
-check-all reporter=EMOJI_REPORTER: (check-sources reporter) (check-tests reporter)
+check-all reporter=EMOJI_REPORTER: (check-inlining) (check-sources reporter) (check-tests reporter)
 
 # summarize (single-file)
 [group('summarize')]

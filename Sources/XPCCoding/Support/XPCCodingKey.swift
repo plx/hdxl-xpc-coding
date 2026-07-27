@@ -7,34 +7,27 @@ import XPC
 // MARK: XPCCodingKey
 
 /// A `CodingKey` type for use with `XPCCoding`; primarily exists to represent the `super` key.
-@usableFromInline
 internal struct XPCCodingKey: CodingKey {
-  @usableFromInline
   internal let stringValue: String
   
-  @usableFromInline
   internal let intValue: Int?
 
-  @usableFromInline
   internal init?(stringValue: String) {
     self.intValue = nil
     self.stringValue = stringValue
   }
   
-  @usableFromInline
   internal init(intValue: Int) {
     self.intValue = intValue
     self.stringValue = String(intValue)
   }
   
-  @usableFromInline
   internal init(intValue: Int, stringValue: String) {
     self.intValue = intValue
     self.stringValue = stringValue
   }
   
   /// The key used to represent the `super` element in an archive.
-  @usableFromInline
   internal static let superKey = XPCCodingKey(
     intValue: 0,
     stringValue: "super"

@@ -11,7 +11,6 @@ import Foundation
 /// - Parameters:
 ///   - value: The optional to unwrap.
 ///   - explanation: A non-empty rationale describing why this call site believes `value` cannot be nil.
-@inlinable @inline(__always)
 internal func infalliblyUnwrap<T>(
   _ value: T?,
   explanation: StaticString,

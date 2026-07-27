@@ -69,7 +69,6 @@ extension XPCDecoder.StringKeyStrategy {
   /// The standard (default) strategy for decoding string keys.
   public static let standard: Self = XPCCodec.StringKeyStrategy.standard.decodingStrategy
   
-  @usableFromInline
   internal var embeddedNullByteRepresentation: String.EmbeddedNullByteRepresentation {
     switch self {
     case .passthrough:
@@ -85,7 +84,6 @@ extension XPCDecoder.StringKeyStrategy {
 
 extension XPCCodec.StringKeyStrategy {
   
-  @usableFromInline
   internal var decodingStrategy: XPCDecoder.StringKeyStrategy {
     switch self {
     case .assumeAbsent:

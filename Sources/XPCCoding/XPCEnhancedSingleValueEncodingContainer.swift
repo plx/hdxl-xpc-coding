@@ -51,7 +51,6 @@ public protocol XPCEnhancedSingleValueEncodingContainer: SingleValueEncodingCont
 
 extension XPCEnhancedSingleValueEncodingContainer {
   
-  @inlinable
   public mutating func directlyEncodeXPCData(
     _ unsafePointer: UnsafeRawPointer?,
     count: Int
@@ -67,7 +66,6 @@ extension XPCEnhancedSingleValueEncodingContainer {
     )
   }
   
-  @inlinable
   public mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeRawBufferPointer) throws {
     try directlyEncodeXPCData(
       unsafeBufferPointer.baseAddress,
@@ -75,7 +73,6 @@ extension XPCEnhancedSingleValueEncodingContainer {
     )
   }
   
-  @inlinable
   public mutating func directlyEncodeXPCData(_ unsafeBufferPointer: UnsafeMutableRawBufferPointer) throws {
     try directlyEncodeXPCData(
       unsafeBufferPointer.baseAddress,

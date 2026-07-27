@@ -5,7 +5,6 @@ extension KeyedEncodingContainer {
   // MARK: - Inline Arrays
 
   /// Convenience to efficiently encode the contents of an inline array as binary data.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData<let N: Int>(
     _ inlineArray: InlineArray<N, UInt8>,
     forKey key: Key
@@ -35,7 +34,6 @@ extension KeyedEncodingContainer {
   /// - Important: For a positive count, the caller must keep at least `count` initialized,
   ///   readable bytes alive for the duration of this call. Their extent, initialization, and
   ///   lifetime cannot be checked dynamically.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawPointer: UnsafeRawPointer?,
     count: Int,
@@ -72,7 +70,6 @@ extension KeyedEncodingContainer {
   /// - Important: For a positive count, the caller must keep at least `count` initialized,
   ///   readable bytes alive for the duration of this call. Their extent, initialization, and
   ///   lifetime cannot be checked dynamically.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawPointer: UnsafeMutableRawPointer?,
     count: Int,
@@ -102,7 +99,6 @@ extension KeyedEncodingContainer {
   /// - Parameters:
   ///   - unsafeRawBufferPointer: A buffer pointer to the raw bytes to encode.
   ///   - key: The key to associate the data with.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawBufferPointer: UnsafeRawBufferPointer,
     forKey key: Key
@@ -121,7 +117,6 @@ extension KeyedEncodingContainer {
   /// - Parameters:
   ///   - unsafeMutableRawBufferPointer: A buffer pointer to the raw bytes to encode.
   ///   - key: The key to associate the data with.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawBufferPointer: UnsafeMutableRawBufferPointer,
     forKey key: Key
@@ -145,7 +140,6 @@ extension KeyedEncodingContainer {
   /// - Important: For a positive count, the caller must keep at least `count` initialized,
   ///   readable `T` values alive for the duration of this call. Their extent, initialization, and
   ///   lifetime cannot be checked dynamically.
-  @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafePointer: UnsafePointer<T>?,
     count: Int,
@@ -177,7 +171,6 @@ extension KeyedEncodingContainer {
   /// - Important: For a positive count, the caller must keep at least `count` initialized,
   ///   readable `T` values alive for the duration of this call. Their extent, initialization, and
   ///   lifetime cannot be checked dynamically.
-  @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeMutablePointer: UnsafeMutablePointer<T>?,
     count: Int,
@@ -202,7 +195,6 @@ extension KeyedEncodingContainer {
   /// - Parameters:
   ///   - unsafeBufferPointer: A buffer pointer to the elements to encode.
   ///   - key: The key to associate the array with.
-  @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeBufferPointer: UnsafeBufferPointer<T>,
     forKey key: Key
@@ -216,7 +208,6 @@ extension KeyedEncodingContainer {
   /// - Parameters:
   ///   - unsafeMutableBufferPointer: A buffer pointer to the elements to encode.
   ///   - key: The key to associate the array with.
-  @inlinable
   public mutating func efficientlyEncodeElements<T: Encodable>(
     _ unsafeMutableBufferPointer: UnsafeMutableBufferPointer<T>,
     forKey key: Key
@@ -246,22 +237,17 @@ extension KeyedEncodingContainer {
 /// - SeeAlso: ``UnsafeMutableRawPointerShim``
 /// - SeeAlso: ``UnsafeRawBufferPointerShim``
 /// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
-@usableFromInline
 internal struct UnsafeRawPointerShim: Encodable {
   
-  @usableFromInline
   internal let unsafeRawPointer: UnsafeRawPointer?
   
-  @usableFromInline
   internal let count: Int
   
-  @inlinable
   init(unsafeRawPointer: UnsafeRawPointer?, count: Int) {
     self.unsafeRawPointer = unsafeRawPointer
     self.count = count
   }
   
-  @inlinable
   internal func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
     try container.efficientlyEncodeBinaryData(
@@ -291,22 +277,17 @@ internal struct UnsafeRawPointerShim: Encodable {
 /// - SeeAlso: ``UnsafeRawPointerShim``
 /// - SeeAlso: ``UnsafeRawBufferPointerShim``
 /// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
-@usableFromInline
 internal struct UnsafeMutableRawPointerShim: Encodable {
   
-  @usableFromInline
   internal let unsafeMutableRawPointer: UnsafeMutableRawPointer?
   
-  @usableFromInline
   internal let count: Int
   
-  @inlinable
   init(unsafeMutableRawPointer: UnsafeMutableRawPointer?, count: Int) {
     self.unsafeMutableRawPointer = unsafeMutableRawPointer
     self.count = count
   }
   
-  @inlinable
   internal func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
     try container.efficientlyEncodeBinaryData(
@@ -336,18 +317,14 @@ internal struct UnsafeMutableRawPointerShim: Encodable {
 /// - SeeAlso: ``UnsafeRawPointerShim``
 /// - SeeAlso: ``UnsafeMutableRawPointerShim``
 /// - SeeAlso: ``UnsafeMutableRawBufferPointerShim``
-@usableFromInline
 internal struct UnsafeRawBufferPointerShim: Encodable {
   
-  @usableFromInline
   internal let unsafeRawBufferPointer: UnsafeRawBufferPointer
   
-  @inlinable
   init(unsafeRawBufferPointer: UnsafeRawBufferPointer) {
     self.unsafeRawBufferPointer = unsafeRawBufferPointer
   }
   
-  @inlinable
   internal func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
     try container.efficientlyEncodeBinaryData(unsafeRawBufferPointer)
@@ -374,18 +351,14 @@ internal struct UnsafeRawBufferPointerShim: Encodable {
 /// - SeeAlso: ``UnsafeRawPointerShim``
 /// - SeeAlso: ``UnsafeMutableRawPointerShim``
 /// - SeeAlso: ``UnsafeRawBufferPointerShim``
-@usableFromInline
 internal struct UnsafeMutableRawBufferPointerShim: Encodable {
   
-  @usableFromInline
   internal let unsafeMutableRawBufferPointer: UnsafeMutableRawBufferPointer
   
-  @inlinable
   init(unsafeMutableRawBufferPointer: UnsafeMutableRawBufferPointer) {
     self.unsafeMutableRawBufferPointer = unsafeMutableRawBufferPointer
   }
   
-  @inlinable
   internal func encode(to encoder: any Encoder) throws {
     var container = encoder.singleValueContainer()
     try container.efficientlyEncodeBinaryData(unsafeMutableRawBufferPointer)

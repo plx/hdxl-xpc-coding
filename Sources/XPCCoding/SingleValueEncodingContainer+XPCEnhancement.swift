@@ -2,7 +2,6 @@ import Foundation
 
 extension SingleValueEncodingContainer {
   
-  @inlinable
   public mutating func efficientlyEncodeBinaryData<let N: Int>(
     _ inlineArray: InlineArray<N, UInt8>
   ) throws {
@@ -22,7 +21,6 @@ extension SingleValueEncodingContainer {
   ///
   /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
   ///   pointer.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawPointer: UnsafeRawPointer?,
     count: Int
@@ -71,7 +69,6 @@ extension SingleValueEncodingContainer {
   ///
   /// - Throws: `EncodingError.invalidValue` when `count` is negative or is positive for a nil
   ///   pointer.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawPointer: UnsafeMutableRawPointer?,
     count: Int
@@ -112,7 +109,6 @@ extension SingleValueEncodingContainer {
   }
   
   /// Convenience by-which external types can take advantage of "fewer-copy" XPC APIs without inlining the type-introspection checks at each call site.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeRawBufferPointer: UnsafeRawBufferPointer
   ) throws {
@@ -144,7 +140,6 @@ extension SingleValueEncodingContainer {
   }
   
   /// Convenience by-which external types can take advantage of "fewer-copy" XPC APIs without inlining the type-introspection checks at each call site.
-  @inlinable
   public mutating func efficientlyEncodeBinaryData(
     _ unsafeMutableRawBufferPointer: UnsafeMutableRawBufferPointer
   ) throws {
