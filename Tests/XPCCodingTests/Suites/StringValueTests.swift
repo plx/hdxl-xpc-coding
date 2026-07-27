@@ -270,6 +270,24 @@ struct `String-Value Tests` {
     )
   }
 
+  @Test(
+    arguments: XPCCodec.StringValueDataRepresentation.allCases
+  )
+  func `data-backed decoded strings own their storage`(
+    representation: XPCCodec.StringValueDataRepresentation
+  ) throws {
+    let expected = String(
+      repeating: "owned\u{0}storage-%-🙂",
+      count: 4_096
+    )
+    let decoded = try decodeStringInsideXPCObjectScope(
+      expected,
+      representation: representation
+    )
+
+    #expect(decoded == expected)
+  }
+
   private func embeddedNullCodec(
     stringKeyStrategy: XPCCodec.StringKeyStrategy,
     stringValueStrategy: XPCCodec.StringValueStrategy
@@ -280,6 +298,20 @@ struct `String-Value Tests` {
         stringValueStrategy: stringValueStrategy
       )
     )
+  }
+
+  private func decodeStringInsideXPCObjectScope(
+    _ expected: String,
+    representation: XPCCodec.StringValueDataRepresentation
+  ) throws -> String {
+    let codec = XPCCodec(
+      configuration: .init(
+        stringKeyStrategy: .percentEscape,
+        stringValueStrategy: .useDataRepresentation(representation)
+      )
+    )
+    let object = try codec.encode(expected)
+    return try codec.decode(String.self, from: object)
   }
 
 }

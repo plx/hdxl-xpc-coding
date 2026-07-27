@@ -8,7 +8,7 @@ import XPC
 @Suite("Data Representation")
 struct DataRepresentationTests {
 
-  @Test(arguments: [0, 1, 16, 4_096])
+  @Test(arguments: [0, 1, 16, 4_096, 1_048_576])
   func `top-level Data uses one XPC data object`(
     byteCount: Int
   ) throws {
@@ -18,6 +18,36 @@ struct DataRepresentationTests {
     try requireXPCData(encoded, equals: expected)
     #expect(xpcObjectCount(encoded) == 1)
     #expect(try XPCDecoder.standard.decode(Data.self, from: encoded) == expected)
+  }
+
+  @Test(arguments: [0, 1, 4_096, 1_048_576])
+  func `decoded Data owns bytes beyond the XPC object scope`(
+    byteCount: Int
+  ) throws {
+    let expected = dataFixture(byteCount: byteCount)
+    let decoded = try decodeDataInsideXPCObjectScope(expected)
+
+    #expect(decoded == expected)
+  }
+
+  @Test
+  func `missing keyed Data preserves the key-not-found error`() throws {
+    let key = try #require(XPCCodingKey(stringValue: "value"))
+    let error = try #require(throws: DecodingError.self) {
+      try xpc_dictionary_create_empty().extractValue(
+        ofType: Data.self,
+        at: [],
+        forKey: key,
+        stringKeyStrategy: .standard
+      )
+    }
+
+    guard case .keyNotFound(let missingKey, let context) = error else {
+      Issue.record("Expected DecodingError.keyNotFound, received \(error).")
+      return
+    }
+    #expect(missingKey.stringValue == key.stringValue)
+    #expect(context.codingPath.isEmpty)
   }
 
   @Test
@@ -290,6 +320,13 @@ private final class DataChildFixture: DataBaseFixture {
 
 private func dataFixture(byteCount: Int) -> Data {
   Data((0..<byteCount).map { UInt8(truncatingIfNeeded: $0 &* 31) })
+}
+
+private func decodeDataInsideXPCObjectScope(
+  _ expected: Data
+) throws -> Data {
+  let object = xpcData(expected)
+  return try XPCDecoder.standard.decode(Data.self, from: object)
 }
 
 private func requireXPCData(

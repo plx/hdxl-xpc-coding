@@ -254,31 +254,7 @@ extension Data: XPCObjectExtractable {
 
   static func _extracting(from object: xpc_object_t) -> Self? {
     assert(object.hasType(associatedXPCObjectType))
-    let length = xpc_data_get_length(object)
-    guard length > 0 else {
-      return Self()
-    }
-    var result = Data(repeating: 0, count: length)
-    let copiedOK = result.withUnsafeMutableBytes { unsafeMutableBufferPtr in
-      let baseAddress = infalliblyUnwrap(
-        unsafeMutableBufferPtr.baseAddress,
-        explanation:
-          "`UnsafeMutableRawBufferPointer.baseAddress` is nil only for empty buffers, but we already early-returned for `length == 0`."
-      )
-
-      let copiedAmount = xpc_data_get_bytes(
-        object,
-        baseAddress,
-        0,
-        length
-      )
-      return copiedAmount == length
-    }
-    guard copiedOK else {
-      return nil
-    }
-
-    return result
+    return object.copiedData()
   }
 
 }
