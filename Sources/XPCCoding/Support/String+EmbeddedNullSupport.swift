@@ -49,6 +49,9 @@ extension String {
   ) rethrows -> R {
     switch embeddedNullByteRepresentation {
     case .passthrough:
+      // Keep this return ahead of `addingXPCCodingPercentEscapes()`: that
+      // transform performs the NUL/percent scans that passthrough exists to
+      // avoid.
       try withCString(closure)
     case .percentEscaped:
       try addingXPCCodingPercentEscapes().withCString(closure)

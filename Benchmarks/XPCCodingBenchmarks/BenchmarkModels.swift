@@ -78,6 +78,58 @@ struct DynamicStringMap: Codable {
   }
 }
 
+struct DynamicIntMap: Codable {
+  let entries: [(key: String, value: Int)]
+
+  init(entries: [(key: String, value: Int)]) {
+    self.entries = entries
+  }
+
+  init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: DynamicCodingKey.self)
+    entries = try container.allKeys.map {
+      (
+        key: $0.stringValue,
+        value: try container.decode(Int.self, forKey: $0)
+      )
+    }
+  }
+
+  func encode(to encoder: any Encoder) throws {
+    var container = encoder.container(keyedBy: DynamicCodingKey.self)
+    for entry in entries {
+      try container.encode(
+        entry.value,
+        forKey: DynamicCodingKey(stringValue: entry.key)
+      )
+    }
+  }
+}
+
+protocol BenchmarkLookupKey {
+  static var value: String { get }
+}
+
+enum ShortBenchmarkLookupKey: BenchmarkLookupKey {
+  static let value = "short-key-512"
+}
+
+enum LongBenchmarkLookupKey: BenchmarkLookupKey {
+  static let value = "\(String(repeating: "x", count: 4_096))-8"
+}
+
+struct DynamicIntLookup<Key: BenchmarkLookupKey>: Decodable {
+  let value: Int
+
+  init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: DynamicCodingKey.self)
+    value = try container.decode(
+      Int.self,
+      forKey: DynamicCodingKey(stringValue: Key.value)
+    )
+  }
+}
+
 struct DynamicCodingKey: CodingKey {
   let stringValue: String
   let intValue: Int?

@@ -90,6 +90,25 @@ struct `String-Key Tests` {
 
   // MARK: Embedded Null-Byte Cases
 
+  @Test
+  func `passthrough C-string boundary bypasses percent escaping`() {
+    let key = "prefix%\u{0}suffix"
+
+    let passthrough = key.withUTF8CString(
+      embeddedNullByteRepresentation: .passthrough
+    ) {
+      String(cString: $0)
+    }
+    let percentEscaped = key.withUTF8CString(
+      embeddedNullByteRepresentation: .percentEscaped
+    ) {
+      String(cString: $0)
+    }
+
+    #expect(passthrough == "prefix%")
+    #expect(percentEscaped == "prefix%25%00suffix")
+  }
+
   /// Verify the exact truncation-and-collision outcome for embedded-null keys
   /// under `.assumeAbsent`.
   ///

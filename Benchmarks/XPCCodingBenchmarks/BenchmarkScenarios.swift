@@ -8,6 +8,7 @@ enum BenchmarkScenarios {
     scenarios.append(contentsOf: try dataScenarios(smokeOnly: smokeOnly))
     scenarios.append(contentsOf: try stringScenarios(smokeOnly: smokeOnly))
     if !smokeOnly {
+      scenarios.append(contentsOf: try stringKeyScenarios())
       scenarios.append(contentsOf: try collectionScenarios())
     }
     return scenarios
@@ -268,6 +269,89 @@ enum BenchmarkScenarios {
     return scenarios
   }
 
+  private static func stringKeyScenarios() throws -> [BenchmarkScenario] {
+    let manyShortEntries = (0..<1_024).map {
+      ("short-key-\($0)", $0)
+    }
+    let longKeyPrefix = String(repeating: "x", count: 4_096)
+    let fewLongEntries = (0..<16).map {
+      ("\(longKeyPrefix)-\($0)", $0)
+    }
+
+    return try stringKeyScenarios(
+      shape: "many-short",
+      fixture: DynamicIntMap(entries: manyShortEntries),
+      lookupKey: ShortBenchmarkLookupKey.self
+    )
+      + stringKeyScenarios(
+        shape: "few-long",
+        fixture: DynamicIntMap(entries: fewLongEntries),
+        lookupKey: LongBenchmarkLookupKey.self
+      )
+  }
+
+  private static func stringKeyScenarios<LookupKey: BenchmarkLookupKey>(
+    shape: String,
+    fixture: DynamicIntMap,
+    lookupKey _: LookupKey.Type
+  ) throws -> [BenchmarkScenario] {
+    let logicalByteCount = fixture.entries.reduce(0) {
+      $0 + $1.key.utf8.count
+    }
+    var scenarios: [BenchmarkScenario] = []
+
+    for keyStrategy in XPCCodec.StringKeyStrategy.allCases {
+      let configuration = XPCCodec.Configuration(
+        stringKeyStrategy: keyStrategy,
+        stringValueStrategy: .assumeAbsent
+      )
+      let encoder = XPCEncoder(configuration: configuration)
+      let decoder = benchmarkDecoder(configuration: configuration)
+      let encoded = try encoder.encode(fixture)
+      let maximumIterationsPerSample = 4_096
+
+      scenarios.append(
+        encodeScenario(
+          name: "string-keys/\(shape)/\(identifier(keyStrategy))/encode",
+          category: "string-keys",
+          encoder: encoder,
+          value: fixture,
+          logicalByteCount: logicalByteCount,
+          maximumIterationsPerSample: maximumIterationsPerSample
+        )
+      )
+      scenarios.append(
+        decodeScenario(
+          name: "string-keys/\(shape)/\(decodingIdentifier(keyStrategy))/lookup",
+          category: "string-keys",
+          operation: "lookup",
+          decoder: decoder,
+          object: encoded,
+          type: DynamicIntLookup<LookupKey>.self,
+          logicalByteCount: logicalByteCount,
+          maximumIterationsPerSample: maximumIterationsPerSample
+        ) {
+          UInt64($0.value)
+        }
+      )
+      scenarios.append(
+        decodeScenario(
+          name: "string-keys/\(shape)/\(decodingIdentifier(keyStrategy))/decode",
+          category: "string-keys",
+          decoder: decoder,
+          object: encoded,
+          type: DynamicIntMap.self,
+          logicalByteCount: logicalByteCount,
+          maximumIterationsPerSample: maximumIterationsPerSample
+        ) {
+          UInt64($0.entries.reduce(0) { $0 + $1.value })
+        }
+      )
+    }
+
+    return scenarios
+  }
+
   private static func collectionScenarios() throws -> [BenchmarkScenario] {
     let encoder = XPCEncoder()
     let decoder = benchmarkDecoder()
@@ -343,6 +427,7 @@ private func encodeScenario<T: Encodable>(
 private func decodeScenario<T: Decodable>(
   name: String,
   category: String,
+  operation: String = "decode",
   decoder: XPCDecoder,
   object: xpc_object_t,
   type: T.Type,
@@ -354,7 +439,7 @@ private func decodeScenario<T: Decodable>(
   BenchmarkScenario(
     name: name,
     category: category,
-    operation: "decode",
+    operation: operation,
     logicalByteCount: logicalByteCount,
     encodedXPCObjectCount: xpcObjectCount(object),
     maximumIterationsPerSample: maximumIterationsPerSample,
@@ -444,6 +529,15 @@ private func identifier(_ strategy: XPCCodec.StringKeyStrategy) -> String {
   switch strategy {
   case .assumeAbsent:
     "assume-absent"
+  case .percentEscape:
+    "percent-escape"
+  }
+}
+
+private func decodingIdentifier(_ strategy: XPCCodec.StringKeyStrategy) -> String {
+  switch strategy {
+  case .assumeAbsent:
+    "passthrough"
   case .percentEscape:
     "percent-escape"
   }
