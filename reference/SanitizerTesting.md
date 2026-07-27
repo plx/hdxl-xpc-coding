@@ -24,7 +24,8 @@ The matching convenience recipes are `just test address-sanitizer`,
 
 Each invocation uses and removes a fresh SwiftPM scratch directory. That keeps
 instrumented products from different analyzers isolated when the recipes run
-back-to-back.
+back-to-back. Caller-supplied sanitizer options are preserved, but the scripts
+append `halt_on_error=1` last so callers cannot weaken the fail-closed policy.
 
 Every unsuppressed sanitizer report, unexpected signal, test failure, or
 timeout fails its lane. CI pipes each command through `tee` with

@@ -12,15 +12,15 @@ usage() {
 sanitizer=
 case "$1" in
   address)
-    export ASAN_OPTIONS="${ASAN_OPTIONS:-halt_on_error=1}"
+    export ASAN_OPTIONS="${ASAN_OPTIONS:+${ASAN_OPTIONS}:}halt_on_error=1"
     sanitizer="address"
     ;;
   thread)
-    export TSAN_OPTIONS="${TSAN_OPTIONS:-halt_on_error=1}"
+    export TSAN_OPTIONS="${TSAN_OPTIONS:+${TSAN_OPTIONS}:}halt_on_error=1"
     sanitizer="thread"
     ;;
   undefined)
-    export UBSAN_OPTIONS="${UBSAN_OPTIONS:-halt_on_error=1:print_stacktrace=1}"
+    export UBSAN_OPTIONS="${UBSAN_OPTIONS:-print_stacktrace=1}:halt_on_error=1"
     sanitizer="undefined"
     ;;
   *)
