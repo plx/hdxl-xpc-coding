@@ -61,10 +61,13 @@ the live setting with the checked-in policy:
 bash Scripts/verify-main-ruleset.sh
 ```
 
-The verifier reads the live ruleset, normalizes response-only API fields, and
-fails unless the target, active enforcement, empty bypass list, merge policy,
-protective rules, and exact set of 15 app-pinned checks match the canonical
-payload. It does not mutate repository settings.
+The verifier reads both the live ruleset and all effective rules for `main`,
+normalizes response-only API fields, and fails unless the target, active
+enforcement, empty bypass list, merge policy, protective rules, exact set of
+15 app-pinned checks, and effective rule sources match the canonical payload.
+An overlapping repository or organization ruleset therefore cannot silently
+add approvals, checks, or history restrictions. The verifier does not mutate
+repository settings.
 
 After a reviewed policy change, update the existing ruleset rather than
 creating a second overlapping rule:
