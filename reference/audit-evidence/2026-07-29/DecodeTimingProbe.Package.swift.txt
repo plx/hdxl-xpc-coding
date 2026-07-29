@@ -1,0 +1,28 @@
+// swift-tools-version:6.3
+
+import PackageDescription
+
+let package = Package(
+  name: "XPCCodingDecodeTimingProbe",
+  platforms: [
+    .macOS(.v26)
+  ],
+  dependencies: [
+    .package(
+      name: "hdxl-xpc-coding",
+      path: "../../../candidate"
+    )
+  ],
+  targets: [
+    .executableTarget(
+      name: "XPCCodingDecodeTimingProbe",
+      dependencies: [
+        .product(
+          name: "XPCCoding",
+          package: "hdxl-xpc-coding"
+        )
+      ]
+    )
+  ],
+  swiftLanguageModes: [.v6]
+)

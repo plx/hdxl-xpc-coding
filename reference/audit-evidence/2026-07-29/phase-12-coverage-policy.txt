@@ -1,0 +1,4 @@
+lines     3832/4055 (94.501%); baseline 3844/4077 (94.285%)
+regions   1146/1222 (93.781%); baseline 1140/1216 (93.750%)
+functions 494/532 (92.857%); baseline 493/531 (92.844%)
+Verified XPCCoding source coverage against /private/tmp/hdxl-xpc-audit52.UvYJGp/candidate/Scripts/source-coverage-policy.json.

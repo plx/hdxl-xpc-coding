@@ -1,0 +1,113 @@
+COMMAND=set -e; scratch=/tmp/hdxl-xpc-audit52.UvYJGp/evidence/phase-10/tsan-focused-scratch; for iteration in 1 2 3 4 5 6 7 8 9 10; do printf "FOCUSED_STRING_VALID_RUN=%s\n" "$iteration"; swift test --package-path /tmp/hdxl-xpc-audit52.UvYJGp/candidate --scratch-path "$scratch" --sanitize=thread --filter "Very Long \\(x\\)" -Xswiftc -warnings-as-errors; done
+START_UTC=2026-07-29T12:20:03Z
+FOCUSED_STRING_VALID_RUN=1
+[0/1] Planning build
+Building for debugging...
+[0/4] Write swift-version--58304C5D6DBC2206.txt
+Build complete! (0.15s)
+Test Suite 'Selected tests' started at 2026-07-29 07:20:06.787.
+Test Suite 'hdxl-xpc-codingPackageTests.xctest' started at 2026-07-29 07:20:06.788.
+Test Suite 'hdxl-xpc-codingPackageTests.xctest' passed at 2026-07-29 07:20:06.788.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-07-29 07:20:06.788.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 1902
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite "String-Value Tests" started.
+􀟈  Test "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .assumeAbsent) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .throwOnDiscovery) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .percentEscape) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .useDataRepresentation(.utf8)) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .useDataRepresentation(.utf16)) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .useDataRepresentation(.utf32)) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .assumeAbsent) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .throwOnDiscovery) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .percentEscape) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .useDataRepresentation(.utf8)) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .useDataRepresentation(.utf16)) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .useDataRepresentation(.utf32)) to "Very Long (x)" started.
+􁁛  Test "Very Long (x)" with 12 test cases passed after 0.087 seconds.
+􁁛  Suite "String-Value Tests" passed after 0.087 seconds.
+􁁛  Test run with 1 test in 1 suite passed after 0.087 seconds.
+FOCUSED_STRING_VALID_RUN=2
+Building for debugging...
+[0/4] Write swift-version--58304C5D6DBC2206.txt
+Build complete! (0.11s)
+error: Process '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/libexec/swift/pm/swiftpm-testing-helper --test-bundle-path /tmp/hdxl-xpc-audit52.UvYJGp/evidence/phase-10/tsan-focused-scratch/arm64-apple-macosx/debug/hdxl-xpc-codingPackageTests.xctest/Contents/MacOS/hdxl-xpc-codingPackageTests --package-path /tmp/hdxl-xpc-audit52.UvYJGp/candidate --scratch-path /tmp/hdxl-xpc-audit52.UvYJGp/evidence/phase-10/tsan-focused-scratch --sanitize=thread --filter Very Long \(x\) -Xswiftc -warnings-as-errors /tmp/hdxl-xpc-audit52.UvYJGp/evidence/phase-10/tsan-focused-scratch/arm64-apple-macosx/debug/hdxl-xpc-codingPackageTests.xctest/Contents/MacOS/hdxl-xpc-codingPackageTests --testing-library swift-testing' exited with unexpected signal code 6
+Test Suite 'Selected tests' started at 2026-07-29 07:20:14.470.
+Test Suite 'hdxl-xpc-codingPackageTests.xctest' started at 2026-07-29 07:20:14.472.
+Test Suite 'hdxl-xpc-codingPackageTests.xctest' passed at 2026-07-29 07:20:14.472.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-07-29 07:20:14.472.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 1902
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite "String-Value Tests" started.
+􀟈  Test "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .assumeAbsent) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .percentEscape) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .throwOnDiscovery) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .useDataRepresentation(.utf16)) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .useDataRepresentation(.utf8)) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .useDataRepresentation(.utf32)) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .assumeAbsent) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .throwOnDiscovery) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .useDataRepresentation(.utf8)) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .percentEscape) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .useDataRepresentation(.utf16)) to "Very Long (x)" started.
+􀟈  Test case passing 1 argument configuration → Configuration(stringKeyStrategy: .percentEscape, stringValueStrategy: .useDataRepresentation(.utf32)) to "Very Long (x)" started.
+ThreadSanitizer:DEADLYSIGNAL
+==36092==ERROR: ThreadSanitizer: SEGV on unknown address 0x300087882000 (pc 0x00010110017c bp 0x00016fb04480 sp 0x00016fb04440 T32423940)
+==36092==The signal is caused by a WRITE memory access.
+    #0 __tsan::MetaMap::AllocBlock(__tsan::ThreadState*, unsigned long, unsigned long, unsigned long) <null> (libclang_rt.tsan_osx_dynamic.dylib:arm64e+0x8417c)
+    #1 __tsan::user_alloc_internal(__tsan::ThreadState*, unsigned long, unsigned long, unsigned long, bool) <null> (libclang_rt.tsan_osx_dynamic.dylib:arm64e+0x6a0bc)
+    #2 __tsan::user_posix_memalign(__tsan::ThreadState*, unsigned long, void**, unsigned long, unsigned long) <null> (libclang_rt.tsan_osx_dynamic.dylib:arm64e+0x6af90)
+    #3 posix_memalign <null> (libclang_rt.tsan_osx_dynamic.dylib:arm64e+0x67e4c)
+    #4 _malloc_type_posix_memalign_outlined <null> (libsystem_malloc.dylib:arm64e+0x1ef60)
+    #5 swift_slowAlloc <null> (libswiftCore.dylib:arm64e+0x4db4)
+    #6 closure #2 in String.init<A>(bytes:encoding:) <null> (Foundation:arm64e+0x83fe98)
+    #7 partial apply for closure #3 in String.init<A>(bytes:encoding:) <null> (Foundation:arm64e+0x848e24)
+    #8 protocol witness for Sequence.withContiguousStorageIfAvailable<A>(_:) in conformance Data <null> (Foundation:arm64e+0x4d1834)
+    #9 dispatch thunk of Sequence.withContiguousStorageIfAvailable<A>(_:) <null> (libswiftCore.dylib:arm64e+0x4807b4)
+    #10 String.init<A>(bytes:encoding:) <null> (Foundation:arm64e+0x83a7e8)
+    #11 OS_xpc_object._extractStringValue(stringValueStrategy:) xpc_object_t+Extraction.swift:175 (hdxl-xpc-codingPackageTests:arm64+0x813c4)
+    #12 OS_xpc_object.extractStringValue(stringValueStrategy:at:) xpc_object_t+Extraction.swift:84 (hdxl-xpc-codingPackageTests:arm64+0x7ffb8)
+    #13 _XPCDecoder.extractVisitedString(from:at:) _XPCDecoder.swift:234 (hdxl-xpc-codingPackageTests:arm64+0x70af4)
+    #14 _XPCDecoder.decodeVisitedValue<A>(_:from:at:depth:) _XPCDecoder.swift:272 (hdxl-xpc-codingPackageTests:arm64+0x71334)
+    #15 closure #1 in XPCUnkeyedDecodingContainer.decode<A>(_:) XPCUnkeyedDecodingContainer.swift:189 (hdxl-xpc-codingPackageTests:arm64+0x61650)
+    #16 partial apply for closure #1 in XPCUnkeyedDecodingContainer.decode<A>(_:) /<compiler-generated> (hdxl-xpc-codingPackageTests:arm64+0x64a60)
+    #17 closure #1 in XPCUnkeyedDecodingContainer.handleNextDecodingKeyValue<A>(_:) XPCUnkeyedDecodingContainer.swift:294 (hdxl-xpc-codingPackageTests:arm64+0x645dc)
+    #18 partial apply for closure #1 in XPCUnkeyedDecodingContainer.handleNextDecodingKeyValue<A>(_:) /<compiler-generated> (hdxl-xpc-codingPackageTests:arm64+0x64aec)
+    #19 XPCUnkeyedDecodingContainer.withCurrentCodingKey<A>(_:) XPCUnkeyedDecodingContainer.swift:273 (hdxl-xpc-codingPackageTests:arm64+0x60178)
+    #20 XPCUnkeyedDecodingContainer.handleNextDecodingKeyValue<A>(_:) XPCUnkeyedDecodingContainer.swift:289 (hdxl-xpc-codingPackageTests:arm64+0x61908)
+    #21 XPCUnkeyedDecodingContainer.decode<A>(_:) XPCUnkeyedDecodingContainer.swift:188 (hdxl-xpc-codingPackageTests:arm64+0x614d0)
+    #22 protocol witness for UnkeyedDecodingContainer.decode<A>(_:) in conformance XPCUnkeyedDecodingContainer /<compiler-generated> (hdxl-xpc-codingPackageTests:arm64+0x6342c)
+    #23 dispatch thunk of UnkeyedDecodingContainer.decode<A>(_:) <null> (libswiftCore.dylib:arm64e+0x46f964)
+    #24 UnkeyedValueWrapper.init(from:) Wrappers.swift:40 (hdxl-xpc-codingPackageTests:arm64+0x574834)
+    #25 protocol witness for Decodable.init(from:) in conformance UnkeyedValueWrapper<A> /<compiler-generated> (hdxl-xpc-codingPackageTests:arm64+0x574c30)
+    #26 dispatch thunk of Decodable.init(from:) <null> (libswiftCore.dylib:arm64e+0x46e2f8)
+    #27 static _XPCDecoder.decode<A>(_:from:stringKeyStrategy:stringValueStrategy:resourceLimits:userInfo:) _XPCDecoder.swift:123 (hdxl-xpc-codingPackageTests:arm64+0x6f48c)
+    #28 XPCCodec.decode<A>(_:from:) XPCCodec.swift:121 (hdxl-xpc-codingPackageTests:arm64+0x27084)
+    #29 verifyRoundTrip<A>(of:using:sourceLocation:) TestHelpers.swift:201 (hdxl-xpc-codingPackageTests:arm64+0x4eb19c)
+    #30 verifyRoundTrip<A>(ofValueAndWrappers:configuration:sourceLocation:) TestHelpers.swift:177 (hdxl-xpc-codingPackageTests:arm64+0x4ebb2c)
+    #31 `String-Value Tests`.`Very Long (x)`(configuration:) StringValueTests.swift:91 (hdxl-xpc-codingPackageTests:arm64+0x487e74)
+    #32 $s14XPCCodingTests0031StringValueTests_EpaGGDEAhrBasaV0027VeryLongx_jjaeGCCDHdoaBHena4TestfMp_7__localfMu0_ #1 @Sendable (configuration:_:) in static `String-Value Tests`.$s14XPCCodingTests0031StringValueTests_EpaGGDEAhrBasaV0027VeryLongx_jjaeGCCDHdoaBHena4TestfMp_17Z1f2e78cc814eb7dbfMu_@Sendable (configuration:) @__swiftmacro_14XPCCodingTests0031StringValueTests_EpaGGDEAhrBasaV0027VeryLongx_jjaeGCCDHdoaBHena4TestfMp_.swift:5 (hdxl-xpc-codingPackageTests:arm64+0x487738)
+    #33 swift::runJobInEstablishedExecutorContext(swift::Job*, swift::SerialExecutorRef, swift::TaskExecutorRef) <null> (libswift_Concurrency.dylib:arm64e+0x2c4c)
+
+==36092==Register values:
+ x[0] = 0x00000000000002ad   x[1] = 0x0000000000000000   x[2] = 0x0000000000000016   x[3] = 0x0000000000000000
+ x[4] = 0x0000000000124f8c   x[5] = 0x0000000000000000   x[6] = 0x00000001f9257990   x[7] = 0x000000010a20e800
+ x[8] = 0x0000300087882000   x[9] = 0x000000004000070a  x[10] = 0x0000000000000000  x[11] = 0xcbd0055f06e0328e
+x[12] = 0x0cd29fbf4fb1de6e  x[13] = 0x0000000000061a84  x[14] = 0x0000000000000000  x[15] = 0x00000000000000ff
+x[16] = 0x0000000190274944  x[17] = 0x00000001011308c8  x[18] = 0x0000000000000000  x[19] = 0x000000010f104000
+x[20] = 0x00000001010e3e38  x[21] = 0x0000000103be0000  x[22] = 0x0000000000124f8c  x[23] = 0x0000000100bc70a0
+x[24] = 0x000000000000070a  x[25] = 0x000000010d870000  x[26] = 0x0000000000000000  x[27] = 0x000000016fb046c0
+x[28] = 0x0000000000000000     fp = 0x000000016fb04480     lr = 0x0000000101100160     sp = 0x000000016fb04440
+ThreadSanitizer can not provide additional info.
+SUMMARY: ThreadSanitizer: SEGV (libsystem_malloc.dylib:arm64e+0x1ef60) in _malloc_type_posix_memalign_outlined+0x40
+==36092==ABORTING
+END_UTC=2026-07-29T12:20:16Z
+EXIT_STATUS=1

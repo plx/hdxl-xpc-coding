@@ -1,0 +1,161 @@
+import Darwin
+import Dispatch
+import Foundation
+import XPC
+import XPCCoding
+
+struct AllocationMeasurement: Codable {
+  let candidateCommit: String
+  let byteCount: Int
+  let sampleCount: Int
+  let encodedXPCObjectCount: Int
+  let encodeMedianNanoseconds: Double
+  let encodeP95Nanoseconds: Double
+  let decodeMedianNanoseconds: Double
+  let decodeP95Nanoseconds: Double
+  let retainedEncodeBlockDelta: Int64
+  let retainedEncodeByteDelta: Int64
+  let retainedDecodeBlockDelta: Int64
+  let retainedDecodeByteDelta: Int64
+}
+
+struct AllocationSnapshot {
+  let blocks: Int64
+  let bytes: Int64
+}
+
+enum ProbeError: Error {
+  case invalidArgument
+  case invalidRepresentation
+  case roundTripMismatch
+}
+
+guard
+  CommandLine.arguments.count == 2,
+  let byteCount = Int(CommandLine.arguments[1]),
+  byteCount >= 0
+else {
+  throw ProbeError.invalidArgument
+}
+
+let candidateCommit =
+  ProcessInfo.processInfo.environment["XPCCODING_AUDITED_COMMIT"]
+  ?? "unknown"
+let codec = XPCCodec.standard
+let data = fixtureData(count: byteCount)
+
+for _ in 0..<2 {
+  let object = try codec.encode(data)
+  let decoded = try codec.decode(Data.self, from: object)
+  guard decoded == data else {
+    throw ProbeError.roundTripMismatch
+  }
+}
+
+let encodeBefore = allocationSnapshot()
+let retainedObject = try codec.encode(data)
+let encodeAfter = allocationSnapshot()
+guard
+  xpc_get_type(retainedObject) == XPC_TYPE_DATA,
+  xpc_data_get_length(retainedObject) == byteCount
+else {
+  throw ProbeError.invalidRepresentation
+}
+
+let decodeBefore = allocationSnapshot()
+let retainedDecodedData = try codec.decode(Data.self, from: retainedObject)
+let decodeAfter = allocationSnapshot()
+guard retainedDecodedData == data else {
+  throw ProbeError.roundTripMismatch
+}
+
+let sampleCount = byteCount >= 32 * 1_024 * 1_024 ? 5 : 9
+var encodeSamples: [Double] = []
+var decodeSamples: [Double] = []
+encodeSamples.reserveCapacity(sampleCount)
+decodeSamples.reserveCapacity(sampleCount)
+
+for _ in 0..<sampleCount {
+  let start = DispatchTime.now().uptimeNanoseconds
+  let object = try codec.encode(data)
+  let end = DispatchTime.now().uptimeNanoseconds
+  guard
+    xpc_get_type(object) == XPC_TYPE_DATA,
+    xpc_data_get_length(object) == byteCount
+  else {
+    throw ProbeError.invalidRepresentation
+  }
+  encodeSamples.append(Double(end - start))
+}
+
+for _ in 0..<sampleCount {
+  let start = DispatchTime.now().uptimeNanoseconds
+  let decoded = try codec.decode(Data.self, from: retainedObject)
+  let end = DispatchTime.now().uptimeNanoseconds
+  guard decoded == data else {
+    throw ProbeError.roundTripMismatch
+  }
+  decodeSamples.append(Double(end - start))
+}
+
+let measurement = AllocationMeasurement(
+  candidateCommit: candidateCommit,
+  byteCount: byteCount,
+  sampleCount: sampleCount,
+  encodedXPCObjectCount: 1,
+  encodeMedianNanoseconds: percentile(0.50, values: encodeSamples),
+  encodeP95Nanoseconds: percentile(0.95, values: encodeSamples),
+  decodeMedianNanoseconds: percentile(0.50, values: decodeSamples),
+  decodeP95Nanoseconds: percentile(0.95, values: decodeSamples),
+  retainedEncodeBlockDelta: encodeAfter.blocks - encodeBefore.blocks,
+  retainedEncodeByteDelta: encodeAfter.bytes - encodeBefore.bytes,
+  retainedDecodeBlockDelta: decodeAfter.blocks - decodeBefore.blocks,
+  retainedDecodeByteDelta: decodeAfter.bytes - decodeBefore.bytes
+)
+
+let encoder = JSONEncoder()
+encoder.outputFormatting = [.sortedKeys]
+let output = try encoder.encode(measurement)
+FileHandle.standardOutput.write(output)
+FileHandle.standardOutput.write(Data([0x0A]))
+
+withExtendedLifetime(retainedObject) {}
+withExtendedLifetime(retainedDecodedData) {}
+
+func allocationSnapshot() -> AllocationSnapshot {
+  var statistics = malloc_statistics_t()
+  malloc_zone_statistics(malloc_default_zone(), &statistics)
+  return AllocationSnapshot(
+    blocks: Int64(statistics.blocks_in_use),
+    bytes: Int64(statistics.size_in_use)
+  )
+}
+
+func fixtureData(count: Int) -> Data {
+  var result = Data(count: count)
+  result.withUnsafeMutableBytes { buffer in
+    guard let bytes = buffer.bindMemory(to: UInt8.self).baseAddress else {
+      return
+    }
+    for index in 0..<count {
+      bytes[index] = UInt8(truncatingIfNeeded: index &* 31)
+    }
+  }
+  return result
+}
+
+func percentile(
+  _ quantile: Double,
+  values: [Double]
+) -> Double {
+  let sorted = values.sorted()
+  guard sorted.count > 1 else {
+    return sorted[0]
+  }
+  let position = quantile * Double(sorted.count - 1)
+  let lowerIndex = Int(position.rounded(.down))
+  let upperIndex = Int(position.rounded(.up))
+  let fraction = position - Double(lowerIndex)
+  return sorted[lowerIndex]
+    + ((sorted[upperIndex] - sorted[lowerIndex]) * fraction)
+}

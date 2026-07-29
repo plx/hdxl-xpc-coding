@@ -1,0 +1,30 @@
+COMMAND=cd /tmp/hdxl-xpc-audit52.UvYJGp/candidate && bash Scripts/run-xpc-integration.sh
+START_UTC=2026-07-29T12:33:28Z
+Building for production...
+[0/9] Write sources
+[4/9] Write swift-version--58304C5D6DBC2206.txt
+[6/11] Compiling XPCCodingXPCIntegrationProtocol IntegrationProtocol.swift
+[7/11] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[8/13] Compiling XPCCodingXPCIntegrationService main.swift
+[8/13] Write Objects.LinkFileList
+[10/13] Compiling XPCCodingXPCIntegrationClient main.swift
+[10/13] Write Objects.LinkFileList
+[11/13] Linking XPCCodingXPCIntegrationService
+[12/13] Linking XPCCodingXPCIntegrationClient
+Build complete! (5.82s)
+/var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T//hdxl-xpc-integration.8reuk5/XPCCodingXPCIntegration.app/Contents/Info.plist: OK
+/var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T//hdxl-xpc-integration.8reuk5/XPCCodingXPCIntegration.app/Contents/XPCServices/com.plx.hdxl-xpc-coding.integration.service.xpc/Contents/Info.plist: OK
+/var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T//hdxl-xpc-integration.8reuk5/XPCCodingXPCIntegration.app/Contents/XPCServices/com.plx.hdxl-xpc-coding.integration.service.xpc: replacing existing signature
+/var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T//hdxl-xpc-integration.8reuk5/XPCCodingXPCIntegration.app: replacing existing signature
+/var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T//hdxl-xpc-integration.8reuk5/XPCCodingXPCIntegration.app/Contents/XPCServices/com.plx.hdxl-xpc-coding.integration.service.xpc: valid on disk
+/var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T//hdxl-xpc-integration.8reuk5/XPCCodingXPCIntegration.app/Contents/XPCServices/com.plx.hdxl-xpc-coding.integration.service.xpc: satisfies its Designated Requirement
+--prepared:/private/var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T/hdxl-xpc-integration.8reuk5/XPCCodingXPCIntegration.app/Contents/XPCServices/com.plx.hdxl-xpc-coding.integration.service.xpc
+--validated:/private/var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T/hdxl-xpc-integration.8reuk5/XPCCodingXPCIntegration.app/Contents/XPCServices/com.plx.hdxl-xpc-coding.integration.service.xpc
+/var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T//hdxl-xpc-integration.8reuk5/XPCCodingXPCIntegration.app: valid on disk
+/var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T//hdxl-xpc-integration.8reuk5/XPCCodingXPCIntegration.app: satisfies its Designated Requirement
+XPC integration iteration 1 passed: client PID 62098, service PID 62099, 1048576 data bytes.
+XPC integration iteration 2 passed: client PID 62100, service PID 62101, 1048576 data bytes.
+XPC integration iteration 3 passed: client PID 62102, service PID 62103, 1048576 data bytes.
+Completed three deterministic same-host XPC request/reply integration runs.
+END_UTC=2026-07-29T12:33:35Z
+EXIT_STATUS=0

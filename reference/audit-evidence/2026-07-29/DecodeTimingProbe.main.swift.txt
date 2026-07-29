@@ -1,0 +1,150 @@
+import Dispatch
+import Foundation
+import XPC
+import XPCCoding
+
+struct TimingMeasurement: Codable {
+  let name: String
+  let operation: String
+  let expectedOutcome: String
+  let warmupCount: Int
+  let sampleCount: Int
+  let iterationsPerSample: Int
+  let medianNanoseconds: Double
+  let p90Nanoseconds: Double
+  let p95Nanoseconds: Double
+  let p99Nanoseconds: Double
+  let standardDeviationNanoseconds: Double
+}
+
+struct TimingReport: Codable {
+  let candidateCommit: String
+  let buildConfiguration: String
+  let measurements: [TimingMeasurement]
+  let checksum: UInt64
+}
+
+enum ProbeError: Error {
+  case expectedDecodeFailure
+  case unexpectedDecodeError
+  case unexpectedDecodedValue
+}
+
+let warmupCount = 3
+let sampleCount = 15
+let iterationsPerSample = 100_000
+let decoder = XPCDecoder(stringValueStrategy: .percentEscape)
+let validObject = xpc_string_create("plain")
+let invalidObject = xpc_string_create("%41")
+
+let successfulDecode = try measure(
+  name: "decode/string/valid-percent-escape",
+  expectedOutcome: "success",
+  warmupCount: warmupCount,
+  sampleCount: sampleCount,
+  iterationsPerSample: iterationsPerSample
+) {
+  let decoded = try decoder.decode(String.self, from: validObject)
+  guard decoded == "plain" else {
+    throw ProbeError.unexpectedDecodedValue
+  }
+  return UInt64(decoded.utf8.count)
+}
+
+let failingDecode = try measure(
+  name: "decode/string/unsupported-percent-escape",
+  expectedOutcome: "DecodingError.dataCorrupted",
+  warmupCount: warmupCount,
+  sampleCount: sampleCount,
+  iterationsPerSample: iterationsPerSample
+) {
+  do {
+    _ = try decoder.decode(String.self, from: invalidObject)
+    throw ProbeError.expectedDecodeFailure
+  } catch DecodingError.dataCorrupted {
+    return 1
+  } catch {
+    throw ProbeError.unexpectedDecodeError
+  }
+}
+
+let report = TimingReport(
+  candidateCommit:
+    ProcessInfo.processInfo.environment["XPCCODING_AUDITED_COMMIT"]
+    ?? "unknown",
+  buildConfiguration: "release",
+  measurements: [successfulDecode.measurement, failingDecode.measurement],
+  checksum: successfulDecode.checksum &+ failingDecode.checksum
+)
+let encoder = JSONEncoder()
+encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+let output = try encoder.encode(report)
+FileHandle.standardOutput.write(output)
+FileHandle.standardOutput.write(Data([0x0A]))
+
+func measure(
+  name: String,
+  expectedOutcome: String,
+  warmupCount: Int,
+  sampleCount: Int,
+  iterationsPerSample: Int,
+  operation: () throws -> UInt64
+) throws -> (measurement: TimingMeasurement, checksum: UInt64) {
+  var checksum: UInt64 = 0
+  for _ in 0..<warmupCount {
+    for _ in 0..<iterationsPerSample {
+      checksum &+= try operation()
+    }
+  }
+
+  var samples: [Double] = []
+  samples.reserveCapacity(sampleCount)
+  for _ in 0..<sampleCount {
+    let start = DispatchTime.now().uptimeNanoseconds
+    for _ in 0..<iterationsPerSample {
+      checksum &+= try operation()
+    }
+    let end = DispatchTime.now().uptimeNanoseconds
+    samples.append(
+      Double(end - start) / Double(iterationsPerSample)
+    )
+  }
+
+  let mean = samples.reduce(0, +) / Double(samples.count)
+  let variance =
+    samples.reduce(0) {
+      $0 + (($1 - mean) * ($1 - mean))
+    } / Double(samples.count)
+  return (
+    TimingMeasurement(
+      name: name,
+      operation: "decode",
+      expectedOutcome: expectedOutcome,
+      warmupCount: warmupCount,
+      sampleCount: sampleCount,
+      iterationsPerSample: iterationsPerSample,
+      medianNanoseconds: percentile(0.50, values: samples),
+      p90Nanoseconds: percentile(0.90, values: samples),
+      p95Nanoseconds: percentile(0.95, values: samples),
+      p99Nanoseconds: percentile(0.99, values: samples),
+      standardDeviationNanoseconds: variance.squareRoot()
+    ),
+    checksum
+  )
+}
+
+func percentile(
+  _ quantile: Double,
+  values: [Double]
+) -> Double {
+  let sorted = values.sorted()
+  guard sorted.count > 1 else {
+    return sorted[0]
+  }
+  let position = quantile * Double(sorted.count - 1)
+  let lowerIndex = Int(position.rounded(.down))
+  let upperIndex = Int(position.rounded(.up))
+  let fraction = position - Double(lowerIndex)
+  return sorted[lowerIndex]
+    + ((sorted[upperIndex] - sorted[lowerIndex]) * fraction)
+}

@@ -1,0 +1,24 @@
+COMMAND=cd /private/tmp/hdxl-xpc-audit52.UvYJGp/control-format && test "$(git rev-parse HEAD)" = 8dab29a230817c3911a2a8e48467c49a9c0a2604 && git diff --check >/dev/null 2>&1; patch_status=$?; printf "CONTROL_DIFF_CHECK_STATUS=%s\n" "$patch_status"; git diff -- Sources/XPCCoding/XPCCodec.swift; set +e; DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer just format check-all; control_status=$?; set -e; printf "EXPECTED_FORMAT_FAILURE_STATUS=%s\n" "$control_status"; test "$control_status" -ne 0
+START_UTC=2026-07-29T13:04:03Z
+CONTROL_DIFF_CHECK_STATUS=0
+diff --git a/Sources/XPCCoding/XPCCodec.swift b/Sources/XPCCoding/XPCCodec.swift
+index c9e9e46..e6e9a18 100644
+--- a/Sources/XPCCoding/XPCCodec.swift
++++ b/Sources/XPCCoding/XPCCodec.swift
+@@ -83,6 +83,8 @@ public struct XPCCodec: Sendable {
+
+ }
+
++private let auditFormattingControl:Int=0
++
+ extension XPCCodec {
+
+   /// Encodes the given value to an `xpc_object_t`.
+Verified swift-format 6.3.0 at /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-format.
+/private/tmp/hdxl-xpc-audit52.UvYJGp/control-format/Sources/XPCCoding/XPCCodec.swift:86:36: error: [Spacing] add 1 space
+/private/tmp/hdxl-xpc-audit52.UvYJGp/control-format/Sources/XPCCoding/XPCCodec.swift:86:39: error: [Spacing] add 1 space
+/private/tmp/hdxl-xpc-audit52.UvYJGp/control-format/Sources/XPCCoding/XPCCodec.swift:86:40: error: [Spacing] add 1 space
+error: recipe `check-all` failed on line 53 with exit code 1
+EXPECTED_FORMAT_FAILURE_STATUS=1
+END_UTC=2026-07-29T13:04:03Z
+EXIT_STATUS=0

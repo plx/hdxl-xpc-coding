@@ -1,0 +1,35 @@
+COMMAND=cd /private/tmp/hdxl-xpc-audit52.UvYJGp/candidate && /usr/bin/time -l swift run -c release XPCCodingBenchmarks run --smoke --output /private/tmp/hdxl-xpc-audit52.UvYJGp/evidence/phase-11/resource-smoke.json
+START_UTC=2026-07-29T12:40:01Z
+[0/1] Planning build
+Building for production...
+[0/2] Write swift-version--58304C5D6DBC2206.txt
+Build of product 'XPCCodingBenchmarks' complete! (0.14s)
+Running primitive/encode...
+Running primitive/decode...
+Running nested/encode...
+Running nested/decode...
+Running data/1024/top-level/encode...
+Running data/1024/top-level/decode...
+Running strings/long/percent-escape/percent-escape/round-trip...
+Checksum: 18446744072226346384
+Wrote 7 results to /private/tmp/hdxl-xpc-audit52.UvYJGp/evidence/phase-11/resource-smoke.json
+        1.25 real         0.25 user         0.10 sys
+            36192256  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               17915  page reclaims
+                 464  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   1  voluntary context switches
+                 701  involuntary context switches
+          3061972040  instructions retired
+           799641095  cycles elapsed
+             3981816  peak memory footprint
+END_UTC=2026-07-29T12:40:02Z
+EXIT_STATUS=0

@@ -1,0 +1,156 @@
+import Foundation
+import XPC
+import XPCCoding
+
+private enum ProbeFailure: Error, CustomStringConvertible {
+  case failed(String)
+
+  var description: String {
+    switch self {
+    case .failed(let message):
+      "VALUE LIFETIME PROBE FAILURE: \(message)"
+    }
+  }
+}
+
+private func require(
+  _ condition: @autoclosure () -> Bool,
+  _ message: @autoclosure () -> String
+) throws {
+  guard condition() else {
+    throw ProbeFailure.failed(message())
+  }
+}
+
+private func fixtureData(count: Int) -> Data {
+  var result = Data(count: count)
+  result.withUnsafeMutableBytes { buffer in
+    guard let bytes = buffer.bindMemory(to: UInt8.self).baseAddress else {
+      return
+    }
+    for index in 0..<count {
+      bytes[index] = UInt8(truncatingIfNeeded: index &* 131 &+ 17)
+    }
+  }
+  return result
+}
+
+private func foundationEncoding(
+  for representation: XPCCodec.StringValueDataRepresentation
+) -> String.Encoding {
+  switch representation {
+  case .utf8:
+    .utf8
+  case .utf16:
+    .utf16
+  case .utf32:
+    .utf32
+  }
+}
+
+private func decodeDataAfterSourceScope(
+  _ source: Data
+) throws -> Data {
+  let object = try XPCEncoder.standard.encode(source)
+  try require(
+    xpc_get_type(object) == XPC_TYPE_DATA,
+    "Data source was not represented by XPC data"
+  )
+  try require(
+    xpc_data_get_length(object) == source.count,
+    "Data source length changed before decoding"
+  )
+  return try XPCDecoder.standard.decode(Data.self, from: object)
+}
+
+private func decodeStringAfterSourceScope(
+  _ source: String,
+  representation: XPCCodec.StringValueDataRepresentation,
+  expectedBytes: Data
+) throws -> String {
+  let configuration = XPCCodec.Configuration(
+    stringKeyStrategy: .percentEscape,
+    stringValueStrategy: .useDataRepresentation(representation)
+  )
+  let object = try XPCEncoder(configuration: configuration).encode(source)
+  try require(
+    xpc_get_type(object) == XPC_TYPE_DATA,
+    "\(representation) String source was not represented by XPC data"
+  )
+  try require(
+    xpc_data_get_length(object) == expectedBytes.count,
+    "\(representation) String source length did not match its reviewed representation"
+  )
+  return try XPCDecoder(configuration: configuration).decode(
+    String.self,
+    from: object
+  )
+}
+
+private func churnAllocations(byteCount: Int) {
+  for ordinal in 0..<256 {
+    autoreleasepool {
+      let bytes = Data(
+        repeating: UInt8(truncatingIfNeeded: ordinal &* 29),
+        count: max(byteCount, 64 * 1_024)
+      )
+      let object = bytes.withUnsafeBytes { buffer in
+        xpc_data_create(buffer.baseAddress, buffer.count)
+      }
+      withExtendedLifetime(object) {
+        _ = xpc_data_get_length(object)
+      }
+    }
+  }
+}
+
+let dataSource = fixtureData(count: 1_048_576)
+let detachedData = try decodeDataAfterSourceScope(dataSource)
+churnAllocations(byteCount: dataSource.count)
+try require(
+  detachedData == dataSource,
+  "decoded Data changed after its source scope ended and allocations were churned"
+)
+print("PASS Data: 1048576 exact bytes remained valid after source release and churn")
+
+let stringSource = String(
+  repeating: "NUL:\0 percent:% composed:\u{00E9} decomposed:e\u{0301} rocket:\u{1F680}|",
+  count: 4_096
+)
+
+for representation in XPCCodec.StringValueDataRepresentation.allCases {
+  let encoding = foundationEncoding(for: representation)
+  guard
+    let expectedBytes = stringSource.data(
+      using: encoding,
+      allowLossyConversion: false
+    )
+  else {
+    throw ProbeFailure.failed(
+      "Foundation could not create the reviewed \(representation) fixture"
+    )
+  }
+  let detachedString = try decodeStringAfterSourceScope(
+    stringSource,
+    representation: representation,
+    expectedBytes: expectedBytes
+  )
+  churnAllocations(byteCount: expectedBytes.count)
+  try require(
+    detachedString.unicodeScalars.map(\.value)
+      == stringSource.unicodeScalars.map(\.value),
+    "\(representation) decoded String scalar sequence changed after source release and churn"
+  )
+  try require(
+    detachedString.data(
+      using: encoding,
+      allowLossyConversion: false
+    ) == expectedBytes,
+    "\(representation) decoded String bytes changed after source release and churn"
+  )
+  print(
+    "PASS \(representation): \(expectedBytes.count) exact bytes remained valid after source release and churn"
+  )
+}
+
+print("VALUE LIFETIME PROBE PASSED UNDER ADDRESS INSTRUMENTATION")

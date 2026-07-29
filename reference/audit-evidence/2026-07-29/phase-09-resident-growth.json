@@ -1,0 +1,243 @@
+{
+  "batchCount" : 32,
+  "candidateCommit" : "8dab29a230817c3911a2a8e48467c49a9c0a2604",
+  "checksum" : 1510028920,
+  "endGrowthBytes" : 49152,
+  "leastSquaresSlopeBytesPerBatch" : 1447.4134897360705,
+  "liveAllocationGrowthBytes" : 49104,
+  "operationsPerBatch" : 80,
+  "outcome" : "pass",
+  "payloadByteCount" : 524288,
+  "samples" : [
+    {
+      "batch" : 0,
+      "completedOperations" : 80,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 1,
+      "completedOperations" : 160,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 2,
+      "completedOperations" : 240,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 3,
+      "completedOperations" : 320,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 4,
+      "completedOperations" : 400,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 5,
+      "completedOperations" : 480,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 6,
+      "completedOperations" : 560,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 7,
+      "completedOperations" : 640,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 8,
+      "completedOperations" : 720,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 9,
+      "completedOperations" : 800,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 10,
+      "completedOperations" : 880,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 11,
+      "completedOperations" : 960,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 12,
+      "completedOperations" : 1040,
+      "liveAllocationBlocks" : 528,
+      "liveAllocationBytes" : 734432,
+      "physicalFootprintBytes" : 3441096
+    },
+    {
+      "batch" : 13,
+      "completedOperations" : 1120,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 14,
+      "completedOperations" : 1200,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 15,
+      "completedOperations" : 1280,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 16,
+      "completedOperations" : 1360,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 17,
+      "completedOperations" : 1440,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 18,
+      "completedOperations" : 1520,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 19,
+      "completedOperations" : 1600,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 20,
+      "completedOperations" : 1680,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 21,
+      "completedOperations" : 1760,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 22,
+      "completedOperations" : 1840,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 23,
+      "completedOperations" : 1920,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 24,
+      "completedOperations" : 2000,
+      "liveAllocationBlocks" : 784,
+      "liveAllocationBytes" : 750816,
+      "physicalFootprintBytes" : 3457480
+    },
+    {
+      "batch" : 25,
+      "completedOperations" : 2080,
+      "liveAllocationBlocks" : 1125,
+      "liveAllocationBytes" : 767184,
+      "physicalFootprintBytes" : 3473864
+    },
+    {
+      "batch" : 26,
+      "completedOperations" : 2160,
+      "liveAllocationBlocks" : 1125,
+      "liveAllocationBytes" : 767184,
+      "physicalFootprintBytes" : 3473864
+    },
+    {
+      "batch" : 27,
+      "completedOperations" : 2240,
+      "liveAllocationBlocks" : 1125,
+      "liveAllocationBytes" : 767184,
+      "physicalFootprintBytes" : 3473864
+    },
+    {
+      "batch" : 28,
+      "completedOperations" : 2320,
+      "liveAllocationBlocks" : 1125,
+      "liveAllocationBytes" : 767184,
+      "physicalFootprintBytes" : 3473864
+    },
+    {
+      "batch" : 29,
+      "completedOperations" : 2400,
+      "liveAllocationBlocks" : 1125,
+      "liveAllocationBytes" : 767184,
+      "physicalFootprintBytes" : 3473864
+    },
+    {
+      "batch" : 30,
+      "completedOperations" : 2480,
+      "liveAllocationBlocks" : 1271,
+      "liveAllocationBytes" : 783536,
+      "physicalFootprintBytes" : 3490248
+    },
+    {
+      "batch" : 31,
+      "completedOperations" : 2560,
+      "liveAllocationBlocks" : 1271,
+      "liveAllocationBytes" : 783536,
+      "physicalFootprintBytes" : 3490248
+    }
+  ],
+  "thresholds" : {
+    "maximumEndGrowthBytes" : 16777216,
+    "maximumLiveAllocationGrowthBytes" : 4194304,
+    "maximumSlopeBytesPerBatch" : 262144
+  },
+  "totalOperations" : 2560
+}

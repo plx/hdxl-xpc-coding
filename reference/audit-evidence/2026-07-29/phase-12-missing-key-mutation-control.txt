@@ -1,0 +1,179 @@
+CANDIDATE_COMMIT=8dab29a230817c3911a2a8e48467c49a9c0a2604
+MUTATION=decodeNil returns false for an absent key instead of requiring the key
+ M Sources/XPCCoding/Decoding/Details/XPCKeyedDecodingContainer.swift
+diff --git a/Sources/XPCCoding/Decoding/Details/XPCKeyedDecodingContainer.swift b/Sources/XPCCoding/Decoding/Details/XPCKeyedDecodingContainer.swift
+index 3de97bf..1caba6a 100644
+--- a/Sources/XPCCoding/Decoding/Details/XPCKeyedDecodingContainer.swift
++++ b/Sources/XPCCoding/Decoding/Details/XPCKeyedDecodingContainer.swift
+@@ -110,8 +110,10 @@ internal final class XPCKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingCon
+   }
+
+   internal func decodeNil(forKey key: Key) throws -> Bool {
+-    let value = try requiredXPCObject(for: key)
+-    return try withTransientCodingKey(key) { codingPath in
++    try withTransientCodingKey(key) { codingPath in
++      guard let value = possibleXPCObject(for: key) else {
++        return false
++      }
+       try decoder.prepareToVisitChild(
+         at: codingPath,
+         depth: depth + 1
+Building for debugging...
+[0/13] /private/tmp/hdxl-xpc-audit52.UvYJGp/mutation-missing-key/.build/arm64-apple-macosx/debug/hdxl-xpc-codingPackageTests.derived/runner.swift
+[1/13] Write sources
+[5/13] Write XPCCodingBenchmarks-entitlement.plist
+[5/13] Write sources
+[7/13] Write swift-version--58304C5D6DBC2206.txt
+[9/53] Compiling XPCCoding InfalliblyUnwrap.swift
+[10/53] Compiling XPCCoding String+EmbeddedNullSupport.swift
+[11/55] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[12/55] Compiling XPCCoding XPCSingleValueDecodingContainer.swift
+[13/55] Compiling XPCCoding XPCUnkeyedDecodingContainer.swift
+[14/55] Compiling XPCCoding String+Support.swift
+[15/55] Compiling XPCCoding UnsafePointerCountValidation.swift
+[16/55] Compiling XPCCoding LosslessXPCObjectConvertible.swift
+[17/55] Compiling XPCCoding XPCBinaryDataRepresentationConvertible.swift
+[18/55] Compiling XPCCoding XPCObjectCompatibilityError.swift
+[19/55] Compiling XPCCoding XPCDecoder.swift
+[20/55] Compiling XPCCoding String+xpc_object_t.swift
+[21/55] Compiling XPCCoding XPCKeyedEncodingContainer.swift
+[22/55] Compiling XPCCoding XPCCodingKey.swift
+[23/55] Compiling XPCCoding xpc_object+Support.swift
+[24/55] Compiling XPCCoding _XPCDictionaryReferencingEncoder.swift
+[25/55] Compiling XPCCoding _XPCEncoder.swift
+[26/55] Compiling XPCCoding XPCEncoder+StringKeyStrategy.swift
+[27/55] Compiling XPCCoding _XPCDecoder.swift
+[28/55] Compiling XPCCoding _XPCDecodingState.swift
+[29/55] Compiling XPCCoding xpc_object_t+Extraction.swift
+[30/55] Compiling XPCCoding UnkeyedCodingContainer+XPCEnhancement.swift
+[31/55] Compiling XPCCoding XPCCodec+Configuration.swift
+[32/55] Compiling XPCCoding XPCCodec+StringValueStrategy.swift
+[33/55] Compiling XPCCoding XPCCodec.swift
+[34/55] Compiling XPCCoding XPCDecoder+ResourceLimits.swift
+[35/55] Compiling XPCCoding XPCDecoder+StringKeyStrategy.swift
+[36/55] Compiling XPCCoding XPCDecoder+StringValueStrategy.swift
+[37/55] Emitting module XPCCoding
+[38/55] Compiling XPCCoding XPCCodec+StringKeyStrategy.swift
+[39/55] Compiling XPCCoding XPCCodec+StringValueDataRepresentation.swift
+[40/55] Compiling XPCCoding XPCSingleValueEncodingContainer.swift
+[41/55] Compiling XPCCoding XPCUnkeyedEncodingContainer.swift
+[42/55] Compiling XPCCoding _XPCArrayReferencingEncoder.swift
+[43/55] Compiling XPCCoding XPCObjectExtractable.swift
+[44/55] Compiling XPCCoding SingleValueEncodingContainer+XPCEnhancement.swift
+[45/55] Compiling XPCCoding CodingKey+Support.swift
+[46/55] Compiling XPCCoding XPCEncoder+StringValueStrategy.swift
+[47/55] Compiling XPCCoding XPCEncoder.swift
+[48/55] Compiling XPCCoding KeyedEncodingContainer+XPCEnhancement.swift
+[49/55] Compiling XPCCoding XPCEnhancedSingleValueEncodingContainer.swift
+[50/55] Compiling XPCCoding XPCEnhancedUnkeyedEncodingContainer.swift
+[51/126] Emitting module XPCCodingBenchmarks
+[52/126] Compiling XPCCodingBenchmarks BenchmarkCLI.swift
+[53/126] Compiling XPCCodingBenchmarks BenchmarkReport.swift
+[54/126] Compiling XPCCodingBenchmarks BenchmarkRunner.swift
+[55/126] Compiling XPCCodingBenchmarks BenchmarkMain.swift
+[56/126] Compiling XPCCodingBenchmarks BenchmarkModels.swift
+[57/126] Compiling XPCCodingBenchmarks BenchmarkScenarios.swift
+[57/126] Write Objects.LinkFileList
+[58/126] Linking XPCCodingBenchmarks
+[59/126] Applying XPCCodingBenchmarks
+[61/126] Compiling XPCCodingTests Decimal+Examples.swift
+[62/126] Compiling XPCCodingTests DeepNesting.swift
+[63/126] Compiling XPCCodingTests EmbeddedNullStringProbe.swift
+[64/126] Compiling XPCCodingTests EmptyTypes.swift
+[65/130] Compiling XPCCodingPublicAPITests UserInfoPublicAPITests.swift
+[66/130] Emitting module XPCCodingPublicAPITests
+[67/130] Compiling XPCCodingPublicAPITests PublicAPITests.swift
+[68/130] Compiling XPCCodingTests OriginalCodableXPCTests.swift
+[69/130] Compiling XPCCodingTests Address.swift
+[70/130] Compiling XPCCodingTests Company.swift
+[71/130] Compiling XPCCodingTests Counter.swift
+[72/130] Compiling XPCCodingTests Employee.swift
+[73/130] Compiling XPCCodingTests EnhancedBool.swift
+[74/130] Compiling XPCCodingTests Mapping.swift
+[75/130] Compiling XPCCodingTests Numbers.swift
+[76/130] Compiling XPCCodingTests TestTypes.swift
+[77/130] Compiling XPCCodingTests TestValues.swift
+[78/130] Compiling XPCCodingTests VerificationFunctions.swift
+[79/130] Compiling XPCCodingTests Wrappers.swift
+[80/130] Compiling XPCCodingTests Person.swift
+[81/130] Compiling XPCCodingTests Programmer.swift
+[82/130] Compiling XPCCodingTests Switch.swift
+[83/130] Compiling XPCCodingTests Timestamp.swift
+[84/130] Compiling XPCCodingTests StrictUTF8DecodingTests.swift
+[85/130] Compiling XPCCodingTests StringKeyTests.swift
+[86/130] Compiling XPCCodingTests StringValueTests.swift
+[87/130] Compiling XPCCodingTests Date+Examples.swift
+[88/130] Compiling XPCCodingTests KeyedDecodeNilTests.swift
+[89/130] Compiling XPCCodingTests NestingTests.swift
+[90/130] Compiling XPCCodingTests NumericExtremeTests.swift
+[91/130] Compiling XPCCodingTests NumericRepresentationTests.swift
+[92/130] Compiling XPCCodingTests DecodingCodingPathTests.swift
+[93/130] Compiling XPCCodingTests DecodingErrorTaxonomyTests.swift
+[94/130] Compiling XPCCodingTests EncodingCodingPathTests.swift
+[95/130] Compiling XPCCodingTests EncodingErrorSemanticsTests.swift
+[96/130] Compiling XPCCodingTests StringValueStrategyTests.swift
+[97/130] Compiling XPCCodingTests XPCConversionRoundTrips.swift
+[98/130] Compiling XPCCodingTests RepresentationFixtureTests.swift
+[99/130] Compiling XPCCodingTests XPCStructuralFixture.swift
+[100/130] Emitting module XPCCodingTests
+[101/130] Compiling XPCCodingTests SimpleStruct.swift
+[102/130] Compiling XPCCodingTests SpecialKeyStructures.swift
+[103/130] Compiling XPCCodingTests String+Examples.swift
+[104/130] Compiling XPCCodingTests ThrowingTypes.swift
+[105/130] Compiling XPCCodingTests InheritanceTestClasses.swift
+[106/130] Compiling XPCCodingTests LevelNClasses.swift
+[107/130] Compiling XPCCodingTests OtherNestedTypes.swift
+[108/130] Compiling XPCCodingTests SharedEncodingClasses.swift
+[109/130] Compiling XPCCodingTests PercentEscapeRegressionTests.swift
+[110/130] Compiling XPCCodingTests PrimitiveTypeTests.swift
+[111/130] Compiling XPCCodingTests ReferencingEncoderStateTests.swift
+[112/130] Compiling XPCCodingTests StandardLibraryTypeTests.swift
+[113/130] Compiling XPCCodingTests CodecConfigurationTests.swift
+[114/130] Compiling XPCCodingTests ConcurrencyTests.swift
+[115/130] Compiling XPCCodingTests DataRepresentationTests.swift
+[116/130] Compiling XPCCodingTests DecoderResourceLimitTests.swift
+[117/130] Compiling XPCCodingTests URL+Examples.swift
+[118/130] Compiling XPCCodingTests UUID+Examples.swift
+[119/130] Compiling XPCCodingTests SupportAndErrorCoverageTests.swift
+[120/130] Compiling XPCCodingTests UnalignedNumericDecodingTests.swift
+[121/130] Compiling XPCCodingTests UnkeyedContainerCoverageTests.swift
+[122/130] Compiling XPCCodingTests UnsafePointerCountValidationTests.swift
+[123/130] Compiling XPCCodingTests TestHelpers.swift
+[124/130] Compiling XPCCodingTests TestTags.swift
+[125/130] Compiling XPCCodingTests EnhancedEncodingTests.swift
+[126/130] Compiling XPCCodingTests FacadeAndStateCoverageTests.swift
+[127/130] Compiling XPCCodingTests InheritanceTests.swift
+[128/130] Compiling XPCCodingTests KeyedContainerCoverageTests.swift
+[129/132] Emitting module hdxl_xpc_codingPackageTests
+[130/132] Compiling hdxl_xpc_codingPackageTests runner.swift
+[130/132] Write Objects.LinkFileList
+[131/132] Linking hdxl-xpc-codingPackageTests
+Build complete! (13.30s)
+Test Suite 'Selected tests' started at 2026-07-29 11:44:10.666.
+Test Suite 'hdxl-xpc-codingPackageTests.xctest' started at 2026-07-29 11:44:10.667.
+Test Suite 'hdxl-xpc-codingPackageTests.xctest' passed at 2026-07-29 11:44:10.667.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-07-29 11:44:10.667.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 1902
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite "Keyed decodeNil" started.
+􀟈  Test "missing key throws key-not-found at the parent path" started.
+􀟈  Test "nested missing key reports its parent container path" started.
+􀟈  Test "present non-null value returns false" started.
+􀟈  Test "percent and null scalar keys preserve escaped lookup behavior" started.
+􀟈  Test "explicit XPC null returns true" started.
+􀟈  Test "decodeIfPresent still returns nil for an absent key" started.
+􁁛  Test "decodeIfPresent still returns nil for an absent key" passed after 0.001 seconds.
+􀢄  Test "missing key throws key-not-found at the parent path" recorded an issue at KeyedDecodeNilTests.swift:12:21: Expectation failed: an error was expected but none was thrown
+􀢄  Test "nested missing key reports its parent container path" recorded an issue at KeyedDecodeNilTests.swift:71:21: Expectation failed: an error was expected but none was thrown
+􁁛  Test "explicit XPC null returns true" passed after 0.001 seconds.
+􁁛  Test "percent and null scalar keys preserve escaped lookup behavior" passed after 0.001 seconds.
+􁁛  Test "present non-null value returns false" passed after 0.001 seconds.
+􀢄  Test "missing key throws key-not-found at the parent path" failed after 0.001 seconds with 1 issue.
+􀢄  Test "nested missing key reports its parent container path" failed after 0.001 seconds with 1 issue.
+􀢄  Suite "Keyed decodeNil" failed after 0.001 seconds with 2 issues.
+􀢄  Test run with 6 tests in 1 suite failed after 0.001 seconds with 2 issues.
+TARGETED_TEST_EXIT_STATUS=1
+CONTROL_OUTCOME=PASS: targeted tests rejected the deliberate mutation

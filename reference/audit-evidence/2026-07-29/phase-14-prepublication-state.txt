@@ -1,0 +1,10 @@
+COMMAND=cd /private/tmp/hdxl-xpc-audit52.UvYJGp/candidate && git tag --list --format="%(refname:short) %(objecttype) %(objectname)" && gh release list --repo plx/hdxl-xpc-coding --limit 100 && gh api repos/plx/hdxl-xpc-coding/private-vulnerability-reporting && gh api repos/plx/hdxl-xpc-coding/code-scanning/default-setup && gh api repos/plx/hdxl-xpc-coding/secret-scanning/alerts?state=open\&per_page=100 --jq "length" && git status --short && git rev-parse HEAD && git rev-parse "HEAD^{tree}"
+START_UTC=2026-07-29T12:38:58Z
+0.0.1 commit ecc9a1677c28fe4727216bb85b89df6c83676d3e
+0.0.2 commit 41c577f140b641f1288dcece2ef5e3676eca1bdd
+0.0.3 commit 8e95faadf8dfcb5297433a98d36a4f3c38f1b4fb
+{"enabled":true}{"state":"not-configured","languages":["actions","swift"],"query_suite":"default","threat_model":"remote","updated_at":null,"schedule":null,"runner_type":"standard","runner_label":null}0
+8dab29a230817c3911a2a8e48467c49a9c0a2604
+0c2c6353840e7c546ed18656b38f548f8c5b0d54
+END_UTC=2026-07-29T12:39:00Z
+EXIT_STATUS=0

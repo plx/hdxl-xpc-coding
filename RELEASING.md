@@ -12,6 +12,11 @@ separate from — and subordinate to — two other documents:
   ([reference/ApiStabilityPolicy.md](reference/ApiStabilityPolicy.md)) governs the
   Swift API surface and its diff gate.
 
+For the frozen `0.1.0` candidate, use the tailored
+[maintainer review and publication playbook](reference/PublicationPlaybook-0.1.0.md).
+It records the exact audited commit, the pre-authorization review checklist,
+and the post-authorization publication and verification sequence.
+
 Two compatibility axes stay separate throughout:
 
 - **Source API** — see the stability policy above and `CHANGELOG.md`.

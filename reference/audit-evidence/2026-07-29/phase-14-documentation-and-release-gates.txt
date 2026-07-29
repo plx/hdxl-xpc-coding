@@ -1,0 +1,104 @@
+COMMAND=cd /private/tmp/hdxl-xpc-audit52.UvYJGp/candidate && bash Scripts/generate-api-documentation.sh /private/tmp/hdxl-xpc-audit52.UvYJGp/evidence/phase-14/docc && bash Scripts/verify-swift-package-index-metadata.sh && bash Scripts/verify-support-policy.sh && bash Scripts/verify-main-ruleset.sh
+START_UTC=2026-07-29T12:36:39Z
+Building for debugging...
+[0/2] Write sources
+[1/2] Write swift-version--58304C5D6DBC2206.txt
+[3/42] Emitting module XPCCoding
+[4/44] Compiling XPCCoding XPCCodec+StringValueStrategy.swift
+[5/44] Compiling XPCCoding XPCCodec.swift
+[6/44] Compiling XPCCoding XPCEnhancedSingleValueEncodingContainer.swift
+[7/44] Compiling XPCCoding XPCEnhancedUnkeyedEncodingContainer.swift
+[8/44] Compiling XPCCoding XPCCodingKey.swift
+[9/44] Compiling XPCCoding xpc_object+Support.swift
+[10/44] Compiling XPCCoding _XPCDecoder.swift
+[11/44] Compiling XPCCoding _XPCDecodingState.swift
+[12/44] Compiling XPCCoding xpc_object_t+Extraction.swift
+[13/44] Compiling XPCCoding XPCObjectExtractable.swift
+[14/44] Compiling XPCCoding SingleValueEncodingContainer+XPCEnhancement.swift
+[15/44] Compiling XPCCoding CodingKey+Support.swift
+[16/44] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[17/44] Compiling XPCCoding XPCSingleValueDecodingContainer.swift
+[18/44] Compiling XPCCoding XPCUnkeyedDecodingContainer.swift
+[19/44] Compiling XPCCoding LosslessXPCObjectConvertible.swift
+[20/44] Compiling XPCCoding XPCBinaryDataRepresentationConvertible.swift
+[21/44] Compiling XPCCoding XPCObjectCompatibilityError.swift
+[22/44] Compiling XPCCoding InfalliblyUnwrap.swift
+[23/44] Compiling XPCCoding String+EmbeddedNullSupport.swift
+[24/44] Compiling XPCCoding String+Support.swift
+[25/44] Compiling XPCCoding UnsafePointerCountValidation.swift
+[26/44] Compiling XPCCoding XPCDecoder+ResourceLimits.swift
+[27/44] Compiling XPCCoding XPCDecoder+StringKeyStrategy.swift
+[28/44] Compiling XPCCoding XPCDecoder+StringValueStrategy.swift
+[29/44] Compiling XPCCoding UnkeyedCodingContainer+XPCEnhancement.swift
+[30/44] Compiling XPCCoding XPCCodec+Configuration.swift
+[31/44] Compiling XPCCoding XPCCodec+StringKeyStrategy.swift
+[32/44] Compiling XPCCoding XPCCodec+StringValueDataRepresentation.swift
+[33/44] Compiling XPCCoding XPCEncoder+StringValueStrategy.swift
+[34/44] Compiling XPCCoding XPCEncoder.swift
+[35/44] Compiling XPCCoding KeyedEncodingContainer+XPCEnhancement.swift
+[36/44] Compiling XPCCoding _XPCDictionaryReferencingEncoder.swift
+[37/44] Compiling XPCCoding _XPCEncoder.swift
+[38/44] Compiling XPCCoding XPCEncoder+StringKeyStrategy.swift
+[39/44] Compiling XPCCoding XPCSingleValueEncodingContainer.swift
+[40/44] Compiling XPCCoding XPCUnkeyedEncodingContainer.swift
+[41/44] Compiling XPCCoding _XPCArrayReferencingEncoder.swift
+[42/44] Compiling XPCCoding XPCDecoder.swift
+[43/44] Compiling XPCCoding String+xpc_object_t.swift
+[44/44] Compiling XPCCoding XPCKeyedEncodingContainer.swift
+Build of target: 'XPCCoding' complete! (4.55s)
+Exempt (compiler-synthesized, cannot carry a doc comment): 19
+  TransientEncoderError.!=(_:_:) (swift.func.op)
+  TransientEncoderError.localizedDescription (swift.property)
+  XPCCodec.Configuration.!=(_:_:) (swift.func.op)
+  XPCCodec.Configuration.init(from:) (swift.init)
+  XPCCodec.StringKeyStrategy.!=(_:_:) (swift.func.op)
+  XPCCodec.StringKeyStrategy.init(from:) (swift.init)
+  XPCCodec.StringValueDataRepresentation.!=(_:_:) (swift.func.op)
+  XPCCodec.StringValueDataRepresentation.init(from:) (swift.init)
+  XPCCodec.StringValueStrategy.!=(_:_:) (swift.func.op)
+  XPCCodec.StringValueStrategy.init(from:) (swift.init)
+  XPCDecoder.ResourceLimits.!=(_:_:) (swift.func.op)
+  XPCDecoder.StringKeyStrategy.!=(_:_:) (swift.func.op)
+  XPCDecoder.StringKeyStrategy.init(from:) (swift.init)
+  XPCDecoder.StringValueStrategy.!=(_:_:) (swift.func.op)
+  XPCDecoder.StringValueStrategy.init(from:) (swift.init)
+  XPCEncoder.StringKeyStrategy.!=(_:_:) (swift.func.op)
+  XPCEncoder.StringKeyStrategy.init(from:) (swift.init)
+  XPCEncoder.StringValueStrategy.!=(_:_:) (swift.func.op)
+  XPCEncoder.StringValueStrategy.init(from:) (swift.init)
+Verified that all 142 declared public XPCCoding symbols are documented (161 public symbols total).
+
+
+Generated the XPCCoding documentation archive at /private/tmp/hdxl-xpc-audit52.UvYJGp/evidence/phase-14/docc/XPCCoding.doccarchive.
+Another instance of SwiftPM (PID: 70531) is already running using '/private/tmp/hdxl-xpc-audit52.UvYJGp/candidate/.build', waiting until that process has finished execution...Fetching https://github.com/jpsim/Yams.git from cache
+Fetching https://github.com/SwiftPackageIndex/SPIManifest.git from cache
+Fetched https://github.com/SwiftPackageIndex/SPIManifest.git from cache (0.02s)
+Fetched https://github.com/jpsim/Yams.git from cache (0.02s)
+Creating working copy for https://github.com/jpsim/Yams.git
+Creating working copy for https://github.com/SwiftPackageIndex/SPIManifest.git
+Working copy of https://github.com/SwiftPackageIndex/SPIManifest.git resolved at 1.13.0
+Working copy of https://github.com/jpsim/Yams.git resolved at 6.2.2
+Building for production...
+[0/12] Write sources
+[3/12] Write swift-version--58304C5D6DBC2206.txt
+[4/12] Compiling reader.c
+[5/12] Compiling writer.c
+[6/12] Compiling parser.c
+[7/12] Compiling api.c
+[8/12] Compiling emitter.c
+[9/12] Compiling scanner.c
+[11/13] Compiling Yams AliasDereferencingStrategy.swift
+[12/14] Compiling SPIManifest Array+Uniqued.swift
+[13/15] Compiling SPIManifestValidator main.swift
+[13/15] Write Objects.LinkFileList
+[14/15] Linking SPIManifestValidator
+Build of product 'SPIManifestValidator' complete! (12.47s)
+Verified .spi.yml with SPIManifest 1.13.0: hdxl-xpc-coding/XPCCoding, Swift 6.3, macOS 26, iOS 26, and XPCCoding documentation.
+Xcode 26.6
+Build version 17F113
+swift-driver version: 1.148.6 Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)
+Target: arm64-apple-macosx28.0
+Verified support policy: Xcode 26.6 (17F113), Apple Swift 6.3.3, Swift 6 language mode, and arm64 Apple platforms 26.0.
+Verified active ruleset 11429473 and all effective rules for plx/hdxl-xpc-coding:main: pull requests, 15 strict GitHub Actions checks, resolved conversations, and deletion/force-push protection are required with no bypass actors or overlapping rule sources.
+END_UTC=2026-07-29T12:37:01Z
+EXIT_STATUS=0
