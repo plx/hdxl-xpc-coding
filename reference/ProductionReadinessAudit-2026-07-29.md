@@ -857,3 +857,7 @@ post-audit publication checkpoint. No publication action is implied by this
 maintainer approval of the technical `GO` verdict. The code-review and
 authorization boundary is recorded in the
 [0.1.0 review and publication playbook](PublicationPlaybook-0.1.0.md).
+
+On 2026-08-05, the maintainer authorized pushing the audit-report branch and
+opening its pull request to `main`. This stage-specific authorization does not
+authorize merging the pull request or any later publication action.

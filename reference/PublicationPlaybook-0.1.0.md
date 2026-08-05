@@ -13,7 +13,7 @@ candidate cannot accidentally publish it.
 | Audited source tree | `0c2c6353840e7c546ed18656b38f548f8c5b0d54` |
 | Audit result | `GO`, 2026-07-29 |
 | Maintainer audit decision | `GO` approved, 2026-07-29 |
-| Publication authorization | **Not yet granted** |
+| Publication authorization | Audit-report PR only, 2026-08-05 |
 | Audit report | [ProductionReadinessAudit-2026-07-29.md](ProductionReadinessAudit-2026-07-29.md) |
 | General release policy | [RELEASING.md](../RELEASING.md) |
 | Release ticket | [GitHub issue #51](https://github.com/plx/hdxl-xpc-coding/issues/51) |
