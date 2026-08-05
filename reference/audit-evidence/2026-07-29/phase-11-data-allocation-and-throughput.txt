@@ -1,0 +1,20 @@
+COMMAND=cd /private/tmp/hdxl-xpc-audit52.UvYJGp/evidence/phase-11/AllocationProbe && test "$(git -C ../../../candidate rev-parse HEAD)" = 8dab29a230817c3911a2a8e48467c49a9c0a2604 && test -z "$(git -C ../../../candidate status --short)" && DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift build -c release -Xswiftc -warnings-as-errors && binary=$(DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift build -c release --show-bin-path)/XPCCodingAllocationProbe && for byte_count in 0 1 16 1024 4096 65536 1048576 33554432; do XPCCODING_AUDITED_COMMIT=8dab29a230817c3911a2a8e48467c49a9c0a2604 "$binary" "$byte_count"; done
+START_UTC=2026-07-29T13:07:14Z
+Building for production...
+[0/5] Write sources
+[2/5] Write swift-version--58304C5D6DBC2206.txt
+[4/6] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[5/7] Compiling XPCCodingAllocationProbe main.swift
+[5/7] Write Objects.LinkFileList
+[6/7] Linking XPCCodingAllocationProbe
+Build complete! (4.26s)
+{"byteCount":0,"candidateCommit":"8dab29a230817c3911a2a8e48467c49a9c0a2604","decodeMedianNanoseconds":208,"decodeP95Nanoseconds":383.5999999999999,"encodeMedianNanoseconds":42,"encodeP95Nanoseconds":2558.3999999999987,"encodedXPCObjectCount":1,"retainedDecodeBlockDelta":0,"retainedDecodeByteDelta":0,"retainedEncodeBlockDelta":1,"retainedEncodeByteDelta":64,"sampleCount":9}
+{"byteCount":1,"candidateCommit":"8dab29a230817c3911a2a8e48467c49a9c0a2604","decodeMedianNanoseconds":167,"decodeP95Nanoseconds":449.79999999999984,"encodeMedianNanoseconds":83,"encodeP95Nanoseconds":2449.9999999999986,"encodedXPCObjectCount":1,"retainedDecodeBlockDelta":0,"retainedDecodeByteDelta":0,"retainedEncodeBlockDelta":2,"retainedEncodeByteDelta":144,"sampleCount":9}
+{"byteCount":16,"candidateCommit":"8dab29a230817c3911a2a8e48467c49a9c0a2604","decodeMedianNanoseconds":291,"decodeP95Nanoseconds":625.1999999999998,"encodeMedianNanoseconds":84,"encodeP95Nanoseconds":2499.799999999999,"encodedXPCObjectCount":1,"retainedDecodeBlockDelta":2,"retainedDecodeByteDelta":96,"retainedEncodeBlockDelta":2,"retainedEncodeByteDelta":144,"sampleCount":9}
+{"byteCount":1024,"candidateCommit":"8dab29a230817c3911a2a8e48467c49a9c0a2604","decodeMedianNanoseconds":250,"decodeP95Nanoseconds":608.3999999999999,"encodeMedianNanoseconds":125,"encodeP95Nanoseconds":2415.999999999999,"encodedXPCObjectCount":1,"retainedDecodeBlockDelta":2,"retainedDecodeByteDelta":1104,"retainedEncodeBlockDelta":2,"retainedEncodeByteDelta":1344,"sampleCount":9}
+{"byteCount":4096,"candidateCommit":"8dab29a230817c3911a2a8e48467c49a9c0a2604","decodeMedianNanoseconds":292,"decodeP95Nanoseconds":625.1999999999998,"encodeMedianNanoseconds":167,"encodeP95Nanoseconds":2133.3999999999987,"encodedXPCObjectCount":1,"retainedDecodeBlockDelta":2,"retainedDecodeByteDelta":4176,"retainedEncodeBlockDelta":2,"retainedEncodeByteDelta":5184,"sampleCount":9}
+{"byteCount":65536,"candidateCommit":"8dab29a230817c3911a2a8e48467c49a9c0a2604","decodeMedianNanoseconds":1625,"decodeP95Nanoseconds":3549.7999999999993,"encodeMedianNanoseconds":3542,"encodeP95Nanoseconds":6124.799999999999,"encodedXPCObjectCount":1,"retainedDecodeBlockDelta":2,"retainedDecodeByteDelta":65616,"retainedEncodeBlockDelta":2,"retainedEncodeByteDelta":128,"sampleCount":9}
+{"byteCount":1048576,"candidateCommit":"8dab29a230817c3911a2a8e48467c49a9c0a2604","decodeMedianNanoseconds":13459,"decodeP95Nanoseconds":40158.19999999998,"encodeMedianNanoseconds":55125,"encodeP95Nanoseconds":64658.2,"encodedXPCObjectCount":1,"retainedDecodeBlockDelta":2,"retainedDecodeByteDelta":1048656,"retainedEncodeBlockDelta":2,"retainedEncodeByteDelta":128,"sampleCount":9}
+{"byteCount":33554432,"candidateCommit":"8dab29a230817c3911a2a8e48467c49a9c0a2604","decodeMedianNanoseconds":447042,"decodeP95Nanoseconds":1453641.4,"encodeMedianNanoseconds":1686417,"encodeP95Nanoseconds":1816266.8,"encodedXPCObjectCount":1,"retainedDecodeBlockDelta":2,"retainedDecodeByteDelta":33554512,"retainedEncodeBlockDelta":2,"retainedEncodeByteDelta":128,"sampleCount":5}
+END_UTC=2026-07-29T13:07:20Z
+EXIT_STATUS=0

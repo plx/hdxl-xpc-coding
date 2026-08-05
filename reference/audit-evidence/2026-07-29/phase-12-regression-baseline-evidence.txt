@@ -1,0 +1,278 @@
+COMMAND=cd /private/tmp/hdxl-xpc-audit52.UvYJGp/candidate && bash Scripts/run-baseline-evidence.sh
+START_UTC=2026-07-29T12:36:39Z
+=== Working tree: every historical defect must be absent ===
+Building for debugging...
+[0/7] Write sources
+[2/7] Write XPCCodingBaselineProbe-entitlement.plist
+[3/7] Write swift-version--58304C5D6DBC2206.txt
+[5/47] Compiling XPCCoding InfalliblyUnwrap.swift
+[6/47] Compiling XPCCoding String+EmbeddedNullSupport.swift
+[7/49] Compiling XPCCoding XPCDecoder.swift
+[8/49] Compiling XPCCoding String+xpc_object_t.swift
+[9/49] Compiling XPCCoding XPCKeyedEncodingContainer.swift
+[10/49] Emitting module XPCCoding
+[11/49] Compiling XPCCoding _XPCDictionaryReferencingEncoder.swift
+[12/49] Compiling XPCCoding _XPCEncoder.swift
+[13/49] Compiling XPCCoding XPCEncoder+StringKeyStrategy.swift
+[14/49] Compiling XPCCoding XPCDecoder+ResourceLimits.swift
+[15/49] Compiling XPCCoding XPCDecoder+StringKeyStrategy.swift
+[16/49] Compiling XPCCoding XPCDecoder+StringValueStrategy.swift
+[17/49] Compiling XPCCoding XPCSingleValueEncodingContainer.swift
+[18/49] Compiling XPCCoding XPCUnkeyedEncodingContainer.swift
+[19/49] Compiling XPCCoding _XPCArrayReferencingEncoder.swift
+[20/49] Compiling XPCCoding String+Support.swift
+[21/49] Compiling XPCCoding UnsafePointerCountValidation.swift
+[22/49] Compiling XPCCoding UnkeyedCodingContainer+XPCEnhancement.swift
+[23/49] Compiling XPCCoding XPCCodec+Configuration.swift
+[24/49] Compiling XPCCoding XPCCodec+StringValueStrategy.swift
+[25/49] Compiling XPCCoding XPCCodec.swift
+[26/49] Compiling XPCCoding _XPCDecoder.swift
+[27/49] Compiling XPCCoding _XPCDecodingState.swift
+[28/49] Compiling XPCCoding xpc_object_t+Extraction.swift
+[29/49] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[30/49] Compiling XPCCoding XPCSingleValueDecodingContainer.swift
+[31/49] Compiling XPCCoding XPCUnkeyedDecodingContainer.swift
+[32/49] Compiling XPCCoding XPCCodingKey.swift
+[33/49] Compiling XPCCoding xpc_object+Support.swift
+[34/49] Compiling XPCCoding LosslessXPCObjectConvertible.swift
+[35/49] Compiling XPCCoding XPCBinaryDataRepresentationConvertible.swift
+[36/49] Compiling XPCCoding XPCObjectCompatibilityError.swift
+[37/49] Compiling XPCCoding XPCCodec+StringKeyStrategy.swift
+[38/49] Compiling XPCCoding XPCCodec+StringValueDataRepresentation.swift
+[39/49] Compiling XPCCoding XPCEncoder+StringValueStrategy.swift
+[40/49] Compiling XPCCoding XPCEncoder.swift
+[41/49] Compiling XPCCoding KeyedEncodingContainer+XPCEnhancement.swift
+[42/49] Compiling XPCCoding XPCObjectExtractable.swift
+[43/49] Compiling XPCCoding SingleValueEncodingContainer+XPCEnhancement.swift
+[44/49] Compiling XPCCoding CodingKey+Support.swift
+[45/49] Compiling XPCCoding XPCEnhancedSingleValueEncodingContainer.swift
+[46/49] Compiling XPCCoding XPCEnhancedUnkeyedEncodingContainer.swift
+[47/55] Compiling XPCCodingBaselineProbe BaselineChecks.swift
+[48/55] Compiling XPCCodingBaselineProbe BaselineSupervisor.swift
+[49/55] Compiling XPCCodingBaselineProbe BaselineMain.swift
+[50/55] Compiling XPCCodingBaselineProbe BaselineCheck.swift
+[51/55] Emitting module XPCCodingBaselineProbe
+[52/55] Compiling XPCCodingBaselineProbe BaselineCLI.swift
+[52/55] Write Objects.LinkFileList
+[53/55] Linking XPCCodingBaselineProbe
+[54/55] Applying XPCCodingBaselineProbe
+Build complete! (5.81s)
+Baseline evidence for the working tree at 8dab29a, expecting the `current` outcomes, with 26 checks in bounded children at wall 15s, cpu 8s, memory 1024 MiB.
+ok   percent-escape/escaped-null-literal matchedContract
+       #7 percent escaping was not bijective: round-trips [U+0025 U+0030 U+0030] under .percentEscape
+       observed: [U+0025 U+0030 U+0030] decoded as [U+0025 U+0030 U+0030]
+ok   percent-escape/escaped-percent-literal matchedContract
+       #7 percent escaping was not bijective: round-trips [U+0025 U+0032 U+0035] under .percentEscape
+       observed: [U+0025 U+0032 U+0035] decoded as [U+0025 U+0032 U+0035]
+ok   percent-escape/uppercase-a-escape matchedContract
+       #7 percent escaping was not bijective: round-trips [U+0025 U+0034 U+0031] under .percentEscape
+       observed: [U+0025 U+0034 U+0031] decoded as [U+0025 U+0034 U+0031]
+ok   percent-escape/double-escaped-null matchedContract
+       #7 percent escaping was not bijective: round-trips [U+0025 U+0032 U+0035 U+0030 U+0030] under .percentEscape
+       observed: [U+0025 U+0032 U+0035 U+0030 U+0030] decoded as [U+0025 U+0032 U+0035 U+0030 U+0030]
+ok   percent-escape/space-escape matchedContract
+       #7 percent escaping was not bijective: round-trips [U+0061 U+0025 U+0032 U+0030 U+0062] under .percentEscape
+       observed: [U+0061 U+0025 U+0032 U+0030 U+0062] decoded as [U+0061 U+0025 U+0032 U+0030 U+0062]
+ok   percent-escape/bare-percent matchedContract
+       #7 percent escaping was not bijective: round-trips [U+0025] under .percentEscape
+       observed: [U+0025] decoded as [U+0025]
+ok   percent-escape/trailing-percent matchedContract
+       #7 percent escaping was not bijective: round-trips [U+0031 U+0030 U+0030 U+0025] under .percentEscape
+       observed: [U+0031 U+0030 U+0030 U+0025] decoded as [U+0031 U+0030 U+0030 U+0025]
+ok   percent-escape/percent-combining-mark matchedContract
+       #7 percent escaping was not bijective: round-trips [U+0025 U+0301] under .percentEscape
+       observed: [U+0025 U+0301] decoded as [U+0025 U+0301]
+ok   percent-escape/key-collision-escaped-null matchedContract
+       #7 distinct keys aliased under .percentEscape: keeps [U+0025 U+0030 U+0030] and [U+0000] distinct
+       observed: 2 distinct keys encoded to 2 XPC entries
+ok   percent-escape/key-collision-embedded-null matchedContract
+       #7 distinct keys aliased under .percentEscape: keeps [U+0061 U+0025 U+0030 U+0030 U+0062] and [U+0061 U+0000 U+0062] distinct
+       observed: 2 distinct keys encoded to 2 XPC entries
+ok   external-utf8/lone-continuation-value typedRejection
+       #16 malformed external UTF-8 was repaired instead of rejected: rejects the malformed UTF-8 [80] as a dictionary value
+       observed: threw a DecodingError
+ok   external-utf8/surrogate-value typedRejection
+       #16 malformed external UTF-8 was repaired instead of rejected: rejects the malformed UTF-8 [ed a0 80] as a dictionary value
+       observed: threw a DecodingError
+ok   external-utf8/interior-invalid-value typedRejection
+       #16 malformed external UTF-8 was repaired instead of rejected: rejects the malformed UTF-8 [61 ff 62] as a dictionary value
+       observed: threw a DecodingError
+ok   external-utf8/truncated-sequence-key typedRejection
+       #16 malformed external UTF-8 was repaired instead of rejected: rejects the malformed UTF-8 [c3 28] as a dictionary key
+       observed: threw a DecodingError
+ok   representation/data-single-object matchedContract
+       #20 ordinary Data became one XPC object per byte: encodes Data as one XPC data object
+       observed: encoded as XPC data, expected data
+ok   representation/int16-scalar matchedContract
+       #22 narrow integers were raw native bytes: encodes Int16 as an XPC int64
+       observed: encoded as XPC int64, expected int64
+ok   representation/uint16-scalar matchedContract
+       #22 narrow integers were raw native bytes: encodes UInt16 as an XPC uint64
+       observed: encoded as XPC uint64, expected uint64
+ok   representation/float-scalar matchedContract
+       #23 binary floating point was raw native bytes: encodes Float as an XPC double
+       observed: encoded as XPC double, expected double
+ok   alignment/offset-narrow-integer typedRejection
+       #8 binary numeric decoding loaded from an unaligned address: decodes a narrow integer from offset XPC data storage
+       observed: threw a DecodingError
+ok   pointer-count/nil-pointer-positive-count typedRejection
+       #11 unsafe pointer/count pairs reached libxpc unvalidated: refuses a nil pointer with a positive count
+       observed: threw an EncodingError
+ok   budgets/self-referential-array typedRejection
+       #9 the decoder recursed with no depth budget: refuses a self-referential XPC array
+       observed: threw a DecodingError
+ok   budgets/deep-nesting typedRejection
+       #9 the decoder recursed with no depth budget: refuses 5000 nested XPC arrays
+       observed: threw a DecodingError
+ok   control/plain-string-round-trip matchedContract
+       control: round-trips a string with no percent sign and no null
+       observed: [U+0070 U+006C U+0061 U+0069 U+006E] decoded as [U+0070 U+006C U+0061 U+0069 U+006E]
+ok   control/embedded-null-string-round-trip matchedContract
+       control: round-trips an embedded null, which .percentEscape always did
+       observed: [U+0061 U+0000 U+0062] decoded as [U+0061 U+0000 U+0062]
+ok   control/pointer-count-nil-zero-count matchedContract
+       control: encodes a nil pointer with a count of 0
+       observed: emitted XPC data of 0 bytes, expected 0
+ok   control/pointer-count-full-extent matchedContract
+       control: encodes a non-nil pointer with a count of 4
+       observed: emitted XPC data of 4 bytes, expected 4
+All 26 checks matched the `current` expectations for the working tree at 8dab29a: 22 historical defects and 4 controls.
+
+=== Audit revision 813c52e0aab258a185aa6d5e8c1a241d419ce589: every historical defect must be present ===
+Building for debugging...
+[0/7] Write sources
+[2/7] Write XPCCodingBaselineProbe-entitlement.plist
+[3/7] Write swift-version--58304C5D6DBC2206.txt
+[5/44] Emitting module XPCCoding
+[6/46] Compiling XPCCoding XPCEnhancedSingleValueEncodingContainer.swift
+[7/46] Compiling XPCCoding XPCEnhancedUnkeyedEncodingContainer.swift
+[8/46] Compiling XPCCoding UnkeyedCodingContainer+XPCEnhancement.swift
+[9/46] Compiling XPCCoding XPCCodec+Configuration.swift
+[10/46] Compiling XPCCoding XPCObjectExtractable.swift
+[11/46] Compiling XPCCoding SingleValueEncodingContainer+XPCEnhancement.swift
+[12/46] Compiling XPCCoding XPCBinaryDataRepresentationConvertible.swift
+[13/46] Compiling XPCCoding XPCObjectCompatibilityError.swift
+[14/46] Compiling XPCCoding XPCCodec+StringKeyStrategy.swift
+[15/46] Compiling XPCCoding XPCCodec+StringValueDataRepresentation.swift
+[16/46] Compiling XPCCoding XPCCodec+StringValueStrategy.swift
+[17/46] Compiling XPCCoding XPCCodec.swift
+[18/46] Compiling XPCCoding XPCEncoder+StringKeyStrategy.swift
+[19/46] Compiling XPCCoding XPCEncoder+StringValueStrategy.swift
+[20/46] Compiling XPCCoding XPCEncoder.swift
+[21/46] Compiling XPCCoding XPCDecoder+StringValueStrategy.swift
+[22/46] Compiling XPCCoding XPCDecoder.swift
+[23/46] Compiling XPCCoding String+xpc_object_t.swift
+[24/46] Compiling XPCCoding KeyedEncodingContainer+XPCEnhancement.swift
+[25/46] Compiling XPCCoding LosslessXPCObjectConvertible.swift
+[26/46] Compiling XPCCoding XPCCodingKey.swift
+[27/46] Compiling XPCCoding xpc_object+Support.swift
+[28/46] Compiling XPCCoding _XPCDecoder.swift
+[29/46] Compiling XPCCoding xpc_object_t+Extraction.swift
+[30/46] Compiling XPCCoding XPCDecoder+StringKeyStrategy.swift
+[31/46] Compiling XPCCoding XPCKeyedEncodingContainer.swift
+[32/46] Compiling XPCCoding XPCSingleValueEncodingContainer.swift
+[33/46] Compiling XPCCoding XPCUnkeyedEncodingContainer.swift
+[34/46] Compiling XPCCoding _XPCArrayReferencingEncoder.swift
+[35/46] Compiling XPCCoding _XPCDictionaryReferencingEncoder.swift
+[36/46] Compiling XPCCoding _XPCEncoder.swift
+[37/46] Compiling XPCCoding String+EmbeddedNullSupport.swift
+[38/46] Compiling XPCCoding String+Support.swift
+[39/46] Compiling XPCCoding CodingKey+Support.swift
+[40/46] Compiling XPCCoding InfalliblyUnwrap.swift
+[41/46] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[42/46] Compiling XPCCoding XPCSingleValueDecodingContainer.swift
+[43/46] Compiling XPCCoding XPCUnkeyedDecodingContainer.swift
+[44/52] Compiling XPCCodingBaselineProbe BaselineCheck.swift
+[45/52] Compiling XPCCodingBaselineProbe BaselineMain.swift
+[46/52] Compiling XPCCodingBaselineProbe BaselineSupervisor.swift
+[47/52] Compiling XPCCodingBaselineProbe BaselineCLI.swift
+[48/52] Emitting module XPCCodingBaselineProbe
+[49/52] Compiling XPCCodingBaselineProbe BaselineChecks.swift
+[49/52] Write Objects.LinkFileList
+[50/52] Linking XPCCodingBaselineProbe
+[51/52] Applying XPCCodingBaselineProbe
+Build complete! (4.03s)
+Baseline evidence for the audit revision 813c52e0aab258a185aa6d5e8c1a241d419ce589, expecting the `baseline` outcomes, with 26 checks in bounded children at wall 15s, cpu 8s, memory 1024 MiB.
+ok   percent-escape/escaped-null-literal violatedContract
+       #7 percent escaping was not bijective: round-trips [U+0025 U+0030 U+0030] under .percentEscape
+       observed: [U+0025 U+0030 U+0030] decoded as [U+0000]
+ok   percent-escape/escaped-percent-literal violatedContract
+       #7 percent escaping was not bijective: round-trips [U+0025 U+0032 U+0035] under .percentEscape
+       observed: [U+0025 U+0032 U+0035] decoded as [U+0025]
+ok   percent-escape/uppercase-a-escape violatedContract
+       #7 percent escaping was not bijective: round-trips [U+0025 U+0034 U+0031] under .percentEscape
+       observed: [U+0025 U+0034 U+0031] decoded as [U+0041]
+ok   percent-escape/double-escaped-null violatedContract
+       #7 percent escaping was not bijective: round-trips [U+0025 U+0032 U+0035 U+0030 U+0030] under .percentEscape
+       observed: [U+0025 U+0032 U+0035 U+0030 U+0030] decoded as [U+0025 U+0030 U+0030]
+ok   percent-escape/space-escape violatedContract
+       #7 percent escaping was not bijective: round-trips [U+0061 U+0025 U+0032 U+0030 U+0062] under .percentEscape
+       observed: [U+0061 U+0025 U+0032 U+0030 U+0062] decoded as [U+0061 U+0020 U+0062]
+ok   percent-escape/bare-percent typedRejection
+       #7 percent escaping was not bijective: round-trips [U+0025] under .percentEscape
+       observed: threw a DecodingError
+ok   percent-escape/trailing-percent typedRejection
+       #7 percent escaping was not bijective: round-trips [U+0031 U+0030 U+0030 U+0025] under .percentEscape
+       observed: threw a DecodingError
+ok   percent-escape/percent-combining-mark typedRejection
+       #7 percent escaping was not bijective: round-trips [U+0025 U+0301] under .percentEscape
+       observed: threw a DecodingError
+ok   percent-escape/key-collision-escaped-null violatedContract
+       #7 distinct keys aliased under .percentEscape: keeps [U+0025 U+0030 U+0030] and [U+0000] distinct
+       observed: 2 distinct keys encoded to 1 XPC entries
+ok   percent-escape/key-collision-embedded-null violatedContract
+       #7 distinct keys aliased under .percentEscape: keeps [U+0061 U+0025 U+0030 U+0030 U+0062] and [U+0061 U+0000 U+0062] distinct
+       observed: 2 distinct keys encoded to 1 XPC entries
+ok   external-utf8/lone-continuation-value violatedContract
+       #16 malformed external UTF-8 was repaired instead of rejected: rejects the malformed UTF-8 [80] as a dictionary value
+       observed: [80] was accepted as [U+FFFD]
+ok   external-utf8/surrogate-value violatedContract
+       #16 malformed external UTF-8 was repaired instead of rejected: rejects the malformed UTF-8 [ed a0 80] as a dictionary value
+       observed: [ed a0 80] was accepted as [U+FFFD U+FFFD U+FFFD]
+ok   external-utf8/interior-invalid-value violatedContract
+       #16 malformed external UTF-8 was repaired instead of rejected: rejects the malformed UTF-8 [61 ff 62] as a dictionary value
+       observed: [61 ff 62] was accepted as [U+0061 U+FFFD U+0062]
+ok   external-utf8/truncated-sequence-key violatedContract
+       #16 malformed external UTF-8 was repaired instead of rejected: rejects the malformed UTF-8 [c3 28] as a dictionary key
+       observed: [c3 28] was accepted as [U+FFFD U+0028]
+ok   representation/data-single-object violatedContract
+       #20 ordinary Data became one XPC object per byte: encodes Data as one XPC data object
+       observed: encoded as XPC array, expected data
+ok   representation/int16-scalar violatedContract
+       #22 narrow integers were raw native bytes: encodes Int16 as an XPC int64
+       observed: encoded as XPC data, expected int64
+ok   representation/uint16-scalar violatedContract
+       #22 narrow integers were raw native bytes: encodes UInt16 as an XPC uint64
+       observed: encoded as XPC data, expected uint64
+ok   representation/float-scalar violatedContract
+       #23 binary floating point was raw native bytes: encodes Float as an XPC double
+       observed: encoded as XPC data, expected double
+ok   alignment/offset-narrow-integer crashed (signal 5 (Trace/BPT trap: 5))
+       #8 binary numeric decoding loaded from an unaligned address: decodes a narrow integer from offset XPC data storage
+       observed: Swift/UnsafeRawPointer.swift:451: Fatal error: load from misaligned raw pointer
+ok   pointer-count/nil-pointer-positive-count crashed (signal 5 (Trace/BPT trap: 5))
+       #11 unsafe pointer/count pairs reached libxpc unvalidated: refuses a nil pointer with a positive count
+       observed: no output
+ok   budgets/self-referential-array crashed (signal 11 (Segmentation fault: 11))
+       #9 the decoder recursed with no depth budget: refuses a self-referential XPC array
+       observed: no output
+ok   budgets/deep-nesting crashed (signal 11 (Segmentation fault: 11))
+       #9 the decoder recursed with no depth budget: refuses 5000 nested XPC arrays
+       observed: no output
+ok   control/plain-string-round-trip matchedContract
+       control: round-trips a string with no percent sign and no null
+       observed: [U+0070 U+006C U+0061 U+0069 U+006E] decoded as [U+0070 U+006C U+0061 U+0069 U+006E]
+ok   control/embedded-null-string-round-trip matchedContract
+       control: round-trips an embedded null, which .percentEscape always did
+       observed: [U+0061 U+0000 U+0062] decoded as [U+0061 U+0000 U+0062]
+ok   control/pointer-count-nil-zero-count matchedContract
+       control: encodes a nil pointer with a count of 0
+       observed: emitted XPC data of 0 bytes, expected 0
+ok   control/pointer-count-full-extent matchedContract
+       control: encodes a non-nil pointer with a count of 4
+       observed: emitted XPC data of 4 bytes, expected 4
+All 26 checks matched the `baseline` expectations for the audit revision 813c52e0aab258a185aa6d5e8c1a241d419ce589: 22 historical defects and 4 controls.
+
+Verified regression-first evidence: every checked defect reproduces at 813c52e0aab258a185aa6d5e8c1a241d419ce589 and none reproduces in the working tree.
+END_UTC=2026-07-29T12:36:56Z
+EXIT_STATUS=0

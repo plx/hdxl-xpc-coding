@@ -1,0 +1,364 @@
+COMMAND=cd /tmp/hdxl-xpc-audit52.UvYJGp/candidate && bash Scripts/run-fuzzing-smoke.sh && bash Scripts/run-hostile-input-tests.sh
+START_UTC=2026-07-29T12:33:28Z
+Building for production...
+[0/5] Write sources
+[2/5] Write swift-version--58304C5D6DBC2206.txt
+[4/6] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[5/7] Compiling XPCCodingFuzzing Bounds.swift
+[5/7] Write Objects.LinkFileList
+[6/7] Linking XPCCodingFuzzing
+Build complete! (11.32s)
+Verified 338 checked-in corpus cases in /tmp/hdxl-xpc-audit52.UvYJGp/candidate/IntegrationTests/Fuzzing/Corpus (digest 7185e6b1259f65f3).
+repeat 1: case digest 4e913c9b905a8e00
+repeat 1: executed 8 cases
+repeat 2: case digest 4e913c9b905a8e00
+repeat 2: executed 8 cases
+repeat 3: case digest 4e913c9b905a8e00
+repeat 3: executed 8 cases
+Seed 0x5eed000000000001 is stable: 3 repeats produced one case digest (4e913c9b905a8e00) for 64 generated plus 64 mutated cases, and identical outcomes for the executed subset.
+FINDING hang/never-returns [deliberate-hang] outcome=timedOut
+  seed: 0x1e1156faaaae95ee (2166608530347300334)
+  outcome: timedOut
+  signal: 9 (Killed: 9)
+  measured: wall 3.077s, cpu 0.000s, peak footprint 2112 KiB
+  replay: XPCCodingFuzzing replay --case-id hang/never-returns
+The wall-clock control killed the deliberate hanger after 3.08s and reported seed 0x1e1156faaaae95ee.
+The footprint control killed hang/never-returns (seed 0x1e1156faaaae95ee) after 0.08s at a 1 MiB ceiling, measured 2080 KiB.
+Minimizer control passed: detected the failure, shrank 32 bytes to 0 in 6 accepted reductions (6 child runs), and the persisted case at /tmp/hdxl-xpc-audit52.UvYJGp/candidate/.build/fuzzing/smoke/minimizer-control.json reproduces.
+Verified 338 checked-in corpus cases (digest 7185e6b1259f65f3).
+Prepared 721 initial cases (digest ce5649fb1fcb9d00) with 8 parallel bounded children at wall 10.0s, cpu 5s, memory 768 MiB.
+Wrote the campaign report to /tmp/hdxl-xpc-audit52.UvYJGp/candidate/.build/fuzzing/smoke/campaign.json.
+seed 0x5eed000000000001: executed 721 cases (337 corpus, 192 generated, 192 mutated) under wall 10.0s, cpu 5s, memory 768 MiB; 0 failed, 0 safety violations.
+corpus digest 7185e6b1259f65f3, case digest ce5649fb1fcb9d00.
+Completed the bounded fuzzing smoke campaign; artifacts are in /tmp/hdxl-xpc-audit52.UvYJGp/candidate/.build/fuzzing/smoke.
+Building for debugging...
+[0/13] /var/folders/zy/3w7lshrj21g28n9g1v9d89nw0000gn/T/hdxl-xpc-hostile-input.r6j9B1/swiftpm/arm64-apple-macosx/debug/hdxl-xpc-codingPackageTests.derived/runner.swift
+[1/13] Write sources
+[2/13] Write XPCCodingBenchmarks-entitlement.plist
+[3/13] Write sources
+[7/13] Write swift-version--58304C5D6DBC2206.txt
+[9/53] Compiling XPCCoding XPCCodec+StringValueStrategy.swift
+[10/53] Compiling XPCCoding XPCCodec.swift
+[11/55] Compiling XPCCoding XPCCodingKey.swift
+[12/55] Compiling XPCCoding xpc_object+Support.swift
+[13/55] Compiling XPCCoding XPCEncoder+StringValueStrategy.swift
+[14/55] Compiling XPCCoding XPCEncoder.swift
+[15/55] Compiling XPCCoding KeyedEncodingContainer+XPCEnhancement.swift
+[16/55] Compiling XPCCoding XPCDecoder+ResourceLimits.swift
+[17/55] Compiling XPCCoding XPCDecoder+StringKeyStrategy.swift
+[18/55] Compiling XPCCoding XPCDecoder+StringValueStrategy.swift
+[19/55] Compiling XPCCoding XPCCodec+StringKeyStrategy.swift
+[20/55] Compiling XPCCoding XPCCodec+StringValueDataRepresentation.swift
+[21/55] Compiling XPCCoding XPCEnhancedSingleValueEncodingContainer.swift
+[22/55] Compiling XPCCoding XPCEnhancedUnkeyedEncodingContainer.swift
+[23/55] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[24/55] Compiling XPCCoding XPCSingleValueDecodingContainer.swift
+[25/55] Compiling XPCCoding XPCUnkeyedDecodingContainer.swift
+[26/55] Compiling XPCCoding _XPCDictionaryReferencingEncoder.swift
+[27/55] Compiling XPCCoding _XPCEncoder.swift
+[28/55] Compiling XPCCoding XPCEncoder+StringKeyStrategy.swift
+[29/55] Compiling XPCCoding UnkeyedCodingContainer+XPCEnhancement.swift
+[30/55] Compiling XPCCoding XPCCodec+Configuration.swift
+[31/55] Compiling XPCCoding _XPCDecoder.swift
+[32/55] Compiling XPCCoding _XPCDecodingState.swift
+[33/55] Compiling XPCCoding xpc_object_t+Extraction.swift
+[34/55] Compiling XPCCoding String+Support.swift
+[35/55] Compiling XPCCoding UnsafePointerCountValidation.swift
+[36/55] Compiling XPCCoding XPCObjectExtractable.swift
+[37/55] Compiling XPCCoding SingleValueEncodingContainer+XPCEnhancement.swift
+[38/55] Compiling XPCCoding CodingKey+Support.swift
+[39/55] Compiling XPCCoding XPCSingleValueEncodingContainer.swift
+[40/55] Compiling XPCCoding XPCUnkeyedEncodingContainer.swift
+[41/55] Compiling XPCCoding _XPCArrayReferencingEncoder.swift
+[42/55] Emitting module XPCCoding
+[43/55] Compiling XPCCoding LosslessXPCObjectConvertible.swift
+[44/55] Compiling XPCCoding XPCBinaryDataRepresentationConvertible.swift
+[45/55] Compiling XPCCoding XPCObjectCompatibilityError.swift
+[46/55] Compiling XPCCoding XPCDecoder.swift
+[47/55] Compiling XPCCoding String+xpc_object_t.swift
+[48/55] Compiling XPCCoding XPCKeyedEncodingContainer.swift
+[49/55] Compiling XPCCoding InfalliblyUnwrap.swift
+[50/55] Compiling XPCCoding String+EmbeddedNullSupport.swift
+[51/126] Compiling XPCCodingBenchmarks BenchmarkRunner.swift
+[52/126] Compiling XPCCodingBenchmarks BenchmarkMain.swift
+[53/126] Compiling XPCCodingBenchmarks BenchmarkModels.swift
+[54/126] Compiling XPCCodingBenchmarks BenchmarkCLI.swift
+[55/126] Compiling XPCCodingBenchmarks BenchmarkReport.swift
+[56/126] Emitting module XPCCodingBenchmarks
+[57/126] Compiling XPCCodingBenchmarks BenchmarkScenarios.swift
+[57/126] Write Objects.LinkFileList
+[58/126] Linking XPCCodingBenchmarks
+[59/126] Applying XPCCodingBenchmarks
+[61/126] Compiling XPCCodingTests SimpleStruct.swift
+[62/126] Compiling XPCCodingTests SpecialKeyStructures.swift
+[63/126] Compiling XPCCodingTests String+Examples.swift
+[64/126] Compiling XPCCodingTests ThrowingTypes.swift
+[65/126] Compiling XPCCodingTests Person.swift
+[66/126] Compiling XPCCodingTests Programmer.swift
+[67/126] Compiling XPCCodingTests Switch.swift
+[68/126] Compiling XPCCodingTests Timestamp.swift
+[69/130] Compiling XPCCodingTests Decimal+Examples.swift
+[70/130] Compiling XPCCodingTests DeepNesting.swift
+[71/130] Compiling XPCCodingTests EmbeddedNullStringProbe.swift
+[72/130] Compiling XPCCodingTests EmptyTypes.swift
+[73/130] Compiling XPCCodingTests OriginalCodableXPCTests.swift
+[74/130] Compiling XPCCodingTests Address.swift
+[75/130] Compiling XPCCodingTests Company.swift
+[76/130] Compiling XPCCodingTests Counter.swift
+[77/130] Compiling XPCCodingTests TestTypes.swift
+[78/130] Compiling XPCCodingTests TestValues.swift
+[79/130] Compiling XPCCodingTests VerificationFunctions.swift
+[80/130] Compiling XPCCodingTests Wrappers.swift
+[81/130] Compiling XPCCodingPublicAPITests UserInfoPublicAPITests.swift
+[82/130] Emitting module XPCCodingPublicAPITests
+[83/130] Compiling XPCCodingPublicAPITests PublicAPITests.swift
+[84/130] Compiling XPCCodingTests StrictUTF8DecodingTests.swift
+[85/130] Compiling XPCCodingTests StringKeyTests.swift
+[86/130] Compiling XPCCodingTests StringValueTests.swift
+[87/130] Compiling XPCCodingTests Date+Examples.swift
+[88/130] Compiling XPCCodingTests UnkeyedContainerCoverageTests.swift
+[89/130] Compiling XPCCodingTests UnsafePointerCountValidationTests.swift
+[90/130] Compiling XPCCodingTests TestHelpers.swift
+[91/130] Compiling XPCCodingTests TestTags.swift
+[92/130] Compiling XPCCodingTests KeyedDecodeNilTests.swift
+[93/130] Compiling XPCCodingTests NestingTests.swift
+[94/130] Compiling XPCCodingTests NumericExtremeTests.swift
+[95/130] Compiling XPCCodingTests NumericRepresentationTests.swift
+[96/130] Compiling XPCCodingTests PercentEscapeRegressionTests.swift
+[97/130] Compiling XPCCodingTests PrimitiveTypeTests.swift
+[98/130] Compiling XPCCodingTests ReferencingEncoderStateTests.swift
+[99/130] Compiling XPCCodingTests StandardLibraryTypeTests.swift
+[100/130] Compiling XPCCodingTests DecodingCodingPathTests.swift
+[101/130] Compiling XPCCodingTests DecodingErrorTaxonomyTests.swift
+[102/130] Compiling XPCCodingTests EncodingCodingPathTests.swift
+[103/130] Compiling XPCCodingTests EncodingErrorSemanticsTests.swift
+[104/130] Compiling XPCCodingTests StringValueStrategyTests.swift
+[105/130] Compiling XPCCodingTests XPCConversionRoundTrips.swift
+[106/130] Compiling XPCCodingTests RepresentationFixtureTests.swift
+[107/130] Compiling XPCCodingTests XPCStructuralFixture.swift
+[108/130] Emitting module XPCCodingTests
+[109/130] Compiling XPCCodingTests Employee.swift
+[110/130] Compiling XPCCodingTests EnhancedBool.swift
+[111/130] Compiling XPCCodingTests Mapping.swift
+[112/130] Compiling XPCCodingTests Numbers.swift
+[113/130] Compiling XPCCodingTests CodecConfigurationTests.swift
+[114/130] Compiling XPCCodingTests ConcurrencyTests.swift
+[115/130] Compiling XPCCodingTests DataRepresentationTests.swift
+[116/130] Compiling XPCCodingTests DecoderResourceLimitTests.swift
+[117/130] Compiling XPCCodingTests URL+Examples.swift
+[118/130] Compiling XPCCodingTests UUID+Examples.swift
+[119/130] Compiling XPCCodingTests SupportAndErrorCoverageTests.swift
+[120/130] Compiling XPCCodingTests UnalignedNumericDecodingTests.swift
+[121/130] Compiling XPCCodingTests InheritanceTestClasses.swift
+[122/130] Compiling XPCCodingTests LevelNClasses.swift
+[123/130] Compiling XPCCodingTests OtherNestedTypes.swift
+[124/130] Compiling XPCCodingTests SharedEncodingClasses.swift
+[125/130] Compiling XPCCodingTests EnhancedEncodingTests.swift
+[126/130] Compiling XPCCodingTests FacadeAndStateCoverageTests.swift
+[127/130] Compiling XPCCodingTests InheritanceTests.swift
+[128/130] Compiling XPCCodingTests KeyedContainerCoverageTests.swift
+[129/132] Compiling hdxl_xpc_codingPackageTests runner.swift
+[130/132] Emitting module hdxl_xpc_codingPackageTests
+[130/132] Write Objects.LinkFileList
+[131/132] Linking hdxl-xpc-codingPackageTests
+Build complete! (8.54s)
+Test Suite 'Selected tests' started at 2026-07-29 07:34:01.226.
+Test Suite 'hdxl-xpc-codingPackageTests.xctest' started at 2026-07-29 07:34:01.227.
+Test Suite 'hdxl-xpc-codingPackageTests.xctest' passed at 2026-07-29 07:34:01.227.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-07-29 07:34:01.227.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 1902
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite "Unaligned Numeric Decoding" started.
+􀟈  Suite "Unsafe Pointer/Count Validation" started.
+􀟈  Suite "Decoder Resource Limits" started.
+􀟈  Suite "Referencing Encoder State" started.
+􀟈  Test "too-short payloads are rejected without reading the bytes that follow them" started.
+􀟈  Test "unaligned storage decodes on the root, keyed, and unkeyed paths" started.
+􀟈  Test "keyed pointer shims cannot bypass validation" started.
+􀟈  Test "unaligned decoding of both 128-bit integer types survives in a subprocess" started.
+􀟈  Test "too-short and too-long payloads throw data-corrupted on every path" started.
+􀟈  Test "aligned exact-size storage still decodes on every path" started.
+􀟈  Test "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test "an alignment-requiring load still traps on that same unaligned storage" started.
+􀟈  Test case passing 1 argument probe → Swift.Int128 to "unaligned storage decodes on the root, keyed, and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → immutable/nil/-1 to "keyed pointer shims cannot bypass validation" started.
+􀟈  Test "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → immutable/nonnil/-1 to "keyed pointer shims cannot bypass validation" started.
+􀟈  Test case passing 1 argument probe → mutable/nil/-1 to "keyed pointer shims cannot bypass validation" started.
+􀟈  Test case passing 1 argument probe → immutable/nil/1 to "keyed pointer shims cannot bypass validation" started.
+􀟈  Test case passing 1 argument probe → mutable/nonnil/-1 to "keyed pointer shims cannot bypass validation" started.
+􀟈  Test "keyed to unkeyed transitions remain prohibited" started.
+􀟈  Test "referencing encoders match root container state dispositions" started.
+􀟈  Test case passing 1 argument probe → mutable/nil/1 to "keyed pointer shims cannot bypass validation" started.
+􀟈  Test "nil positive raw pointer fails safely instead of aborting XPC" started.
+􀟈  Test "single value completion installs exactly once" started.
+􀟈  Test "unkeyed to keyed transitions remain prohibited" started.
+􀟈  Test "repeated unkeyed requests retain every element in order" started.
+􀟈  Test case passing 1 argument probe → Swift.Int128 to "too-short and too-long payloads throw data-corrupted on every path" started.
+􀟈  Test "array references preserve single value index validation" started.
+􀟈  Test case passing 1 argument probe → Swift.UInt128 to "too-short and too-long payloads throw data-corrupted on every path" started.
+􀟈  Test "repeated keyed requests retain every field" started.
+􀟈  Test case passing 1 argument probe → Swift.UInt128 to "unaligned storage decodes on the root, keyed, and unkeyed paths" started.
+􀟈  Test "dictionary element boundary is enforced before key enumeration" started.
+􀟈  Test case passing 1 argument probe → Swift.Int128 to "aligned exact-size storage still decodes on every path" started.
+􀟈  Test "resource errors retain the complete nested coding path" started.
+􀟈  Test "configuration initializer accepts explicit decoder-local limits" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test "per-value and cumulative data-byte boundaries are enforced" started.
+􀟈  Test case passing 1 argument probe → Swift.UInt128 to "aligned exact-size storage still decodes on every path" started.
+􀟈  Test "XPC-string byte boundary is enforced" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nil/-1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test "standard limits are finite and documented" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test "oversized data is rejected without touching inaccessible payload bytes" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nonnil/-1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test "extreme depth and cyclic graphs return typed errors in a subprocess" started.
+􀟈  Test "total-node boundary includes the root and repeated visits" started.
+􀟈  Test "shared acyclic child is permitted and each traversal consumes one node" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nil/0 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test "nesting at the limit succeeds and one level over throws" started.
+􀟈  Test "limits are isolated between top-level decode operations" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nonnil/0 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nonnil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test "per-container element boundary is enforced before traversal" started.
+􀟈  Test "cumulative string-byte boundary is shared by siblings" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nil/1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nonnil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nonnil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nonnil/-1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nil/-1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nonnil/1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test "dictionary keys are checked before allKeys allocates them" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nonnil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nil/0 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test "self and two-object cycles throw typed depth errors" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nonnil/0 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nonnil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test "data-backed string byte boundary is enforced before copying" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nonnil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nonnil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nonnil/1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nil/1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → keyed/immutable/nonnil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nil/-1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nonnil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nil/-1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nonnil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nonnil/-1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nonnil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nil/0 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nil/1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nonnil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nonnil/1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nil/0 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nonnil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nonnil/0 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/immutable/nonnil/0 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nonnil/-1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nil/0 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nil/1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nonnil/0 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nonnil/-1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument destination → .array to "referencing encoders match root container state dispositions" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nil/1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument path → .root to "single value completion installs exactly once" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nonnil/1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nonnil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument destination → .dictionary to "referencing encoders match root container state dispositions" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nonnil/1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument path → .keyedDefaultSuper to "single value completion installs exactly once" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → single-value/mutable/nil/-1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nil/-1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nil/-1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nonnil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nonnil/1 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nonnil/-1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument path → .unkeyedSuper to "single value completion installs exactly once" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nonnil/-1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nonnil/0 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nil/1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument path → .root to "repeated unkeyed requests retain every element in order" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nil/0 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nil/0 to "library enhanced container witnesses validate direct calls" started.
+􁁛  Test "keyed pointer shims cannot bypass validation" with 6 test cases passed after 0.003 seconds.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nonnil/1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nil/-1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument path → .unkeyedSuper to "repeated unkeyed requests retain every element in order" started.
+􀟈  Test case passing 1 argument path → .keyedNamedSuper to "repeated unkeyed requests retain every element in order" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nonnil/-1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument path → .keyedDefaultSuper to "repeated unkeyed requests retain every element in order" started.
+􀟈  Test case passing 1 argument probe → unkeyed/immutable/nonnil/-1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → keyed/mutable/nonnil/0 to "raw pointer helpers enforce one contract on fast and fallback paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nonnil/0 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nonnil/0 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nil/1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nil/1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nonnil/1 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nil/0 to "library enhanced container witnesses validate direct calls" started.
+􀟈  Test case passing 1 argument path → .keyedDefaultSuper to "repeated keyed requests retain every field" started.
+􀟈  Test case passing 1 argument path → .keyedNamedSuper to "repeated keyed requests retain every field" started.
+􀟈  Test case passing 1 argument path → .unkeyedSuper to "repeated keyed requests retain every field" started.
+􁁛  Test "raw pointer helpers enforce one contract on fast and fallback paths" with 36 test cases passed after 0.003 seconds.
+􀟈  Test case passing 1 argument path → .keyedNamedSuper to "single value completion installs exactly once" started.
+􁁛  Test "library enhanced container witnesses validate direct calls" with 24 test cases passed after 0.004 seconds.
+􁁛  Test "too-short and too-long payloads throw data-corrupted on every path" with 2 test cases passed after 0.004 seconds.
+􁁛  Test "single value completion installs exactly once" with 4 test cases passed after 0.004 seconds.
+􁁛  Test "referencing encoders match root container state dispositions" with 2 test cases passed after 0.004 seconds.
+􁁛  Test "aligned exact-size storage still decodes on every path" with 2 test cases passed after 0.004 seconds.
+􀟈  Test case passing 1 argument path → .root to "repeated keyed requests retain every field" started.
+􁁛  Test "array references preserve single value index validation" passed after 0.004 seconds.
+􁁛  Test "resource errors retain the complete nested coding path" passed after 0.004 seconds.
+􁁛  Test "repeated keyed requests retain every field" with 4 test cases passed after 0.004 seconds.
+􁁛  Test "configuration initializer accepts explicit decoder-local limits" passed after 0.004 seconds.
+􁁛  Test "standard limits are finite and documented" passed after 0.004 seconds.
+􁁛  Test "dictionary element boundary is enforced before key enumeration" passed after 0.004 seconds.
+􁁛  Test "total-node boundary includes the root and repeated visits" passed after 0.004 seconds.
+􁁛  Test "shared acyclic child is permitted and each traversal consumes one node" passed after 0.004 seconds.
+􁁛  Test "cumulative string-byte boundary is shared by siblings" passed after 0.003 seconds.
+􁁛  Test "per-container element boundary is enforced before traversal" passed after 0.003 seconds.
+􁁛  Test "limits are isolated between top-level decode operations" passed after 0.004 seconds.
+􁁛  Test "data-backed string byte boundary is enforced before copying" passed after 0.004 seconds.
+􁁛  Test "nesting at the limit succeeds and one level over throws" passed after 0.004 seconds.
+􁁛  Test "dictionary keys are checked before allKeys allocates them" passed after 0.004 seconds.
+􁁛  Test "XPC-string byte boundary is enforced" passed after 0.004 seconds.
+􀟈  Test case passing 1 argument probe → unkeyed/mutable/nonnil/1 to "typed element helpers enforce one contract on keyed and unkeyed paths" started.
+􁁛  Test "per-value and cumulative data-byte boundaries are enforced" passed after 0.004 seconds.
+􁁛  Test "typed element helpers enforce one contract on keyed and unkeyed paths" with 24 test cases passed after 0.004 seconds.
+􁁛  Test "self and two-object cycles throw typed depth errors" passed after 0.003 seconds.
+􁁛  Test "repeated unkeyed requests retain every element in order" with 4 test cases passed after 0.004 seconds.
+􁁛  Test "unaligned storage decodes on the root, keyed, and unkeyed paths" with 2 test cases passed after 0.004 seconds.
+􁁛  Test "an alignment-requiring load still traps on that same unaligned storage" passed after 0.009 seconds.
+􁁛  Test "nil positive raw pointer fails safely instead of aborting XPC" passed after 0.010 seconds.
+􁁛  Test "too-short payloads are rejected without reading the bytes that follow them" passed after 0.011 seconds.
+􁁛  Suite "Unsafe Pointer/Count Validation" passed after 0.011 seconds.
+􁁛  Test "oversized data is rejected without touching inaccessible payload bytes" passed after 0.012 seconds.
+􁁛  Test "unaligned decoding of both 128-bit integer types survives in a subprocess" passed after 0.013 seconds.
+􁁛  Suite "Unaligned Numeric Decoding" passed after 0.013 seconds.
+􁁛  Test "extreme depth and cyclic graphs return typed errors in a subprocess" passed after 0.014 seconds.
+􁁛  Suite "Decoder Resource Limits" passed after 0.015 seconds.
+􁁛  Test "keyed to unkeyed transitions remain prohibited" passed after 0.033 seconds.
+􁁛  Test "unkeyed to keyed transitions remain prohibited" passed after 0.037 seconds.
+􁁛  Suite "Referencing Encoder State" passed after 0.038 seconds.
+􁁛  Test run with 35 tests in 4 suites passed after 0.038 seconds.
+END_UTC=2026-07-29T12:34:01Z
+EXIT_STATUS=0

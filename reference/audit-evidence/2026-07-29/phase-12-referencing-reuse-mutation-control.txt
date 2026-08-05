@@ -1,0 +1,209 @@
+CANDIDATE_COMMIT=8dab29a230817c3911a2a8e48467c49a9c0a2604
+MUTATION=repeated keyed and unkeyed requests replace the active container
+ M Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift
+diff --git a/Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift b/Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift
+index 25d9912..6b37aed 100644
+--- a/Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift
++++ b/Sources/XPCCoding/Encoding/Details/_XPCEncoder.swift
+@@ -335,15 +335,15 @@ extension _XPCEncoder {
+     case (.completedSingleValue, _):
+       // never ok to continue after vending a single-value container
+       .unableToContinueSingleValueContainer
+-    case (.keyed(let xpcObject), .keyed):
+-      // ok to "continue" a keyed container
+-      .continueExistingContainer(xpcObject)
++    case (.keyed, .keyed):
++      // Deliberate audit mutation: replace rather than reuse the active container.
++      .proceedWithContainerCreation
+     case (.keyed, _):
+       // not ok to "switch" from keyed to unkeyed
+       .unableToSwitchContainerKind(.keyed, containerKind)
+-    case (.unkeyed(let xpcObject), .unkeyed):
+-      // ok to "continue" an unkeyed container
+-      .continueExistingContainer(xpcObject)
++    case (.unkeyed, .unkeyed):
++      // Deliberate audit mutation: replace rather than reuse the active container.
++      .proceedWithContainerCreation
+     case (.unkeyed, _):
+       // not ok to "switch" from unkeyed to keyed
+       .unableToSwitchContainerKind(.unkeyed, containerKind)
+Building for debugging...
+[0/13] /private/tmp/hdxl-xpc-audit52.UvYJGp/mutation-referencing-reuse/.build/arm64-apple-macosx/debug/hdxl-xpc-codingPackageTests.derived/runner.swift
+[1/13] Write sources
+[6/13] Write XPCCodingBenchmarks-entitlement.plist
+[7/13] Write swift-version--58304C5D6DBC2206.txt
+[9/53] Emitting module XPCCoding
+[10/55] Compiling XPCCoding XPCCodec+StringValueStrategy.swift
+[11/55] Compiling XPCCoding XPCCodec.swift
+[12/55] Compiling XPCCoding XPCEnhancedSingleValueEncodingContainer.swift
+[13/55] Compiling XPCCoding XPCEnhancedUnkeyedEncodingContainer.swift
+[14/55] Compiling XPCCoding XPCCodec+StringKeyStrategy.swift
+[15/55] Compiling XPCCoding XPCCodec+StringValueDataRepresentation.swift
+[16/55] Compiling XPCCoding UnkeyedCodingContainer+XPCEnhancement.swift
+[17/55] Compiling XPCCoding XPCCodec+Configuration.swift
+[18/55] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[19/55] Compiling XPCCoding XPCSingleValueDecodingContainer.swift
+[20/55] Compiling XPCCoding XPCUnkeyedDecodingContainer.swift
+[21/55] Compiling XPCCoding XPCDecoder.swift
+[22/55] Compiling XPCCoding String+xpc_object_t.swift
+[23/55] Compiling XPCCoding XPCKeyedEncodingContainer.swift
+[24/55] Compiling XPCCoding XPCCodingKey.swift
+[25/55] Compiling XPCCoding xpc_object+Support.swift
+[26/55] Compiling XPCCoding InfalliblyUnwrap.swift
+[27/55] Compiling XPCCoding String+EmbeddedNullSupport.swift
+[28/55] Compiling XPCCoding XPCSingleValueEncodingContainer.swift
+[29/55] Compiling XPCCoding XPCUnkeyedEncodingContainer.swift
+[30/55] Compiling XPCCoding _XPCArrayReferencingEncoder.swift
+[31/55] Compiling XPCCoding String+Support.swift
+[32/55] Compiling XPCCoding UnsafePointerCountValidation.swift
+[33/55] Compiling XPCCoding LosslessXPCObjectConvertible.swift
+[34/55] Compiling XPCCoding XPCBinaryDataRepresentationConvertible.swift
+[35/55] Compiling XPCCoding XPCObjectCompatibilityError.swift
+[36/55] Compiling XPCCoding _XPCDecoder.swift
+[37/55] Compiling XPCCoding _XPCDecodingState.swift
+[38/55] Compiling XPCCoding xpc_object_t+Extraction.swift
+[39/55] Compiling XPCCoding XPCObjectExtractable.swift
+[40/55] Compiling XPCCoding SingleValueEncodingContainer+XPCEnhancement.swift
+[41/55] Compiling XPCCoding CodingKey+Support.swift
+[42/55] Compiling XPCCoding XPCDecoder+ResourceLimits.swift
+[43/55] Compiling XPCCoding XPCDecoder+StringKeyStrategy.swift
+[44/55] Compiling XPCCoding XPCDecoder+StringValueStrategy.swift
+[45/55] Compiling XPCCoding XPCEncoder+StringValueStrategy.swift
+[46/55] Compiling XPCCoding XPCEncoder.swift
+[47/55] Compiling XPCCoding KeyedEncodingContainer+XPCEnhancement.swift
+[48/55] Compiling XPCCoding _XPCDictionaryReferencingEncoder.swift
+[49/55] Compiling XPCCoding _XPCEncoder.swift
+[50/55] Compiling XPCCoding XPCEncoder+StringKeyStrategy.swift
+[51/126] Compiling XPCCodingBenchmarks BenchmarkReport.swift
+[52/126] Compiling XPCCodingBenchmarks BenchmarkCLI.swift
+[53/126] Compiling XPCCodingBenchmarks BenchmarkMain.swift
+[54/126] Compiling XPCCodingBenchmarks BenchmarkRunner.swift
+[55/126] Compiling XPCCodingBenchmarks BenchmarkModels.swift
+[56/126] Emitting module XPCCodingBenchmarks
+[57/126] Compiling XPCCodingBenchmarks BenchmarkScenarios.swift
+[57/126] Write Objects.LinkFileList
+[58/126] Linking XPCCodingBenchmarks
+[59/126] Applying XPCCodingBenchmarks
+[61/126] Compiling XPCCodingTests Employee.swift
+[62/126] Compiling XPCCodingTests EnhancedBool.swift
+[63/126] Compiling XPCCodingTests Mapping.swift
+[64/126] Compiling XPCCodingTests Numbers.swift
+[65/130] Compiling XPCCodingTests InheritanceTestClasses.swift
+[66/130] Compiling XPCCodingTests LevelNClasses.swift
+[67/130] Compiling XPCCodingTests OtherNestedTypes.swift
+[68/130] Compiling XPCCodingTests SharedEncodingClasses.swift
+[69/130] Compiling XPCCodingTests Decimal+Examples.swift
+[70/130] Compiling XPCCodingTests DeepNesting.swift
+[71/130] Compiling XPCCodingTests EmbeddedNullStringProbe.swift
+[72/130] Compiling XPCCodingTests EmptyTypes.swift
+[73/130] Compiling XPCCodingTests OriginalCodableXPCTests.swift
+[74/130] Compiling XPCCodingTests Address.swift
+[75/130] Compiling XPCCodingTests Company.swift
+[76/130] Compiling XPCCodingTests Counter.swift
+[77/130] Compiling XPCCodingTests TestTypes.swift
+[78/130] Compiling XPCCodingTests TestValues.swift
+[79/130] Compiling XPCCodingTests VerificationFunctions.swift
+[80/130] Compiling XPCCodingTests Wrappers.swift
+[81/130] Compiling XPCCodingPublicAPITests PublicAPITests.swift
+[82/130] Compiling XPCCodingPublicAPITests UserInfoPublicAPITests.swift
+[83/130] Emitting module XPCCodingPublicAPITests
+[84/130] Compiling XPCCodingTests UnkeyedContainerCoverageTests.swift
+[85/130] Compiling XPCCodingTests UnsafePointerCountValidationTests.swift
+[86/130] Compiling XPCCodingTests TestHelpers.swift
+[87/130] Compiling XPCCodingTests TestTags.swift
+[88/130] Compiling XPCCodingTests StrictUTF8DecodingTests.swift
+[89/130] Compiling XPCCodingTests StringKeyTests.swift
+[90/130] Compiling XPCCodingTests StringValueTests.swift
+[91/130] Compiling XPCCodingTests Date+Examples.swift
+[92/130] Compiling XPCCodingTests DecodingCodingPathTests.swift
+[93/130] Compiling XPCCodingTests DecodingErrorTaxonomyTests.swift
+[94/130] Compiling XPCCodingTests EncodingCodingPathTests.swift
+[95/130] Compiling XPCCodingTests EncodingErrorSemanticsTests.swift
+[96/130] Compiling XPCCodingTests StringValueStrategyTests.swift
+[97/130] Compiling XPCCodingTests XPCConversionRoundTrips.swift
+[98/130] Compiling XPCCodingTests RepresentationFixtureTests.swift
+[99/130] Compiling XPCCodingTests XPCStructuralFixture.swift
+[100/130] Compiling XPCCodingTests KeyedDecodeNilTests.swift
+[101/130] Compiling XPCCodingTests NestingTests.swift
+[102/130] Compiling XPCCodingTests NumericExtremeTests.swift
+[103/130] Compiling XPCCodingTests NumericRepresentationTests.swift
+[104/130] Compiling XPCCodingTests PercentEscapeRegressionTests.swift
+[105/130] Compiling XPCCodingTests PrimitiveTypeTests.swift
+[106/130] Compiling XPCCodingTests ReferencingEncoderStateTests.swift
+[107/130] Compiling XPCCodingTests StandardLibraryTypeTests.swift
+[108/130] Emitting module XPCCodingTests
+[109/130] Compiling XPCCodingTests Person.swift
+[110/130] Compiling XPCCodingTests Programmer.swift
+[111/130] Compiling XPCCodingTests Switch.swift
+[112/130] Compiling XPCCodingTests Timestamp.swift
+[113/130] Compiling XPCCodingTests CodecConfigurationTests.swift
+[114/130] Compiling XPCCodingTests ConcurrencyTests.swift
+[115/130] Compiling XPCCodingTests DataRepresentationTests.swift
+[116/130] Compiling XPCCodingTests DecoderResourceLimitTests.swift
+[117/130] Compiling XPCCodingTests SimpleStruct.swift
+[118/130] Compiling XPCCodingTests SpecialKeyStructures.swift
+[119/130] Compiling XPCCodingTests String+Examples.swift
+[120/130] Compiling XPCCodingTests ThrowingTypes.swift
+[121/130] Compiling XPCCodingTests URL+Examples.swift
+[122/130] Compiling XPCCodingTests UUID+Examples.swift
+[123/130] Compiling XPCCodingTests SupportAndErrorCoverageTests.swift
+[124/130] Compiling XPCCodingTests UnalignedNumericDecodingTests.swift
+[125/130] Compiling XPCCodingTests EnhancedEncodingTests.swift
+[126/130] Compiling XPCCodingTests FacadeAndStateCoverageTests.swift
+[127/130] Compiling XPCCodingTests InheritanceTests.swift
+[128/130] Compiling XPCCodingTests KeyedContainerCoverageTests.swift
+[129/132] Emitting module hdxl_xpc_codingPackageTests
+[130/132] Compiling hdxl_xpc_codingPackageTests runner.swift
+[130/132] Write Objects.LinkFileList
+[131/132] Linking hdxl-xpc-codingPackageTests
+Build complete! (13.27s)
+Test Suite 'Selected tests' started at 2026-07-29 11:44:10.666.
+Test Suite 'hdxl-xpc-codingPackageTests.xctest' started at 2026-07-29 11:44:10.667.
+Test Suite 'hdxl-xpc-codingPackageTests.xctest' passed at 2026-07-29 11:44:10.667.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-07-29 11:44:10.667.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 1902
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite "Referencing Encoder State" started.
+􀟈  Test "repeated keyed requests retain every field" started.
+􀟈  Test "unkeyed to keyed transitions remain prohibited" started.
+􀟈  Test "array references preserve single value index validation" started.
+􀟈  Test "repeated unkeyed requests retain every element in order" started.
+􀟈  Test "referencing encoders match root container state dispositions" started.
+􀟈  Test case passing 1 argument path → .root to "repeated keyed requests retain every field" started.
+􀟈  Test case passing 1 argument path → .keyedDefaultSuper to "repeated keyed requests retain every field" started.
+􀟈  Test case passing 1 argument path → .keyedNamedSuper to "repeated keyed requests retain every field" started.
+􀟈  Test "keyed to unkeyed transitions remain prohibited" started.
+􀟈  Test case passing 1 argument path → .keyedDefaultSuper to "repeated unkeyed requests retain every element in order" started.
+􀟈  Test case passing 1 argument path → .unkeyedSuper to "repeated unkeyed requests retain every element in order" started.
+􀟈  Test "single value completion installs exactly once" started.
+􀟈  Test case passing 1 argument path → .keyedNamedSuper to "repeated unkeyed requests retain every element in order" started.
+􀟈  Test case passing 1 argument path → .unkeyedSuper to "repeated keyed requests retain every field" started.
+􀟈  Test case passing 1 argument path → .root to "repeated unkeyed requests retain every element in order" started.
+􀟈  Test case passing 1 argument path → .root to "single value completion installs exactly once" started.
+􀟈  Test case passing 1 argument path → .keyedDefaultSuper to "single value completion installs exactly once" started.
+􀟈  Test case passing 1 argument destination → .array to "referencing encoders match root container state dispositions" started.
+􀟈  Test case passing 1 argument path → .unkeyedSuper to "single value completion installs exactly once" started.
+􀟈  Test case passing 1 argument path → .keyedNamedSuper to "single value completion installs exactly once" started.
+􀟈  Test case passing 1 argument destination → .dictionary to "referencing encoders match root container state dispositions" started.
+􀢄  Test "repeated unkeyed requests retain every element in order" recorded an issue with 1 argument path → .keyedNamedSuper at ReferencingEncoderStateTests.swift:26:4: Caught error: DecodingError.dataCorrupted: Data was corrupted. Debug description: Reached end of unkeyed container.
+􀢄  Test "repeated keyed requests retain every field" recorded an issue with 1 argument path → .keyedDefaultSuper at ReferencingEncoderStateTests.swift:11:4: Caught error: DecodingError.keyNotFound: Key 'first' not found in keyed decoding container. Debug description: No value found for key first
+􁁛  Test "single value completion installs exactly once" with 4 test cases passed after 0.001 seconds.
+􁁛  Test "array references preserve single value index validation" passed after 0.001 seconds.
+􀢄  Test "repeated keyed requests retain every field" recorded an issue with 1 argument path → .unkeyedSuper at ReferencingEncoderStateTests.swift:11:4: Caught error: DecodingError.keyNotFound: Key 'first' not found in keyed decoding container. Debug description: No value found for key first
+􀢄  Test "repeated unkeyed requests retain every element in order" recorded an issue with 1 argument path → .root at ReferencingEncoderStateTests.swift:26:4: Caught error: DecodingError.dataCorrupted: Data was corrupted. Debug description: Reached end of unkeyed container.
+􀢄  Test "repeated keyed requests retain every field" recorded an issue with 1 argument path → .keyedNamedSuper at ReferencingEncoderStateTests.swift:11:4: Caught error: DecodingError.keyNotFound: Key 'first' not found in keyed decoding container. Debug description: No value found for key first
+􀢄  Test "repeated unkeyed requests retain every element in order" recorded an issue with 1 argument path → .keyedDefaultSuper at ReferencingEncoderStateTests.swift:26:4: Caught error: DecodingError.dataCorrupted: Data was corrupted. Debug description: Reached end of unkeyed container.
+􀢄  Test "repeated keyed requests retain every field" recorded an issue with 1 argument path → .root at ReferencingEncoderStateTests.swift:11:4: Caught error: DecodingError.keyNotFound: Key 'first' not found in keyed decoding container. Debug description: No value found for key first
+􀢄  Test "repeated unkeyed requests retain every element in order" recorded an issue with 1 argument path → .unkeyedSuper at ReferencingEncoderStateTests.swift:26:4: Caught error: DecodingError.dataCorrupted: Data was corrupted. Debug description: Reached end of unkeyed container.
+􁁛  Test "referencing encoders match root container state dispositions" with 2 test cases passed after 0.001 seconds.
+􀢄  Test "repeated unkeyed requests retain every element in order" with 4 test cases failed after 0.001 seconds with 4 issues.
+􀢄  Test "repeated keyed requests retain every field" with 4 test cases failed after 0.001 seconds with 4 issues.
+􁁛  Test "keyed to unkeyed transitions remain prohibited" passed after 0.030 seconds.
+􁁛  Test "unkeyed to keyed transitions remain prohibited" passed after 0.030 seconds.
+􀢄  Suite "Referencing Encoder State" failed after 0.031 seconds with 8 issues.
+􀢄  Test run with 7 tests in 1 suite failed after 0.031 seconds with 8 issues.
+TARGETED_TEST_EXIT_STATUS=1
+CONTROL_OUTCOME=PASS: targeted tests rejected the deliberate mutation

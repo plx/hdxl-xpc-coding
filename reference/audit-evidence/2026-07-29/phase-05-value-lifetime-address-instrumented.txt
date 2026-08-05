@@ -1,0 +1,13 @@
+Building for production...
+[0/5] Write sources
+[2/5] Write swift-version--58304C5D6DBC2206.txt
+[4/6] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[5/7] Compiling ValueLifetimeProbe main.swift
+[5/7] Write Objects.LinkFileList
+[6/7] Linking ValueLifetimeProbe
+Build of product 'ValueLifetimeProbe' complete! (3.42s)
+PASS Data: 1048576 exact bytes remained valid after source release and churn
+PASS UTF-8: 225280 exact bytes remained valid after source release and churn
+PASS UTF-16: 417794 exact bytes remained valid after source release and churn
+PASS UTF-32: 819204 exact bytes remained valid after source release and churn
+VALUE LIFETIME PROBE PASSED UNDER ADDRESS INSTRUMENTATION

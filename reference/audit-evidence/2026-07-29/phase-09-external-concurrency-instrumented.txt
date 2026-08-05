@@ -1,0 +1,4 @@
+Building for production...
+[0/2] Write swift-version--58304C5D6DBC2206.txt
+Build of product 'IndependentXPCCodingAdversarial' complete! (0.09s)
+PASS concurrency: 8,000 shared-codec mixed encode/decode operations

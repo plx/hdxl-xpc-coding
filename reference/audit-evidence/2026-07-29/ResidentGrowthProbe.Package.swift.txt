@@ -1,0 +1,28 @@
+// swift-tools-version: 6.3
+
+import PackageDescription
+
+let package = Package(
+  name: "ResidentGrowthProbe",
+  platforms: [
+    .macOS(.v26)
+  ],
+  dependencies: [
+    .package(
+      name: "hdxl-xpc-coding",
+      path: "/private/tmp/hdxl-xpc-audit52.UvYJGp/candidate"
+    )
+  ],
+  targets: [
+    .executableTarget(
+      name: "ResidentGrowthProbe",
+      dependencies: [
+        .product(
+          name: "XPCCoding",
+          package: "hdxl-xpc-coding"
+        )
+      ]
+    )
+  ],
+  swiftLanguageModes: [.v6]
+)

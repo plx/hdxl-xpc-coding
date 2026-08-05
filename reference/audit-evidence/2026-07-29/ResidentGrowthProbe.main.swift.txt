@@ -1,0 +1,252 @@
+import Darwin
+import Foundation
+import XPCCoding
+
+private let candidateCommit =
+  "8dab29a230817c3911a2a8e48467c49a9c0a2604"
+private let batchCount = 32
+private let operationsPerBatch = 80
+private let payloadByteCount = 512 * 1_024
+private let maximumEndGrowthBytes: Int64 = 16 * 1_024 * 1_024
+private let maximumSlopeBytesPerBatch = 256.0 * 1_024.0
+private let maximumLiveAllocationGrowthBytes: Int64 = 4 * 1_024 * 1_024
+
+private enum ProbeFailure: Error, CustomStringConvertible {
+  case failed(String)
+
+  var description: String {
+    switch self {
+    case .failed(let message):
+      "RESIDENT GROWTH PROBE FAILURE: \(message)"
+    }
+  }
+}
+
+private struct Workload: Codable, Equatable {
+  let ordinal: Int
+  let text: String
+  let values: [Int]
+  let bytes: Data
+}
+
+private struct Sample: Codable {
+  let batch: Int
+  let completedOperations: Int
+  let physicalFootprintBytes: UInt64
+  let liveAllocationBlocks: UInt64
+  let liveAllocationBytes: UInt64
+}
+
+private struct Result: Codable {
+  let candidateCommit: String
+  let batchCount: Int
+  let operationsPerBatch: Int
+  let payloadByteCount: Int
+  let totalOperations: Int
+  let thresholds: Thresholds
+  let samples: [Sample]
+  let endGrowthBytes: Int64
+  let liveAllocationGrowthBytes: Int64
+  let leastSquaresSlopeBytesPerBatch: Double
+  let checksum: UInt64
+  let outcome: String
+}
+
+private struct Thresholds: Codable {
+  let maximumEndGrowthBytes: Int64
+  let maximumSlopeBytesPerBatch: Double
+  let maximumLiveAllocationGrowthBytes: Int64
+}
+
+private func fixtureData(count: Int) -> Data {
+  var result = Data(count: count)
+  result.withUnsafeMutableBytes { buffer in
+    guard let bytes = buffer.bindMemory(to: UInt8.self).baseAddress else {
+      return
+    }
+    for index in 0..<count {
+      bytes[index] = UInt8(truncatingIfNeeded: index &* 31 &+ 7)
+    }
+  }
+  return result
+}
+
+private func physicalFootprintBytes() throws -> UInt64 {
+  var info = rusage_info_current()
+  let result = withUnsafeMutablePointer(to: &info) { pointer in
+    pointer.withMemoryRebound(to: rusage_info_t?.self, capacity: 1) { rebound in
+      proc_pid_rusage(getpid(), RUSAGE_INFO_CURRENT, rebound)
+    }
+  }
+  guard result == 0 else {
+    throw ProbeFailure.failed(
+      "proc_pid_rusage failed with errno \(errno)"
+    )
+  }
+  return info.ri_phys_footprint
+}
+
+private func allocationSnapshot() -> (
+  blocks: UInt64,
+  bytes: UInt64
+) {
+  var statistics = malloc_statistics_t()
+  malloc_zone_statistics(malloc_default_zone(), &statistics)
+  return (
+    blocks: UInt64(statistics.blocks_in_use),
+    bytes: UInt64(statistics.size_in_use)
+  )
+}
+
+private func signedDifference(
+  _ lhs: UInt64,
+  _ rhs: UInt64
+) -> Int64 {
+  if lhs >= rhs {
+    return Int64(clamping: lhs - rhs)
+  }
+  return -Int64(clamping: rhs - lhs)
+}
+
+private func leastSquaresSlope(_ values: [UInt64]) -> Double {
+  let count = Double(values.count)
+  let meanX = Double(values.indices.reduce(0, +)) / count
+  let meanY = values.reduce(0.0) { $0 + Double($1) } / count
+  var numerator = 0.0
+  var denominator = 0.0
+  for (index, value) in values.enumerated() {
+    let centeredX = Double(index) - meanX
+    numerator += centeredX * (Double(value) - meanY)
+    denominator += centeredX * centeredX
+  }
+  return numerator / denominator
+}
+
+private func runBatch(
+  index: Int,
+  codec: XPCCodec,
+  fixtureBytes: Data
+) throws -> UInt64 {
+  var checksum: UInt64 = 0
+  for offset in 0..<operationsPerBatch {
+    checksum &+= try autoreleasepool {
+      let ordinal = index * operationsPerBatch + offset
+      let input = Workload(
+        ordinal: ordinal,
+        text: "batch-\(index)-operation-\(offset)-\0-%",
+        values: [ordinal, ordinal &* 3, ordinal &* 7],
+        bytes: fixtureBytes
+      )
+      let object = try codec.encode(input)
+      let output = try codec.decode(Workload.self, from: object)
+      guard output == input else {
+        throw ProbeFailure.failed(
+          "round trip mismatch in batch \(index), operation \(offset)"
+        )
+      }
+      return UInt64(output.bytes.count)
+        &+ UInt64(output.values.count)
+        &+ UInt64(output.text.utf8.count)
+    }
+  }
+  return checksum
+}
+
+private func collectSample(
+  batch: Int
+) throws -> Sample {
+  _ = malloc_zone_pressure_relief(malloc_default_zone(), 0)
+  let allocation = allocationSnapshot()
+  return try Sample(
+    batch: batch,
+    completedOperations: (batch + 1) * operationsPerBatch,
+    physicalFootprintBytes: physicalFootprintBytes(),
+    liveAllocationBlocks: allocation.blocks,
+    liveAllocationBytes: allocation.bytes
+  )
+}
+
+private let codec = XPCCodec.standard
+private let fixtureBytes = fixtureData(count: payloadByteCount)
+private var checksum: UInt64 = 0
+
+for warmup in 0..<4 {
+  checksum &+= try runBatch(
+    index: -(warmup + 1),
+    codec: codec,
+    fixtureBytes: fixtureBytes
+  )
+}
+
+private var samples: [Sample] = []
+samples.reserveCapacity(batchCount)
+for batch in 0..<batchCount {
+  checksum &+= try runBatch(
+    index: batch,
+    codec: codec,
+    fixtureBytes: fixtureBytes
+  )
+  samples.append(try collectSample(batch: batch))
+}
+
+guard
+  let first = samples.first,
+  let last = samples.last
+else {
+  throw ProbeFailure.failed("no samples were collected")
+}
+
+private let endGrowthBytes = signedDifference(
+  last.physicalFootprintBytes,
+  first.physicalFootprintBytes
+)
+private let liveAllocationGrowthBytes = signedDifference(
+  last.liveAllocationBytes,
+  first.liveAllocationBytes
+)
+private let slope = leastSquaresSlope(
+  samples.map(\.physicalFootprintBytes)
+)
+
+guard endGrowthBytes <= maximumEndGrowthBytes else {
+  throw ProbeFailure.failed(
+    "physical-footprint end growth \(endGrowthBytes) exceeded \(maximumEndGrowthBytes)"
+  )
+}
+guard slope <= maximumSlopeBytesPerBatch else {
+  throw ProbeFailure.failed(
+    "physical-footprint slope \(slope) exceeded \(maximumSlopeBytesPerBatch)"
+  )
+}
+guard
+  liveAllocationGrowthBytes <= maximumLiveAllocationGrowthBytes
+else {
+  throw ProbeFailure.failed(
+    "live allocation growth \(liveAllocationGrowthBytes) exceeded \(maximumLiveAllocationGrowthBytes)"
+  )
+}
+
+private let result = Result(
+  candidateCommit: candidateCommit,
+  batchCount: batchCount,
+  operationsPerBatch: operationsPerBatch,
+  payloadByteCount: payloadByteCount,
+  totalOperations: batchCount * operationsPerBatch,
+  thresholds: Thresholds(
+    maximumEndGrowthBytes: maximumEndGrowthBytes,
+    maximumSlopeBytesPerBatch: maximumSlopeBytesPerBatch,
+    maximumLiveAllocationGrowthBytes: maximumLiveAllocationGrowthBytes
+  ),
+  samples: samples,
+  endGrowthBytes: endGrowthBytes,
+  liveAllocationGrowthBytes: liveAllocationGrowthBytes,
+  leastSquaresSlopeBytesPerBatch: slope,
+  checksum: checksum,
+  outcome: "pass"
+)
+
+private let encoder = JSONEncoder()
+encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+private let output = try encoder.encode(result)
+FileHandle.standardOutput.write(output)
+FileHandle.standardOutput.write(Data([0x0A]))

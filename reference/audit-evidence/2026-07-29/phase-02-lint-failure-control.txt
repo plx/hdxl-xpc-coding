@@ -1,0 +1,22 @@
+COMMAND=cd /private/tmp/hdxl-xpc-audit52.UvYJGp/control-lint && test "$(git rev-parse HEAD)" = 8dab29a230817c3911a2a8e48467c49a9c0a2604 && git diff -- Sources/XPCCoding/XPCCodec.swift; set +e; just lint check-all github-actions-logging; control_status=$?; set -e; printf "EXPECTED_LINT_FAILURE_STATUS=%s\n" "$control_status"; test "$control_status" -ne 0
+START_UTC=2026-07-29T13:04:09Z
+diff --git a/Sources/XPCCoding/XPCCodec.swift b/Sources/XPCCoding/XPCCodec.swift
+index c9e9e46..810af58 100644
+--- a/Sources/XPCCoding/XPCCodec.swift
++++ b/Sources/XPCCoding/XPCCodec.swift
+@@ -83,6 +83,8 @@ public struct XPCCodec: Sendable {
+
+ }
+
++private let auditLintControl = Optional(1)!
++
+ extension XPCCodec {
+
+   /// Encodes the given value to an `xpc_object_t`.
+Verified 68 reviewed inlining annotation(s).
+Verified SwiftLint 0.65.0.
+::error file=tmp/hdxl-xpc-audit52.UvYJGp/control-lint/Sources/XPCCoding/XPCCodec.swift,line=86,col=43::Force unwrapping should be avoided (force_unwrapping)
+error: recipe `_swiftlint` failed on line 23 with exit code 2
+EXPECTED_LINT_FAILURE_STATUS=2
+END_UTC=2026-07-29T13:04:10Z
+EXIT_STATUS=0

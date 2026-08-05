@@ -1,0 +1,785 @@
+import Dispatch
+import Foundation
+import XPC
+import XPCCoding
+
+private enum AuditFailure: Error, CustomStringConvertible {
+  case failed(String)
+
+  var description: String {
+    switch self {
+    case .failed(let message):
+      "AUDIT FAILURE: \(message)"
+    }
+  }
+}
+
+private func require(
+  _ condition: @autoclosure () throws -> Bool,
+  _ message: @autoclosure () -> String
+) throws {
+  guard try condition() else {
+    throw AuditFailure.failed(message())
+  }
+}
+
+private func requireDataCorrupted<T>(
+  _ context: String,
+  operation: () throws -> T
+) throws {
+  do {
+    _ = try operation()
+    throw AuditFailure.failed("\(context): unexpectedly succeeded")
+  } catch DecodingError.dataCorrupted {
+    return
+  } catch {
+    throw AuditFailure.failed(
+      "\(context): expected DecodingError.dataCorrupted, got \(String(reflecting: error))"
+    )
+  }
+}
+
+private func requireTypeMismatch<T>(
+  _ context: String,
+  operation: () throws -> T
+) throws {
+  do {
+    _ = try operation()
+    throw AuditFailure.failed("\(context): unexpectedly succeeded")
+  } catch DecodingError.typeMismatch {
+    return
+  } catch {
+    throw AuditFailure.failed(
+      "\(context): expected DecodingError.typeMismatch, got \(String(reflecting: error))"
+    )
+  }
+}
+
+private func xpcString(bytes: [UInt8]) -> xpc_object_t {
+  var terminated = bytes
+  terminated.append(0)
+  return terminated.withUnsafeBytes { rawBuffer in
+    let pointer = rawBuffer.baseAddress!.assumingMemoryBound(to: CChar.self)
+    return xpc_string_create(pointer)
+  }
+}
+
+private struct AnyStringKey: CodingKey, Hashable {
+  let stringValue: String
+  let intValue: Int?
+
+  init?(stringValue: String) {
+    self.stringValue = stringValue
+    self.intValue = nil
+  }
+
+  init?(intValue: Int) {
+    self.stringValue = String(intValue)
+    self.intValue = intValue
+  }
+}
+
+private struct KeyInventory: Decodable {
+  let keyScalarSignatures: Set<[UInt32]>
+  let values: [String: Int]
+
+  init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: AnyStringKey.self)
+    var values: [String: Int] = [:]
+    for key in container.allKeys {
+      guard container.contains(key) else {
+        throw AuditFailure.failed("allKeys returned a key that contains rejected")
+      }
+      values[key.stringValue] = try container.decode(Int.self, forKey: key)
+    }
+    self.keyScalarSignatures = Set(
+      container.allKeys.map { scalarSignature($0.stringValue) }
+    )
+    self.values = values
+  }
+}
+
+private func scalarSignature(_ value: String) -> [UInt32] {
+  value.unicodeScalars.map(\.value)
+}
+
+private func scalarDistinctStrings(_ values: [String]) -> [String] {
+  var seen = Set<[UInt32]>()
+  return values.filter { seen.insert(scalarSignature($0)).inserted }
+}
+
+private func deterministicStrings(count: Int) -> [String] {
+  let scalars: [Unicode.Scalar] = [
+    "\0", "%", "A", "z", "\u{0301}", "\u{00E9}", "\u{4E2D}", "\u{1F680}",
+    "\n", "\u{7F}",
+  ]
+  var result: [String] = []
+  result.reserveCapacity(count)
+  for ordinal in 0..<count {
+    var value = ordinal + 1
+    var view = String.UnicodeScalarView()
+    while value > 0 {
+      view.append(scalars[value % scalars.count])
+      value /= scalars.count
+    }
+    result.append(String(view))
+  }
+  return result
+}
+
+private func testStringsAndKeys() throws {
+  let requiredCorpus = [
+    "", "plain", "%", "%0", "%00", "%25", "%41", "%GG", "100%", "a%20b",
+    "a%00b", "a\0b", "%\u{301}", "x%\u{301}41", "\0leading", "trailing\0",
+    "\0\0repeated\0", "ASCII", "\u{00E9}", "e\u{301}", "\u{4E2D}",
+    "\u{1F680}",
+  ]
+  let corpus = scalarDistinctStrings(
+    requiredCorpus + deterministicStrings(count: 8_192)
+  )
+  let encoder = XPCEncoder.standard
+  let decoder = XPCDecoder.standard
+  var scalarSignaturesByRepresentation: [Data: [UInt32]] = [:]
+
+  for value in corpus {
+    let inputScalarSignature = scalarSignature(value)
+    let object = try encoder.encode(value)
+    try require(xpc_get_type(object) == XPC_TYPE_STRING, "String did not encode as XPC string")
+    let count = xpc_string_get_length(object)
+    guard let pointer = xpc_string_get_string_ptr(object) else {
+      throw AuditFailure.failed("XPC string unexpectedly had no pointer")
+    }
+    let representation = Data(bytes: pointer, count: count)
+    if let prior = scalarSignaturesByRepresentation[representation] {
+      throw AuditFailure.failed(
+        "percent escaping was not injective for scalar signatures \(prior) and \(inputScalarSignature)"
+      )
+    }
+    scalarSignaturesByRepresentation[representation] = inputScalarSignature
+    let decoded = try decoder.decode(String.self, from: object)
+    try require(
+      scalarSignature(decoded) == inputScalarSignature,
+      "String scalar sequence did not round-trip exactly"
+    )
+  }
+
+  let historicalCollisionKeys = [
+    "\0",
+    "%00",
+    "a\0b",
+    "a%00b",
+    "%",
+    "%25",
+  ]
+  var keyInventory = historicalCollisionKeys
+  var seenKeys = Set(historicalCollisionKeys)
+  for candidate in corpus where keyInventory.count < 2_048 {
+    if seenKeys.insert(candidate).inserted {
+      keyInventory.append(candidate)
+    }
+  }
+  try require(
+    keyInventory.count == 2_048,
+    "unable to construct the required 2,048-key inventory"
+  )
+  let values = Dictionary(
+    uniqueKeysWithValues: keyInventory.enumerated().map { ($0.element, $0.offset) }
+  )
+  try require(values.count == 2_048, "Swift dictionary collapsed required keys")
+  for requiredKey in historicalCollisionKeys {
+    try require(values[requiredKey] != nil, "required historical collision key was absent")
+  }
+  let dictionaryObject = try encoder.encode(values)
+  try require(
+    xpc_get_type(dictionaryObject) == XPC_TYPE_DICTIONARY,
+    "[String: Int] did not encode as an XPC dictionary"
+  )
+  try require(
+    xpc_dictionary_get_count(dictionaryObject) == values.count,
+    "distinct keys collapsed in the XPC dictionary"
+  )
+  let inventory = try decoder.decode(KeyInventory.self, from: dictionaryObject)
+  try require(
+    inventory.keyScalarSignatures == Set(values.keys.map(scalarSignature)),
+    "allKeys did not preserve the exact scalar key set"
+  )
+  try require(inventory.values == values, "contains/lookup returned a different value map")
+
+  for malformed in ["%", "%0", "%GG", "%41", "%2A", "%000%"] {
+    try requireDataCorrupted("malformed percent escape \(malformed)") {
+      try XPCDecoder(
+        stringValueStrategy: .percentEscape
+      ).decode(String.self, from: xpcString(bytes: Array(malformed.utf8)))
+    }
+  }
+
+  let malformedUTF8 = xpcString(bytes: [0xF0, 0x28, 0x8C, 0x28])
+  try requireDataCorrupted("malformed external UTF-8 string") {
+    try XPCDecoder(
+      stringValueStrategy: .passthrough
+    ).decode(String.self, from: malformedUTF8)
+  }
+
+  print("PASS strings-and-keys: \(corpus.count) unique scalar strings; 2,048-key inventory")
+}
+
+private func unalignedXPCData<Value>(value: Value, offset: Int) -> xpc_object_t {
+  let payload = withUnsafeBytes(of: value) { Array($0) }
+  var prefixed = [UInt8](repeating: 0xA5, count: offset)
+  prefixed.append(contentsOf: payload)
+  let dispatchData = prefixed.withUnsafeBytes { DispatchData(bytes: $0) }
+  let slice = dispatchData.subdata(in: offset..<prefixed.count)
+  return xpc_data_create_with_dispatch_data(slice as dispatch_data_t)
+}
+
+private func testNumericsAndAlignment() throws {
+  let decoder = XPCDecoder.standard
+
+  for value in [Int64(Int8.min), Int64(Int8.min) + 1, Int64(Int8.max) - 1, Int64(Int8.max)] {
+    try require(
+      try decoder.decode(Int8.self, from: xpc_int64_create(value)) == Int8(value),
+      "Int8 boundary failed"
+    )
+  }
+  for value in [Int64(Int8.min) - 1, Int64(Int8.max) + 1] {
+    try requireDataCorrupted("Int8 out-of-range \(value)") {
+      try decoder.decode(Int8.self, from: xpc_int64_create(value))
+    }
+  }
+  try requireTypeMismatch("signedness rejection for Int8") {
+    try decoder.decode(Int8.self, from: xpc_uint64_create(UInt64.max))
+  }
+
+  for value in [UInt64(UInt8.min), 1, UInt64(UInt8.max) - 1, UInt64(UInt8.max)] {
+    try require(
+      try decoder.decode(UInt8.self, from: xpc_uint64_create(value)) == UInt8(value),
+      "UInt8 boundary failed"
+    )
+  }
+  try requireDataCorrupted("UInt8 out-of-range 256") {
+    try decoder.decode(UInt8.self, from: xpc_uint64_create(256))
+  }
+  try requireTypeMismatch("signedness rejection for UInt8") {
+    try decoder.decode(UInt8.self, from: xpc_int64_create(-1))
+  }
+
+  let negativeZero = try decoder.decode(Float.self, from: xpc_double_create(-0.0))
+  try require(
+    negativeZero == 0 && negativeZero.sign == .minus,
+    "Float negative zero lost its sign"
+  )
+  try require(
+    try decoder.decode(Float.self, from: xpc_double_create(Double(Float.leastNonzeroMagnitude)))
+      == Float.leastNonzeroMagnitude,
+    "Float subnormal failed exact narrowing"
+  )
+  try require(
+    try decoder.decode(Float.self, from: xpc_double_create(.infinity)).isInfinite,
+    "Float infinity was not preserved"
+  )
+  try require(
+    try decoder.decode(Float.self, from: xpc_double_create(.nan)).isNaN,
+    "Float NaN classification was not preserved"
+  )
+  try requireDataCorrupted("inexact Double-to-Float narrowing") {
+    try decoder.decode(Float.self, from: xpc_double_create(0.1))
+  }
+  try requireTypeMismatch("wrong Float scalar kind") {
+    try decoder.decode(Float.self, from: xpc_int64_create(1))
+  }
+
+  let signed = Int128.min / 3
+  let unsigned = UInt128.max - 0x1234
+  var signedRemainders = Set<Int>()
+  var unsignedRemainders = Set<Int>()
+  for offset in 1...16 {
+    let signedObject = unalignedXPCData(value: signed, offset: offset)
+    let unsignedObject = unalignedXPCData(value: unsigned, offset: offset)
+    let signedPointer = xpc_data_get_bytes_ptr(signedObject)!
+    let unsignedPointer = xpc_data_get_bytes_ptr(unsignedObject)!
+    signedRemainders.insert(
+      Int(UInt(bitPattern: signedPointer) % UInt(MemoryLayout<Int128>.alignment))
+    )
+    unsignedRemainders.insert(
+      Int(UInt(bitPattern: unsignedPointer) % UInt(MemoryLayout<UInt128>.alignment))
+    )
+    try require(
+      try decoder.decode(Int128.self, from: signedObject) == signed,
+      "misaligned Int128 failed at source offset \(offset)"
+    )
+    try require(
+      try decoder.decode(UInt128.self, from: unsignedObject) == unsigned,
+      "misaligned UInt128 failed at source offset \(offset)"
+    )
+  }
+  try require(
+    signedRemainders.contains(where: { $0 != 0 })
+      && unsignedRemainders.contains(where: { $0 != 0 }),
+    "finite 16-offset construction budget observed no genuinely misaligned pointer"
+  )
+
+  for length in 0...24 where length != 16 {
+    let object = [UInt8](repeating: 0x5A, count: length).withUnsafeBytes {
+      xpc_data_create($0.baseAddress, $0.count)
+    }
+    try requireDataCorrupted("Int128 wrong length \(length)") {
+      try decoder.decode(Int128.self, from: object)
+    }
+    try requireDataCorrupted("UInt128 wrong length \(length)") {
+      try decoder.decode(UInt128.self, from: object)
+    }
+  }
+
+  print(
+    "PASS numerics-and-alignment: offsets=1...16, Int128 remainders=\(signedRemainders.sorted()), UInt128 remainders=\(unsignedRemainders.sorted())"
+  )
+}
+
+private enum PointerCase {
+  case nilZero
+  case nilPositive
+  case nilNegative
+  case nonnullZero
+  case nonnullNegative
+  case valid
+}
+
+private struct PointerPayload: Encodable {
+  let testCase: PointerCase
+
+  func encode(to encoder: any Encoder) throws {
+    var container = encoder.singleValueContainer()
+    switch testCase {
+    case .nilZero:
+      try container.efficientlyEncodeBinaryData(
+        Optional<UnsafeRawPointer>.none,
+        count: 0
+      )
+    case .nilPositive:
+      try container.efficientlyEncodeBinaryData(
+        Optional<UnsafeRawPointer>.none,
+        count: 1
+      )
+    case .nilNegative:
+      try container.efficientlyEncodeBinaryData(
+        Optional<UnsafeRawPointer>.none,
+        count: -1
+      )
+    case .nonnullZero:
+      var byte: UInt8 = 0x42
+      try withUnsafePointer(to: &byte) {
+        try container.efficientlyEncodeBinaryData(
+          UnsafeRawPointer($0),
+          count: 0
+        )
+      }
+    case .nonnullNegative:
+      var byte: UInt8 = 0x42
+      try withUnsafePointer(to: &byte) {
+        try container.efficientlyEncodeBinaryData(
+          UnsafeRawPointer($0),
+          count: -1
+        )
+      }
+    case .valid:
+      let bytes: [UInt8] = [0, 1, 2, 3, 5, 8, 13, 255]
+      try bytes.withUnsafeBytes {
+        try container.efficientlyEncodeBinaryData($0)
+      }
+    }
+  }
+}
+
+private func requireEncodingInvalidValue(_ testCase: PointerCase) throws {
+  do {
+    _ = try XPCEncoder.standard.encode(PointerPayload(testCase: testCase))
+    throw AuditFailure.failed("invalid pointer/count case unexpectedly encoded")
+  } catch EncodingError.invalidValue {
+    return
+  } catch {
+    throw AuditFailure.failed(
+      "invalid pointer/count case produced \(String(reflecting: error))"
+    )
+  }
+}
+
+private struct KeyedDataShape: Codable, Equatable {
+  let neighbor: Int
+  let data: Data
+}
+
+private struct NestedDataShape: Codable, Equatable {
+  let label: String
+  let nested: KeyedDataShape
+}
+
+private class DataBaseShape: Codable {
+  let data: Data
+
+  init(data: Data) {
+    self.data = data
+  }
+}
+
+private final class DataChildShape: DataBaseShape {
+  let marker: Int
+
+  private enum CodingKeys: String, CodingKey {
+    case marker
+  }
+
+  init(data: Data, marker: Int) {
+    self.marker = marker
+    super.init(data: data)
+  }
+
+  required init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.marker = try container.decode(Int.self, forKey: .marker)
+    try super.init(from: container.superDecoder())
+  }
+
+  override func encode(to encoder: any Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(marker, forKey: .marker)
+    try super.encode(to: container.superEncoder())
+  }
+}
+
+private func requiredDictionaryValue(
+  _ dictionary: xpc_object_t,
+  key: String
+) throws -> xpc_object_t {
+  try require(
+    xpc_get_type(dictionary) == XPC_TYPE_DICTIONARY,
+    "expected an XPC dictionary while looking up \(key)"
+  )
+  guard let value = xpc_dictionary_get_value(dictionary, key) else {
+    throw AuditFailure.failed("missing XPC dictionary key \(key)")
+  }
+  return value
+}
+
+private func requireDataObject(
+  _ object: xpc_object_t,
+  byteCount: Int,
+  context: String
+) throws {
+  try require(
+    xpc_get_type(object) == XPC_TYPE_DATA,
+    "\(context) did not contain one XPC data object"
+  )
+  try require(
+    xpc_data_get_length(object) == byteCount,
+    "\(context) XPC data length did not match"
+  )
+}
+
+private func testDataShapes(
+  _ source: Data,
+  encoder: XPCEncoder,
+  decoder: XPCDecoder
+) throws {
+  let byteCount = source.count
+
+  do {
+    let value = KeyedDataShape(neighbor: 17, data: source)
+    let object = try encoder.encode(value)
+    try requireDataObject(
+      try requiredDictionaryValue(object, key: "data"),
+      byteCount: byteCount,
+      context: "keyed Data"
+    )
+    try require(
+      try decoder.decode(KeyedDataShape.self, from: object) == value,
+      "keyed Data did not round-trip exactly at \(byteCount) bytes"
+    )
+  }
+
+  do {
+    let value = [source]
+    let object = try encoder.encode(value)
+    try require(
+      xpc_get_type(object) == XPC_TYPE_ARRAY && xpc_array_get_count(object) == 1,
+      "unkeyed Data did not use a one-element XPC array"
+    )
+    try requireDataObject(
+      xpc_array_get_value(object, 0),
+      byteCount: byteCount,
+      context: "unkeyed Data"
+    )
+    try require(
+      try decoder.decode([Data].self, from: object) == value,
+      "unkeyed Data did not round-trip exactly at \(byteCount) bytes"
+    )
+  }
+
+  do {
+    let value = NestedDataShape(
+      label: "nested",
+      nested: KeyedDataShape(neighbor: 29, data: source)
+    )
+    let object = try encoder.encode(value)
+    let nested = try requiredDictionaryValue(object, key: "nested")
+    try requireDataObject(
+      try requiredDictionaryValue(nested, key: "data"),
+      byteCount: byteCount,
+      context: "nested Data"
+    )
+    try require(
+      try decoder.decode(NestedDataShape.self, from: object) == value,
+      "nested Data did not round-trip exactly at \(byteCount) bytes"
+    )
+  }
+
+  do {
+    let value = DataChildShape(data: source, marker: 31)
+    let object = try encoder.encode(value)
+    let superclass = try requiredDictionaryValue(object, key: "super")
+    try requireDataObject(
+      try requiredDictionaryValue(superclass, key: "data"),
+      byteCount: byteCount,
+      context: "superclass Data"
+    )
+    let decoded = try decoder.decode(DataChildShape.self, from: object)
+    try require(
+      decoded.marker == value.marker && decoded.data == value.data,
+      "superclass Data did not round-trip exactly at \(byteCount) bytes"
+    )
+  }
+}
+
+private func testDataAndUnsafeBuffers() throws {
+  let encoder = XPCEncoder.standard
+  let decoder = XPCDecoder.standard
+  let sizes = [0, 1, 16, 1_024, 4_096, 65_536, 1_048_576, 32 * 1_024 * 1_024]
+  for size in sizes {
+    let source = Data((0..<size).lazy.map { UInt8(truncatingIfNeeded: $0 &* 131) })
+    let decoded: Data = try {
+      let object = try encoder.encode(source)
+      try require(xpc_get_type(object) == XPC_TYPE_DATA, "Data was not one XPC data object")
+      try require(xpc_data_get_length(object) == size, "XPC data length did not match")
+      return try decoder.decode(Data.self, from: object)
+    }()
+    for churn in 0..<16 {
+      _ = Data(repeating: UInt8(truncatingIfNeeded: churn), count: min(size + 1, 1_048_576))
+    }
+    try require(decoded == source, "decoded Data did not own exact bytes for size \(size)")
+    try testDataShapes(source, encoder: encoder, decoder: decoder)
+  }
+
+  let emptyNil = try encoder.encode(PointerPayload(testCase: .nilZero))
+  let emptyNonnull = try encoder.encode(PointerPayload(testCase: .nonnullZero))
+  try require(xpc_data_get_length(emptyNil) == 0, "(nil, 0) was not empty data")
+  try require(xpc_data_get_length(emptyNonnull) == 0, "(nonnull, 0) was not empty data")
+  try requireEncodingInvalidValue(.nilPositive)
+  try requireEncodingInvalidValue(.nilNegative)
+  try requireEncodingInvalidValue(.nonnullNegative)
+  let valid = try encoder.encode(PointerPayload(testCase: .valid))
+  try require(
+    try decoder.decode(Data.self, from: valid) == Data([0, 1, 2, 3, 5, 8, 13, 255]),
+    "valid initialized raw storage did not copy exact bytes"
+  )
+
+  print(
+    "PASS data-and-unsafe-buffers: top-level, keyed, unkeyed, nested, and superclass positions through 32 MiB; all documented pointer/count pairs"
+  )
+}
+
+private enum RepeatedKey: String, CodingKey {
+  case first
+  case second
+  case third
+  case child
+  case after
+}
+
+private final class UserSentinel: Error, @unchecked Sendable {}
+
+private struct ThrowingChild: Encodable {
+  let sentinel: UserSentinel
+
+  func encode(to encoder: any Encoder) throws {
+    _ = encoder
+    throw sentinel
+  }
+}
+
+private struct RepeatedContainerPayload: Encodable {
+  let sentinel: UserSentinel
+
+  func encode(to encoder: any Encoder) throws {
+    var first = encoder.container(keyedBy: RepeatedKey.self)
+    try first.encode(1, forKey: .first)
+    var second = encoder.container(keyedBy: RepeatedKey.self)
+    try second.encode(2, forKey: .second)
+    do {
+      try second.encode(ThrowingChild(sentinel: sentinel), forKey: .child)
+      throw AuditFailure.failed("user child unexpectedly encoded")
+    } catch let error as UserSentinel where error === sentinel {
+      // Expected: preserve identity and continue the manual transaction.
+    }
+    var third = encoder.container(keyedBy: RepeatedKey.self)
+    try third.encode(3, forKey: .third)
+    try third.encode(4, forKey: .after)
+  }
+}
+
+private struct NilInventory: Decodable {
+  let keys: Set<String>
+  let containsMissing: Bool
+  let missingNilError: String
+
+  init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: AnyStringKey.self)
+    let missing = AnyStringKey(stringValue: "missing")!
+    self.keys = Set(container.allKeys.map(\.stringValue))
+    self.containsMissing = container.contains(missing)
+    do {
+      _ = try container.decodeNil(forKey: missing)
+      self.missingNilError = "none"
+    } catch DecodingError.keyNotFound {
+      self.missingNilError = "keyNotFound"
+    }
+  }
+}
+
+private struct UserInfoProbe: Codable, Equatable {
+  static let key = CodingUserInfoKey(rawValue: "independent-audit")!
+  let observed: String
+
+  init(observed: String) {
+    self.observed = observed
+  }
+
+  init(from decoder: any Decoder) throws {
+    self.observed = decoder.userInfo[Self.key] as? String ?? "missing"
+  }
+
+  func encode(to encoder: any Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try container.encode(encoder.userInfo[Self.key] as? String ?? "missing")
+  }
+}
+
+private struct RecursiveArrayProbe: Decodable {
+  init(from decoder: any Decoder) throws {
+    var container = try decoder.unkeyedContainer()
+    _ = try container.decode(RecursiveArrayProbe.self)
+  }
+}
+
+private func testCodableBudgetsAndState() throws {
+  let sentinel = UserSentinel()
+  let object = try XPCEncoder.standard.encode(
+    RepeatedContainerPayload(sentinel: sentinel)
+  )
+  let dictionary = try XPCDecoder.standard.decode([String: Int].self, from: object)
+  try require(
+    dictionary == ["first": 1, "second": 2, "third": 3, "after": 4],
+    "repeated container requests or partial child failure lost fields"
+  )
+  let inventory = try XPCDecoder.standard.decode(NilInventory.self, from: object)
+  try require(
+    inventory.keys == Set(["first", "second", "third", "after"]),
+    "allKeys exposed an unexpected partial child"
+  )
+  try require(!inventory.containsMissing, "contains reported a missing key")
+  try require(inventory.missingNilError == "keyNotFound", "decodeNil did not distinguish missing")
+
+  let encoder = XPCEncoder.standard
+  encoder.userInfo[UserInfoProbe.key] = "encoder-nested"
+  let userInfoObject = try encoder.encode([UserInfoProbe(observed: "ignored")])
+  let decoder = XPCDecoder.standard
+  decoder.userInfo[UserInfoProbe.key] = "decoder-nested"
+  let userInfoValues = try decoder.decode([UserInfoProbe].self, from: userInfoObject)
+  try require(
+    userInfoValues == [UserInfoProbe(observed: "decoder-nested")],
+    "userInfo did not reach nested encode/decode paths"
+  )
+
+  let cycle = xpc_array_create(nil, 0)
+  xpc_array_append_value(cycle, cycle)
+  let tight = XPCDecoder.ResourceLimits(
+    maximumNestingDepth: 3,
+    maximumContainerElementCount: 4,
+    maximumTotalNodeCount: 8,
+    maximumStringByteCount: 32,
+    maximumDataByteCount: 32,
+    maximumCumulativeByteCount: 64
+  )
+  try requireDataCorrupted("self-cycle under tight public limits") {
+    try XPCDecoder(resourceLimits: tight).decode(RecursiveArrayProbe.self, from: cycle)
+  }
+
+  let broad = xpc_array_create(nil, 0)
+  for value in 0..<5 {
+    xpc_array_append_value(broad, xpc_int64_create(Int64(value)))
+  }
+  try requireDataCorrupted("breadth one above tight public limit") {
+    try XPCDecoder(resourceLimits: tight).decode([Int].self, from: broad)
+  }
+
+  do {
+    _ = try XPCEncoder.standard.withTransientEncoder { _ in }
+    throw AuditFailure.failed("no-work root did not throw")
+  } catch TransientEncoderError.noEncodingOccurred {
+    // Expected.
+  }
+
+  print("PASS codable-budgets-and-state: repeated containers, partial failure, userInfo, cycle, breadth")
+}
+
+private struct ConcurrentPayload: Codable, Equatable, Sendable {
+  let ordinal: Int
+  let strings: [String: String]
+  let bytes: Data
+}
+
+private func testConcurrency() async throws {
+  let configurations: [XPCCodec.Configuration] = [
+    .standard,
+    .init(stringKeyStrategy: .percentEscape, stringValueStrategy: .useDataRepresentation(.utf8)),
+    .init(stringKeyStrategy: .percentEscape, stringValueStrategy: .useDataRepresentation(.utf16)),
+    .init(stringKeyStrategy: .assumeAbsent, stringValueStrategy: .assumeAbsent),
+  ]
+
+  for configuration in configurations {
+    let codec = XPCCodec(configuration: configuration)
+    try await withThrowingTaskGroup(of: Bool.self) { group in
+      for ordinal in 0..<2_000 {
+        group.addTask {
+          let nullSuffix = configuration.stringKeyStrategy == .assumeAbsent ? "" : "\0%"
+          let payload = ConcurrentPayload(
+            ordinal: ordinal,
+            strings: ["key\(ordinal)\(nullSuffix)": "value\(ordinal)\(nullSuffix)"],
+            bytes: Data((0..<257).map { UInt8(truncatingIfNeeded: $0 &+ ordinal) })
+          )
+          let object = try codec.encode(payload)
+          return try codec.decode(ConcurrentPayload.self, from: object) == payload
+        }
+      }
+      for try await result in group {
+        try require(result, "shared immutable codec produced a mismatched concurrent result")
+      }
+    }
+  }
+
+  print("PASS concurrency: 8,000 shared-codec mixed encode/decode operations")
+}
+
+@main
+private struct IndependentAdversarialAudit {
+  static func main() async throws {
+    if CommandLine.arguments.dropFirst() == ["concurrency-only"] {
+      try await testConcurrency()
+      return
+    }
+    try testStringsAndKeys()
+    try testNumericsAndAlignment()
+    try testDataAndUnsafeBuffers()
+    try testCodableBudgetsAndState()
+    try await testConcurrency()
+    print("INDEPENDENT ADVERSARIAL BLACK-BOX AUDIT PASSED")
+  }
+}

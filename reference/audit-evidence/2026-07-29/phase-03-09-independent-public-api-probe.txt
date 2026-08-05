@@ -1,0 +1,14 @@
+[0/1] Planning build
+Building for production...
+[0/3] Write sources
+[1/3] Write swift-version--58304C5D6DBC2206.txt
+[3/4] Compiling IndependentXPCCodingAdversarial main.swift
+[3/5] Write Objects.LinkFileList
+[4/5] Linking IndependentXPCCodingAdversarial
+Build of product 'IndependentXPCCodingAdversarial' complete! (2.76s)
+PASS strings-and-keys: 8209 unique scalar strings; 2,048-key inventory
+PASS numerics-and-alignment: offsets=1...16, Int128 remainders=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], UInt128 remainders=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+PASS data-and-unsafe-buffers: top-level, keyed, unkeyed, nested, and superclass positions through 32 MiB; all documented pointer/count pairs
+PASS codable-budgets-and-state: repeated containers, partial failure, userInfo, cycle, breadth
+PASS concurrency: 8,000 shared-codec mixed encode/decode operations
+INDEPENDENT ADVERSARIAL BLACK-BOX AUDIT PASSED

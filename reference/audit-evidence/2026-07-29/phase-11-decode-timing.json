@@ -1,0 +1,33 @@
+{
+  "buildConfiguration" : "release",
+  "candidateCommit" : "8dab29a230817c3911a2a8e48467c49a9c0a2604",
+  "checksum" : 10800000,
+  "measurements" : [
+    {
+      "expectedOutcome" : "success",
+      "iterationsPerSample" : 100000,
+      "medianNanoseconds" : 214.7525,
+      "name" : "decode\/string\/valid-percent-escape",
+      "operation" : "decode",
+      "p90Nanoseconds" : 223.850834,
+      "p95Nanoseconds" : 228.020329,
+      "p99Nanoseconds" : 228.21539380000002,
+      "sampleCount" : 15,
+      "standardDeviationNanoseconds" : 4.9998662903372395,
+      "warmupCount" : 3
+    },
+    {
+      "expectedOutcome" : "DecodingError.dataCorrupted",
+      "iterationsPerSample" : 100000,
+      "medianNanoseconds" : 258.83291,
+      "name" : "decode\/string\/unsupported-percent-escape",
+      "operation" : "decode",
+      "p90Nanoseconds" : 262.178082,
+      "p95Nanoseconds" : 264.895625,
+      "p99Nanoseconds" : 269.337125,
+      "sampleCount" : 15,
+      "standardDeviationNanoseconds" : 3.2416258032649132,
+      "warmupCount" : 3
+    }
+  ]
+}

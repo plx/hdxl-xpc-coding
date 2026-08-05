@@ -1,0 +1,87 @@
+COMMAND=cd /private/tmp/hdxl-xpc-audit52.UvYJGp/control-docs && test "$(git rev-parse HEAD)" = 8dab29a230817c3911a2a8e48467c49a9c0a2604 && git diff -- Sources/XPCCoding/XPCCodec.swift; set +e; DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer bash Scripts/generate-api-documentation.sh /private/tmp/hdxl-xpc-audit52.UvYJGp/control-docs-output; control_status=$?; set -e; printf "EXPECTED_DOCUMENTATION_FAILURE_STATUS=%s\n" "$control_status"; test "$control_status" -ne 0
+START_UTC=2026-07-29T13:04:46Z
+diff --git a/Sources/XPCCoding/XPCCodec.swift b/Sources/XPCCoding/XPCCodec.swift
+index c9e9e46..ef589c0 100644
+--- a/Sources/XPCCoding/XPCCodec.swift
++++ b/Sources/XPCCoding/XPCCodec.swift
+@@ -83,6 +83,8 @@ public struct XPCCodec: Sendable {
+
+ }
+
++public struct AuditDocumentationControl {}
++
+ extension XPCCodec {
+
+   /// Encodes the given value to an `xpc_object_t`.
+Building for debugging...
+[0/2] Write sources
+[1/2] Write swift-version--58304C5D6DBC2206.txt
+[3/42] Compiling XPCCoding XPCDecoder+ResourceLimits.swift
+[4/42] Compiling XPCCoding XPCDecoder+StringKeyStrategy.swift
+[5/42] Compiling XPCCoding XPCDecoder+StringValueStrategy.swift
+[6/44] Compiling XPCCoding LosslessXPCObjectConvertible.swift
+[7/44] Compiling XPCCoding XPCBinaryDataRepresentationConvertible.swift
+[8/44] Compiling XPCCoding XPCObjectCompatibilityError.swift
+[9/44] Compiling XPCCoding XPCCodec+StringValueStrategy.swift
+[10/44] Compiling XPCCoding XPCCodec.swift
+[11/44] Compiling XPCCoding InfalliblyUnwrap.swift
+[12/44] Compiling XPCCoding String+EmbeddedNullSupport.swift
+[13/44] Compiling XPCCoding _XPCDecoder.swift
+[14/44] Compiling XPCCoding _XPCDecodingState.swift
+[15/44] Compiling XPCCoding xpc_object_t+Extraction.swift
+[16/44] Compiling XPCCoding XPCObjectExtractable.swift
+[17/44] Compiling XPCCoding SingleValueEncodingContainer+XPCEnhancement.swift
+[18/44] Compiling XPCCoding CodingKey+Support.swift
+[19/44] Compiling XPCCoding String+Support.swift
+[20/44] Compiling XPCCoding UnsafePointerCountValidation.swift
+[21/44] Compiling XPCCoding XPCCodingKey.swift
+[22/44] Compiling XPCCoding xpc_object+Support.swift
+[23/44] Compiling XPCCoding XPCKeyedDecodingContainer.swift
+[24/44] Compiling XPCCoding XPCSingleValueDecodingContainer.swift
+[25/44] Compiling XPCCoding XPCUnkeyedDecodingContainer.swift
+[26/44] Compiling XPCCoding XPCCodec+StringKeyStrategy.swift
+[27/44] Compiling XPCCoding XPCCodec+StringValueDataRepresentation.swift
+[28/44] Compiling XPCCoding UnkeyedCodingContainer+XPCEnhancement.swift
+[29/44] Compiling XPCCoding XPCCodec+Configuration.swift
+[30/44] Compiling XPCCoding XPCEncoder+StringValueStrategy.swift
+[31/44] Compiling XPCCoding XPCEncoder.swift
+[32/44] Compiling XPCCoding KeyedEncodingContainer+XPCEnhancement.swift
+[33/44] Compiling XPCCoding _XPCDictionaryReferencingEncoder.swift
+[34/44] Compiling XPCCoding _XPCEncoder.swift
+[35/44] Compiling XPCCoding XPCEncoder+StringKeyStrategy.swift
+[36/44] Emitting module XPCCoding
+[37/44] Compiling XPCCoding XPCDecoder.swift
+[38/44] Compiling XPCCoding String+xpc_object_t.swift
+[39/44] Compiling XPCCoding XPCKeyedEncodingContainer.swift
+[40/44] Compiling XPCCoding XPCSingleValueEncodingContainer.swift
+[41/44] Compiling XPCCoding XPCUnkeyedEncodingContainer.swift
+[42/44] Compiling XPCCoding _XPCArrayReferencingEncoder.swift
+[43/44] Compiling XPCCoding XPCEnhancedSingleValueEncodingContainer.swift
+[44/44] Compiling XPCCoding XPCEnhancedUnkeyedEncodingContainer.swift
+Build of target: 'XPCCoding' complete! (2.83s)
+Exempt (compiler-synthesized, cannot carry a doc comment): 19
+  TransientEncoderError.!=(_:_:) (swift.func.op)
+  TransientEncoderError.localizedDescription (swift.property)
+  XPCCodec.Configuration.!=(_:_:) (swift.func.op)
+  XPCCodec.Configuration.init(from:) (swift.init)
+  XPCCodec.StringKeyStrategy.!=(_:_:) (swift.func.op)
+  XPCCodec.StringKeyStrategy.init(from:) (swift.init)
+  XPCCodec.StringValueDataRepresentation.!=(_:_:) (swift.func.op)
+  XPCCodec.StringValueDataRepresentation.init(from:) (swift.init)
+  XPCCodec.StringValueStrategy.!=(_:_:) (swift.func.op)
+  XPCCodec.StringValueStrategy.init(from:) (swift.init)
+  XPCDecoder.ResourceLimits.!=(_:_:) (swift.func.op)
+  XPCDecoder.StringKeyStrategy.!=(_:_:) (swift.func.op)
+  XPCDecoder.StringKeyStrategy.init(from:) (swift.init)
+  XPCDecoder.StringValueStrategy.!=(_:_:) (swift.func.op)
+  XPCDecoder.StringValueStrategy.init(from:) (swift.init)
+  XPCEncoder.StringKeyStrategy.!=(_:_:) (swift.func.op)
+  XPCEncoder.StringKeyStrategy.init(from:) (swift.init)
+  XPCEncoder.StringValueStrategy.!=(_:_:) (swift.func.op)
+  XPCEncoder.StringValueStrategy.init(from:) (swift.init)
+error: 1 public declaration(s) are undocumented:
+  Sources/XPCCoding/XPCCodec.swift:86: AuditDocumentationControl (swift.struct)
+error: every public XPCCoding declaration must carry a documentation comment.
+EXPECTED_DOCUMENTATION_FAILURE_STATUS=1
+END_UTC=2026-07-29T13:04:50Z
+EXIT_STATUS=0
