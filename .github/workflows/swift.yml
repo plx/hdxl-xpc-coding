@@ -62,7 +62,7 @@ jobs:
 
       - name: Upload the zero-known-issue test transcripts
         if: ${{ always() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: zero-known-issue-tests-xcode-26.6
           path: |
@@ -85,7 +85,7 @@ jobs:
             --output .build/benchmarks/ci-smoke.json
 
       - name: Upload the benchmark smoke report
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: benchmark-smoke-xcode-26.6
           path: .build/benchmarks/ci-smoke.json
@@ -150,7 +150,7 @@ jobs:
 
       - name: Upload quality-gate transcripts
         if: ${{ always() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: quality-contracts-xcode-26.6
           path: |
@@ -187,7 +187,7 @@ jobs:
 
       - name: Upload the documentation archive and transcript
         if: ${{ always() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: api-documentation-xcode-26.6
           path: |
@@ -213,7 +213,7 @@ jobs:
 
       - name: Upload the raw report, summary, and complete transcripts
         if: ${{ always() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: source-coverage-xcode-26.6
           path: ${{ runner.temp }}/coverage
@@ -264,7 +264,7 @@ jobs:
 
       - name: Upload the baseline evidence transcript
         if: ${{ always() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: baseline-evidence-xcode-26.6
           path: ${{ runner.temp }}/baseline-evidence.log
@@ -319,7 +319,7 @@ jobs:
 
       - name: Upload the fuzzing smoke report and any counterexamples
         if: ${{ always() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: fuzzing-smoke-xcode-26.6
           path: |
@@ -357,7 +357,7 @@ jobs:
 
       - name: Upload the complete AddressSanitizer log
         if: ${{ always() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: address-sanitizer-xcode-26.6
           path: ${{ runner.temp }}/address-sanitizer.log
@@ -387,7 +387,7 @@ jobs:
 
       - name: Upload the complete UndefinedBehaviorSanitizer log
         if: ${{ always() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: undefined-behavior-sanitizer-xcode-26.6
           path: ${{ runner.temp }}/undefined-behavior-sanitizer.log
@@ -423,7 +423,7 @@ jobs:
 
       - name: Upload the complete ThreadSanitizer log
         if: ${{ always() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: thread-sanitizer-xcode-26.6
           path: ${{ runner.temp }}/thread-sanitizer.log
